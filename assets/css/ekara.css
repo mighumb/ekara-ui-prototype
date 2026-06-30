@@ -586,10 +586,16 @@ span.form-label {
 }
 
 .form-row-service {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 16px;
-  align-items: start;
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 16px 0;
+}
+
+.form-row-service .form-select,
+.form-row-service .service-help {
+  display: table-cell;
+  vertical-align: top;
 }
 
 .form-row-service .form-select {
