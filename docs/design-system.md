@@ -13,26 +13,26 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 ## Colors (Ekara DS)
 
-**Neutrals** — token prefix `--color-n{step}` (N900 darkest → N0 Coconut). Values only in `tokens.css`.
+All **values** live in `tokens.css` only. `ekara.css` references semantic tokens — no hardcoded hex/rgba.
 
-| Sub-family | Range |
-|------------|-------|
-| Dark | N900–N500 |
-| Mid | N400–N60 |
-| Light | N50–N0 |
+**Palette families:** Neutrals (`--color-n*`), Greens (`--color-g*`), Teals (`--color-t*`), Blues (`--color-b*`).
 
-**Greens** — `--color-g{step}` (G900 → G100).
+**Semantic layers** (in `tokens.css`):
+- Text: `--text-primary`, `--text-secondary`, `--text-muted`, `--text-on-primary`
+- Surfaces: `--surface-default`, `--surface-muted`, `--surface-hover`, `--content-bg`, `--card-bg`
+- Borders: `--border-color` → N30, `--input-border-color` → N60
+- Shadows: `--shadow-dropdown`, `--shadow-panel`, `--shadow-dialog`
 
-**Teals** — `--color-t{step}` (T900 → T100).
-
-**Blues** — `--color-b{step}` (B900 → B50). Primary actions use **B500** (`#195190`, Turkish sea). Light hover surfaces use **B50**.
+**Blues** — primary actions use **B500** via `--primary`. Light hover surfaces use **B50** via `--surface-hover-light`.
 
 | Semantic token | Maps to |
 |----------------|---------|
 | `--primary` | `var(--color-b500)` — filled primary buttons, active toggles, links, input focus |
-| `--primary-hover` | `var(--color-b600)` — hover on filled primary buttons |
-| `--primary-light` | `var(--color-b400)` — secondary accents (sidebar active border) |
+| `--primary-hover` | `var(--color-b600)` |
+| `--primary-light` | `var(--color-b400)` — sidebar active border |
 | `--surface-hover-light` | `var(--color-b50)` — hover on outline/text buttons |
+| `--border-color` | `var(--color-n30)` — dividers, table borders, mode-toggle border |
+| `--input-border-color` | `var(--color-n60)` — input/select at rest |
 
 Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
 
