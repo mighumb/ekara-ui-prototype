@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=20');
+@import url('tokens.css?v=21');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -273,12 +273,13 @@ input, select, textarea {
 }
 
 .btn-text {
-  color: var(--primary-light);
+  color: var(--primary);
   padding: 8px 12px;
+  border-radius: var(--radius);
 }
 
 .btn-text:hover {
-  text-decoration: underline;
+  background: var(--color-b100);
 }
 
 .btn-icon {
