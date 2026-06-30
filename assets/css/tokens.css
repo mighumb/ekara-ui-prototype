@@ -62,7 +62,7 @@
   --color-t200: #93f6e0; /* Limpet shell */
   --color-t100: #c8faeb; /* Mint green */
 
-  /* Colors — Blues (Ekara DS) B900 darkest → B100 lightest */
+  /* Colors — Blues (Ekara DS) B900 darkest → B50 lightest */
   --color-b900: #041645; /* Ink blue */
   --color-b800: #072053; /* Blue depths */
   --color-b700: #0c2e67;
@@ -72,6 +72,7 @@
   --color-b300: #6faddd; /* Sky blue */
   --color-b200: #a3d4f3;
   --color-b100: #d0ebf9;
+  --color-b50: #e8f4fc;
 
   /* Colors — surfaces */
   --sidebar-bg: #1e2a3a;

@@ -25,7 +25,7 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 **Teals** — `--color-t{step}` (T900 → T100).
 
-**Blues** — `--color-b{step}` (B900 → B100). Primary actions use **B500** (`#195190`, Turkish sea).
+**Blues** — `--color-b{step}` (B900 → B50). Primary actions use **B500** (`#195190`, Turkish sea). Light hover surfaces use **B50**.
 
 | Semantic token | Maps to |
 |----------------|---------|

@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=21');
+@import url('tokens.css?v=22');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -269,7 +269,7 @@ input, select, textarea {
 }
 
 .btn-outline:hover {
-  background: var(--color-b100);
+  background: var(--color-b50);
 }
 
 .btn-text {
@@ -279,7 +279,7 @@ input, select, textarea {
 }
 
 .btn-text:hover {
-  background: var(--color-b100);
+  background: var(--color-b50);
 }
 
 .btn-icon {
