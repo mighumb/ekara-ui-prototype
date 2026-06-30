@@ -13,13 +13,15 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 ## Colors (Ekara DS)
 
-Neutral scales use `--color-n{step}` (e.g. `--color-n900`). Values only in `tokens.css`.
+**Neutrals** — token prefix `--color-n{step}` (N900 darkest → N0 Coconut). Values only in `tokens.css`.
 
-| Family | Tokens (so far) | Usage in prototype |
-|--------|-----------------|-------------------|
-| Dark neutrals | N900–N500 | `--label-color` → `var(--color-n900)` for `form-label` |
+| Sub-family | Range |
+|------------|-------|
+| Dark | N900–N500 |
+| Mid | N400–N60 |
+| Light | N50–N0 |
 
-Mid neutrals and light neutrals will be added as you share them from the DS.
+Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
 
 ## Labels
 

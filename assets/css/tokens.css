@@ -10,12 +10,30 @@
   /* Typography */
   --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 
-  /* Colors — dark neutrals (Ekara DS) */
+  /* Colors — Neutrals (Ekara DS)
+     Sub-families: Dark (N900–N500), Mid (N400–N60), Light (N50–N0) */
+  /* Dark */
   --color-n900: #0c1524;
   --color-n800: #182533;
   --color-n700: #223347;
   --color-n600: #3c4f67;
   --color-n500: #4a5f78;
+  /* Mid */
+  --color-n400: #59708b;
+  --color-n300: #69819d;
+  --color-n200: #7791ae;
+  --color-n100: #86a2c1;
+  --color-n90: #92acc7;
+  --color-n80: #9eb5ce;
+  --color-n70: #abbed4;
+  --color-n60: #b7c7da;
+  /* Light */
+  --color-n50: #c2d0e0;
+  --color-n40: #cedae6;
+  --color-n30: #dbe3ec;
+  --color-n20: #e8edf3;
+  --color-n10: #f3f6f9;
+  --color-n0: #ffffff; /* Coconut */
 
   /* Colors — surfaces */
   --sidebar-bg: #1e2a3a;
@@ -48,7 +66,7 @@
   /* Labels — all form/component labels (class: form-label) */
   --label-font-size: 12px;
   --label-font-weight: 500;
-  --label-color: #0c1524;
+  --label-color: var(--color-n900);
   --label-letter-spacing: 0.4px;
   --label-margin-bottom: 6px;
 }
