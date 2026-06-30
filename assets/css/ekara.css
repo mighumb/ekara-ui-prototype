@@ -341,11 +341,11 @@ input, select, textarea {
 }
 
 .data-table-header-cell {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .data-table-row {
@@ -513,14 +513,20 @@ input, select, textarea {
   margin-bottom: 20px;
 }
 
+/* Unified label — same style for every label in the prototype */
 .form-label {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.4px;
   margin-bottom: 6px;
+}
+
+.toggle-row .form-label,
+.mapping-column-labels .form-label {
+  margin-bottom: 0;
 }
 
 .form-input,
@@ -603,11 +609,6 @@ input, select, textarea {
   justify-content: space-between;
 }
 
-.toggle-label {
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
 .toggle {
   position: relative;
   width: 44px;
@@ -670,10 +671,6 @@ input, select, textarea {
 
 .mapping-column-labels.hidden {
   display: none;
-}
-
-.mapping-column-labels .form-label {
-  margin-bottom: 0;
 }
 
 .dynamic-row {
