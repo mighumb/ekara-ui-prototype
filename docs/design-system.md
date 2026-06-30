@@ -19,7 +19,7 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 
 **Semantic layers** (in `tokens.css`):
 - Text: `--text-primary`, `--text-secondary`, `--text-muted`, `--text-on-primary`
-- Surfaces: `--surface-default`, `--surface-muted`, `--surface-hover`, `--content-bg`, `--card-bg`
+- Surfaces: `--surface-default`, `--surface-muted`, `--surface-hover-neutral`, `--surface-hover-action`, `--content-bg`, `--card-bg`
 - Borders: `--border-color` → N30, `--input-border-color` → N60
 - Shadows: `--shadow-dropdown`, `--shadow-panel`, `--shadow-dialog`
 
@@ -30,7 +30,8 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 | `--primary` | `var(--color-b500)` — filled primary buttons, active toggles, links, input focus |
 | `--primary-hover` | `var(--color-b600)` |
 | `--primary-light` | `var(--color-b400)` — sidebar active border |
-| `--surface-hover-light` | `var(--color-b50)` — hover on outline/text buttons |
+| `--surface-hover-action` | `var(--color-b50)` — hover on action buttons (Cancel, outline, close) |
+| `--surface-hover-neutral` | `var(--color-n10)` — hover on passive surfaces (tabs, table rows, dropdown items) |
 | `--border-color` | `var(--color-n30)` — dividers, table borders, mode-toggle outer border |
 | `--mode-toggle-divider` | `var(--color-n20)` — separator between Mapping / Custom JSON tabs |
 | `--input-border-color` | `var(--color-n60)` — input/select at rest |

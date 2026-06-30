@@ -122,9 +122,9 @@
   --surface-default: var(--color-n0);
   --surface-muted: var(--color-n10);
   --surface-subtle: var(--color-n20);
-  --surface-hover: var(--color-n10);
+  --surface-hover-neutral: var(--color-n10);
   --table-header-bg: var(--color-n10);
-  --table-row-hover-bg: var(--color-n10);
+  --table-row-hover-bg: var(--surface-hover-neutral);
   --payload-preview-bg: var(--color-n10);
   --avatar-bg: var(--color-n500);
   --overlay: color-mix(in srgb, var(--color-n900) 45%, transparent);
@@ -163,6 +163,7 @@
   --link-color: var(--primary);
   --input-focus-border: var(--primary);
   --surface-hover-light: var(--color-b50);
+  --surface-hover-action: var(--color-b50);
   --toggle-track-off: var(--color-n50);
   --toggle-track-on: var(--primary);
   --toggle-thumb: var(--color-n0);

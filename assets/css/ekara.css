@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=26');
+@import url('tokens.css?v=27');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -270,7 +270,7 @@ input, select, textarea {
 }
 
 .btn-outline:hover {
-  background: var(--surface-hover-light);
+  background: var(--surface-hover-action);
 }
 
 .btn-text {
@@ -280,7 +280,7 @@ input, select, textarea {
 }
 
 .btn-text:hover {
-  background: var(--surface-hover-light);
+  background: var(--surface-hover-action);
 }
 
 .btn-icon {
@@ -294,7 +294,7 @@ input, select, textarea {
 }
 
 .btn-icon:hover {
-  background: var(--surface-hover);
+  background: var(--surface-hover-neutral);
   color: var(--text-primary);
 }
 
@@ -393,7 +393,7 @@ input, select, textarea {
 }
 
 .dropdown-item:hover {
-  background: var(--surface-muted);
+  background: var(--surface-hover-neutral);
 }
 
 .dropdown-item svg {
@@ -467,7 +467,7 @@ input, select, textarea {
 }
 
 .slide-panel-close:hover {
-  background: var(--surface-hover);
+  background: var(--surface-hover-action);
 }
 
 .slide-panel-body {
@@ -771,7 +771,7 @@ span.form-label {
 }
 
 .mode-toggle-btn:hover:not(.active) {
-  background: var(--surface-muted);
+  background: var(--surface-hover-neutral);
 }
 
 .json-editor-section {
