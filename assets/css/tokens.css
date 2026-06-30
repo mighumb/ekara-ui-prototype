@@ -10,6 +10,13 @@
   /* Typography */
   --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 
+  /* Colors — dark neutrals (Ekara DS) */
+  --color-n900: #0c1524;
+  --color-n800: #182533;
+  --color-n700: #223347;
+  --color-n600: #3c4f67;
+  --color-n500: #4a5f78;
+
   /* Colors — surfaces */
   --sidebar-bg: #1e2a3a;
   --topbar-bg: #1e2a3a;

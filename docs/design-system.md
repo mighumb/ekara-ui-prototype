@@ -11,6 +11,16 @@ Conventions for shared UI. Token **values** live in CSS only — not duplicated 
 
 Change a color, size, or weight → edit `tokens.css`. Nothing else required from the product owner.
 
+## Colors (Ekara DS)
+
+Neutral scales use `--color-n{step}` (e.g. `--color-n900`). Values only in `tokens.css`.
+
+| Family | Tokens (so far) | Usage in prototype |
+|--------|-----------------|-------------------|
+| Dark neutrals | N900–N500 | `--label-color` → `var(--color-n900)` for `form-label` |
+
+Mid neutrals and light neutrals will be added as you share them from the DS.
+
 ## Labels
 
 - **Class:** `form-label` on every form/component label.
