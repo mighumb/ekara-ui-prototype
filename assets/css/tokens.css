@@ -84,8 +84,8 @@
   /* Colors — sidebar */
   --sidebar-text: #a8b4c4;
   --sidebar-text-active: #ffffff;
-  --sidebar-active-bg: rgba(74, 144, 217, 0.25);
-  --sidebar-active-border: #4a90d9;
+  --sidebar-active-bg: rgba(25, 81, 144, 0.25);
+  --sidebar-active-border: var(--color-b400);
 
   /* Colors — text */
   --text-primary: #1a2b4b;
@@ -97,10 +97,20 @@
   --primary-hover: var(--color-b600);
   --primary-light: var(--color-b400);
   --danger: #d9534f;
+  --danger-hover: #c9302c;
   --success: #3c9a5f;
 
   /* Colors — borders */
   --border-color: #dde3ea;
+  --input-border-color: var(--color-n60);
+
+  /* Components — interactive (reuse on every page/modal) */
+  --link-color: var(--primary);
+  --input-focus-border: var(--primary);
+  --surface-hover-light: var(--color-b50);
+  --toggle-track-off: var(--color-n50);
+  --toggle-track-on: var(--primary);
+  --toggle-thumb: var(--color-n0);
 
   /* Labels — all form/component labels (class: form-label) */
   --label-font-size: 12px;

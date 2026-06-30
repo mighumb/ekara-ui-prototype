@@ -29,11 +29,27 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 | Semantic token | Maps to |
 |----------------|---------|
-| `--primary` | `var(--color-b500)` — filled primary buttons (`.btn-primary`, active mode toggle) |
-| `--primary-hover` | `var(--color-b600)` |
-| `--primary-light` | `var(--color-b400)` — links, text buttons, focus rings, toggles |
+| `--primary` | `var(--color-b500)` — filled primary buttons, active toggles, links, input focus |
+| `--primary-hover` | `var(--color-b600)` — hover on filled primary buttons |
+| `--primary-light` | `var(--color-b400)` — secondary accents (sidebar active border) |
+| `--surface-hover-light` | `var(--color-b50)` — hover on outline/text buttons |
 
 Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
+
+## Components (reuse classes + tokens)
+
+| Component | Class | Key tokens |
+|-----------|-------|------------|
+| Primary button | `.btn-primary` | `--primary` / `--primary-hover` |
+| Outline button | `.btn-outline` | `--primary` border & text; hover `--surface-hover-light` |
+| Text button | `.btn-text` | `--primary` text; hover `--surface-hover-light` |
+| Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
+| Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
+| Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border` |
+| Mode toggle (active) | `.mode-toggle-btn.active` | `--primary` |
+| Link | `a` | `--link-color` |
+
+New pages/modals: use these classes — do not hardcode colors in HTML or per-page CSS.
 
 ## Typography (Ekara DS)
 

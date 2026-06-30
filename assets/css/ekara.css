@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=22');
+@import url('tokens.css?v=23');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -16,7 +16,7 @@ html, body {
 }
 
 a {
-  color: var(--primary-light);
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -269,7 +269,7 @@ input, select, textarea {
 }
 
 .btn-outline:hover {
-  background: var(--color-b50);
+  background: var(--surface-hover-light);
 }
 
 .btn-text {
@@ -279,7 +279,7 @@ input, select, textarea {
 }
 
 .btn-text:hover {
-  background: var(--color-b50);
+  background: var(--surface-hover-light);
 }
 
 .btn-icon {
@@ -514,10 +514,10 @@ span.form-label {
 .form-textarea {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #b8c4d0;
+  border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
   color: var(--text-primary);
-  background: #ffffff;
+  background: var(--color-n0);
   transition: border-color 0.15s;
   -webkit-appearance: none;
   appearance: none;
@@ -538,11 +538,11 @@ span.form-label {
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--primary-light);
+  border-color: var(--input-focus-border);
 }
 
 .form-input::placeholder {
-  color: #8e9aab;
+  color: var(--text-muted);
 }
 
 .form-textarea {
@@ -613,7 +613,7 @@ span.form-label {
 .toggle-slider {
   position: absolute;
   inset: 0;
-  background: #c8d0da;
+  background: var(--toggle-track-off);
   border-radius: 12px;
   transition: background 0.2s;
 }
@@ -625,13 +625,13 @@ span.form-label {
   height: 18px;
   left: 3px;
   bottom: 3px;
-  background: #ffffff;
+  background: var(--toggle-thumb);
   border-radius: 50%;
   transition: transform 0.2s;
 }
 
 .toggle input:checked + .toggle-slider {
-  background: var(--primary-light);
+  background: var(--toggle-track-on);
 }
 
 .toggle input:checked + .toggle-slider::before {
@@ -828,7 +828,7 @@ span.form-label {
 }
 
 .btn-danger:hover {
-  background: #c9302c;
+  background: var(--danger-hover);
 }
 
 /* Section divider */
