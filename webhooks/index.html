@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webhooks — Ekara Management</title>
-  <link rel="stylesheet" href="../assets/css/ekara.css?v=11">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=12">
 </head>
 <body>
   <div class="app-layout">
@@ -180,6 +180,11 @@
         <!-- HTTP Headers -->
         <div class="dynamic-section">
           <span class="form-label">HTTP Header (optional)</span>
+          <div class="field-column-labels field-column-labels--header hidden" id="header-column-labels">
+            <span class="form-label">Key</span>
+            <span class="form-label">Value</span>
+            <span></span>
+          </div>
           <div id="headers-container"></div>
           <button type="button" class="btn btn-outline" id="btn-add-header" style="margin-top:4px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -202,7 +207,7 @@
         <div id="mapping-section">
           <div class="dynamic-section">
             <span class="form-label">Mapping (optional)</span>
-            <div class="mapping-column-labels hidden" id="mapping-column-labels">
+            <div class="field-column-labels field-column-labels--mapping hidden" id="mapping-column-labels">
               <span class="form-label">Target key</span>
               <span class="form-label">Source</span>
               <span class="form-label">Value</span>
@@ -252,6 +257,6 @@
     </div>
   </div>
 
-  <script src="../assets/js/webhooks.js?v=4"></script>
+  <script src="../assets/js/webhooks.js?v=5"></script>
 </body>
 </html>

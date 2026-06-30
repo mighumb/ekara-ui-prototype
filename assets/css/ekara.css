@@ -504,7 +504,7 @@ span.form-label {
 }
 
 .toggle-row .form-label,
-.mapping-column-labels .form-label {
+.field-column-labels .form-label {
   margin-bottom: 0;
 }
 
@@ -649,15 +649,31 @@ span.form-label {
   margin-bottom: 10px;
 }
 
-.mapping-column-labels {
+.field-column-labels {
   display: grid;
-  grid-template-columns: 1fr 160px 1fr 28px;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-top: 12px;
+  margin-bottom: 8px;
 }
 
-.mapping-column-labels.hidden {
+.field-column-labels--header {
+  grid-template-columns: 1fr 1fr 28px;
+}
+
+.field-column-labels--mapping {
+  grid-template-columns: 1fr 160px 1fr 28px;
+}
+
+.field-column-labels.hidden {
   display: none;
+}
+
+.header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 28px;
+  gap: 8px;
+  align-items: start;
+  margin-bottom: 8px;
 }
 
 .dynamic-row {

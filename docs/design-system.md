@@ -17,6 +17,12 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 - **Tokens:** `--label-*` in `tokens.css`.
 - Never hardcode label typography in page HTML or per-page CSS.
 
+## Dynamic field rows (headers, mapping)
+
+- Section label (`form-label`) then column labels (`field-column-labels`) — shown when the first row is added.
+- Column label classes: `field-column-labels--header` (Key / Value), `field-column-labels--mapping` (Target key / Source / Value).
+- `margin-top: 12px` on `field-column-labels` separates column labels from the section label.
+
 ## Pages
 
 ```html

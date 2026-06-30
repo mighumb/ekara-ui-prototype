@@ -111,6 +111,7 @@ function init() {
     urlInput: document.getElementById('field-url'),
     oauthToggle: document.getElementById('field-oauth'),
     headersContainer: document.getElementById('headers-container'),
+    headerColumnLabels: document.getElementById('header-column-labels'),
     mappingsContainer: document.getElementById('mappings-container'),
     mappingColumnLabels: document.getElementById('mapping-column-labels'),
     payloadPreview: document.getElementById('payload-preview-content'),
@@ -260,6 +261,7 @@ function resetForm() {
   els.urlInput.value = '';
   els.oauthToggle.checked = false;
   els.headersContainer.innerHTML = '';
+  updateHeaderLabelsVisibility();
   els.mappingsContainer.innerHTML = '';
   updateMappingLabelsVisibility();
   els.customJsonInput.value = '';
@@ -279,6 +281,7 @@ function populateForm(wh) {
 
   els.headersContainer.innerHTML = '';
   (wh.headers || []).forEach((h) => addHeaderRow(h.key, h.value));
+  updateHeaderLabelsVisibility();
 
   els.mappingsContainer.innerHTML = '';
   (wh.mappings || []).forEach((m) => addMappingRow(m.targetKey, m.source, m.value));
@@ -307,8 +310,15 @@ function addHeaderRow(key = '', value = '') {
     </button>`;
   row.querySelector('.remove-header').addEventListener('click', () => {
     row.remove();
+    updateHeaderLabelsVisibility();
   });
   els.headersContainer.appendChild(row);
+  updateHeaderLabelsVisibility();
+}
+
+function updateHeaderLabelsVisibility() {
+  const hasRows = els.headersContainer.querySelectorAll('.header-row').length > 0;
+  els.headerColumnLabels.classList.toggle('hidden', !hasRows);
 }
 
 function collectHeaders() {
