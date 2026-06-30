@@ -31,8 +31,10 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 | `--primary-hover` | `var(--color-b600)` |
 | `--primary-light` | `var(--color-b400)` — sidebar active border |
 | `--surface-hover-light` | `var(--color-b50)` — hover on outline/text buttons |
-| `--border-color` | `var(--color-n30)` — dividers, table borders, mode-toggle border |
+| `--border-color` | `var(--color-n30)` — dividers, table borders, mode-toggle outer border |
+| `--mode-toggle-divider` | `var(--color-n20)` — separator between Mapping / Custom JSON tabs |
 | `--input-border-color` | `var(--color-n60)` — input/select at rest |
+| `--text-placeholder` | `var(--color-n100)` — input/textarea placeholder |
 | `--danger` | `var(--color-r600)` — delete button, errors |
 | `--danger-hover` | `var(--color-r700)` |
 

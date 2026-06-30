@@ -109,6 +109,7 @@
   --text-primary: var(--color-n900);
   --text-secondary: var(--color-n400);
   --text-muted: var(--color-n200);
+  --text-placeholder: var(--color-n100);
   --text-on-primary: var(--color-n0);
   --text-on-dark: var(--color-n0);
   --text-on-dark-muted: var(--color-n40);
@@ -166,6 +167,7 @@
   --toggle-track-on: var(--primary);
   --toggle-thumb: var(--color-n0);
   --select-chevron-color: var(--color-n400);
+  --mode-toggle-divider: var(--color-n20);
   --select-chevron-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2359708b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 
   /* ── Labels (class: form-label) ── */

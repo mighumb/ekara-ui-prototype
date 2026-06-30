@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=25');
+@import url('tokens.css?v=26');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -482,7 +482,6 @@ input, select, textarea {
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -542,8 +541,9 @@ span.form-label {
   border-color: var(--input-focus-border);
 }
 
-.form-input::placeholder {
-  color: var(--text-muted);
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-placeholder);
 }
 
 .form-textarea {
@@ -758,7 +758,7 @@ span.form-label {
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary);
   background: var(--surface-default);
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid var(--mode-toggle-divider);
 }
 
 .mode-toggle-btn:last-child {
