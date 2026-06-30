@@ -38,10 +38,11 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 ## Pages
 
 ```html
-<link rel="stylesheet" href="../assets/css/ekara.css">
+<link rel="stylesheet" href="../assets/css/tokens.css?v=…">
+<link rel="stylesheet" href="../assets/css/ekara.css?v=…">
 ```
 
-Bump `?v=` on the stylesheet after deploy if the browser cache is sticky.
+Bump `?v=` on **both** files after deploy (tokens + ekara) so the browser does not serve a stale `tokens.css` via cache.
 
 ## Maintenance (agent)
 
