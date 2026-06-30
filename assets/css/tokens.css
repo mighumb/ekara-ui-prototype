@@ -41,7 +41,7 @@
   /* Labels — all form/component labels (class: form-label) */
   --label-font-size: 12px;
   --label-font-weight: 500;
-  --label-color: var(--primary);
+  --label-color: #0c1524;
   --label-letter-spacing: 0.4px;
   --label-margin-bottom: 6px;
 }
