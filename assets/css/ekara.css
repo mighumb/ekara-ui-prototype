@@ -341,9 +341,9 @@ input, select, textarea {
 }
 
 .data-table-header-cell {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
