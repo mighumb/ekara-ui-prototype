@@ -23,7 +23,7 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 - Borders: `--border-color` → N30, `--input-border-color` → N60
 - Shadows: `--shadow-dropdown`, `--shadow-panel`, `--shadow-dialog`
 
-**Blues** — primary actions use **B500** via `--primary`. Light hover surfaces use **B50** via `--surface-hover-light`.
+**Blues** — primary actions use **B500** via `--primary`. Action-button hovers use **B50** via `--surface-hover-action`.
 
 | Semantic token | Maps to |
 |----------------|---------|
@@ -46,8 +46,8 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Component | Class | Key tokens |
 |-----------|-------|------------|
 | Primary button | `.btn-primary` | `--primary` / `--primary-hover` |
-| Outline button | `.btn-outline` | `--primary` border & text; hover `--surface-hover-light` |
-| Text button | `.btn-text` | `--primary` text; hover `--surface-hover-light` |
+| Outline button | `.btn-outline` | `--primary` border & text; hover `--surface-hover-action` |
+| Text button | `.btn-text` | `--primary` text; hover `--surface-hover-action` |
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
 | Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border` |
