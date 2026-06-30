@@ -513,16 +513,6 @@ input, select, textarea {
   margin-bottom: 20px;
 }
 
-.section-title {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  margin-bottom: 10px;
-}
-
 .form-label {
   display: block;
   font-size: 11px;
