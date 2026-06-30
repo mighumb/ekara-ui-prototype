@@ -7,8 +7,13 @@
   --modal-width: 680px;
   --radius: 3px;
 
-  /* Typography */
-  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  /* Typography — Open Sans (Ekara DS) */
+  --font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
 
   /* Colors — Neutrals (Ekara DS)
      Sub-families: Dark (N900–N500), Mid (N400–N60), Light (N50–N0) */
@@ -65,7 +70,7 @@
 
   /* Labels — all form/component labels (class: form-label) */
   --label-font-size: 12px;
-  --label-font-weight: 500;
+  --label-font-weight: var(--font-weight-regular);
   --label-color: var(--color-n900);
   --label-letter-spacing: 0.4px;
   --label-margin-bottom: 6px;

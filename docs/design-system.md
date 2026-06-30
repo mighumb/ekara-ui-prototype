@@ -23,6 +23,12 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
 
+## Typography (Ekara DS)
+
+- **Family:** Open Sans — loaded via Google Fonts in page `<head>`, token `--font-family`.
+- **Weights:** `--font-weight-regular` (400), `--font-weight-semibold` (600), etc. in `tokens.css`.
+- **Labels:** `--label-font-weight` → `var(--font-weight-regular)` (400).
+
 ## Labels
 
 - **Class:** `form-label` on every form/component label.
