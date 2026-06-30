@@ -586,21 +586,23 @@ span.form-label {
 }
 
 .form-row-service {
-  display: flex;
+  display: grid;
+  grid-template-columns: 160px 1fr;
   gap: 16px;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .form-row-service .form-select {
   width: 160px;
-  flex-shrink: 0;
+  margin: 0;
 }
 
 .service-help {
-  flex: 1;
+  margin: 0;
+  padding: 0;
   font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 /* Toggle */
