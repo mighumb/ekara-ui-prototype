@@ -40,6 +40,39 @@
   --color-n10: #f3f6f9;
   --color-n0: #ffffff; /* Coconut */
 
+  /* Colors — Greens (Ekara DS) G900 darkest → G100 lightest */
+  --color-g900: #0c6a5b;
+  --color-g800: #158065;
+  --color-g700: #219f73;
+  --color-g600: #30be7e;
+  --color-g500: #43de88;
+  --color-g400: #70eb9a;
+  --color-g300: #8ef5a7;
+  --color-g200: #b5fbbf;
+  --color-g100: #d9fdbb;
+
+  /* Colors — Teals (Ekara DS) T900 darkest → T100 lightest */
+  --color-t900: #003250;
+  --color-t800: #004561;
+  --color-t700: #006078; /* Barrier Reef */
+  --color-t600: #007f90; /* Deep lake */
+  --color-t500: #00a3a8; /* Teal */
+  --color-t400: #32cac2; /* Viridian green */
+  --color-t300: #5be4d1; /* Turquoise */
+  --color-t200: #93f6e0; /* Limpet shell */
+  --color-t100: #c8faeb; /* Mint green */
+
+  /* Colors — Blues (Ekara DS) B900 darkest → B100 lightest */
+  --color-b900: #041645; /* Ink blue */
+  --color-b800: #072053; /* Blue depths */
+  --color-b700: #0c2e67;
+  --color-b600: #123e7b;
+  --color-b500: #195190; /* Turkish sea */
+  --color-b400: #4784bc; /* Ibiza blue */
+  --color-b300: #6faddd; /* Sky blue */
+  --color-b200: #a3d4f3;
+  --color-b100: #d0ebf9;
+
   /* Colors — surfaces */
   --sidebar-bg: #1e2a3a;
   --topbar-bg: #1e2a3a;
@@ -58,10 +91,10 @@
   --text-secondary: #6b7c93;
   --text-muted: #9aa5b4;
 
-  /* Colors — brand & status */
-  --primary: #2d5a8e;
-  --primary-hover: #1e4a7a;
-  --primary-light: #4a90d9;
+  /* Colors — brand & status (primary actions → Blues B500) */
+  --primary: var(--color-b500);
+  --primary-hover: var(--color-b600);
+  --primary-light: var(--color-b400);
   --danger: #d9534f;
   --success: #3c9a5f;
 

@@ -21,6 +21,18 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 | Mid | N400–N60 |
 | Light | N50–N0 |
 
+**Greens** — `--color-g{step}` (G900 → G100).
+
+**Teals** — `--color-t{step}` (T900 → T100).
+
+**Blues** — `--color-b{step}` (B900 → B100). Primary actions use **B500** (`#195190`, Turkish sea).
+
+| Semantic token | Maps to |
+|----------------|---------|
+| `--primary` | `var(--color-b500)` — filled primary buttons (`.btn-primary`, active mode toggle) |
+| `--primary-hover` | `var(--color-b600)` |
+| `--primary-light` | `var(--color-b400)` — links, outline/text buttons, focus rings, toggles |
+
 Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
 
 ## Typography (Ekara DS)
