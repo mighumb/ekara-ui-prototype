@@ -67,7 +67,7 @@
         </div>
 
         <!-- Integrations group -->
-        <div class="sidebar-item active">
+        <div class="sidebar-item">
           <div class="sidebar-group-toggle">
             <span style="display:flex;align-items:center;gap:10px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
@@ -179,9 +179,7 @@
 
         <!-- HTTP Headers -->
         <div class="dynamic-section">
-          <div class="dynamic-section-header">
-            <span class="form-label" style="margin-bottom:0;">HTTP Header (optional)</span>
-          </div>
+          <span class="section-title">HTTP Header (optional)</span>
           <div id="headers-container"></div>
           <button type="button" class="btn btn-outline" id="btn-add-header" style="margin-top:4px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -203,13 +201,11 @@
         <!-- Mapping section -->
         <div id="mapping-section">
           <div class="dynamic-section">
-            <div class="dynamic-section-header">
-              <span class="form-label" style="margin-bottom:0;">Mapping (optional)</span>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 140px 1fr 28px;gap:8px;margin-bottom:6px;">
-              <span class="form-label" style="margin:0;">Target key</span>
-              <span class="form-label" style="margin:0;">Source</span>
-              <span class="form-label" style="margin:0;">Value</span>
+            <span class="section-title">Mapping (optional)</span>
+            <div class="mapping-column-labels hidden" id="mapping-column-labels">
+              <span class="form-label">Target key</span>
+              <span class="form-label">Source</span>
+              <span class="form-label">Value</span>
               <span></span>
             </div>
             <div id="mappings-container"></div>
@@ -231,7 +227,7 @@
 
         <!-- Payload preview -->
         <div class="payload-preview">
-          <div class="payload-preview-label">Payload preview</div>
+          <div class="section-title" style="margin-bottom:8px;">Payload preview</div>
           <div class="payload-preview-content" id="payload-preview-content">
             <span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>
           </div>

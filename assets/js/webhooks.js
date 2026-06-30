@@ -112,6 +112,7 @@ function init() {
     oauthToggle: document.getElementById('field-oauth'),
     headersContainer: document.getElementById('headers-container'),
     mappingsContainer: document.getElementById('mappings-container'),
+    mappingColumnLabels: document.getElementById('mapping-column-labels'),
     payloadPreview: document.getElementById('payload-preview-content'),
     saveBtn: document.getElementById('save-btn'),
     modeMapping: document.getElementById('mode-mapping'),
@@ -259,8 +260,8 @@ function resetForm() {
   els.urlInput.value = '';
   els.oauthToggle.checked = false;
   els.headersContainer.innerHTML = '';
-  addHeaderRow();
   els.mappingsContainer.innerHTML = '';
+  updateMappingLabelsVisibility();
   els.customJsonInput.value = '';
   els.jsonError.textContent = '';
   els.customJsonInput.classList.remove('error');
@@ -281,6 +282,7 @@ function populateForm(wh) {
 
   els.mappingsContainer.innerHTML = '';
   (wh.mappings || []).forEach((m) => addMappingRow(m.targetKey, m.source, m.value));
+  updateMappingLabelsVisibility();
 
   setPayloadMode(wh.payloadMode || 'mapping');
   updateServiceHelp();
@@ -371,11 +373,18 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
   row.querySelector('.mapping-target').addEventListener('input', updatePayloadPreview);
   row.querySelector('.remove-mapping').addEventListener('click', () => {
     row.remove();
+    updateMappingLabelsVisibility();
     updatePayloadPreview();
   });
 
   els.mappingsContainer.appendChild(row);
+  updateMappingLabelsVisibility();
   updatePayloadPreview();
+}
+
+function updateMappingLabelsVisibility() {
+  const hasRows = els.mappingsContainer.querySelectorAll('.mapping-row').length > 0;
+  els.mappingColumnLabels.classList.toggle('hidden', !hasRows);
 }
 
 function collectMappings() {
