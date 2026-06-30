@@ -513,6 +513,16 @@ input, select, textarea {
   margin-bottom: 20px;
 }
 
+.section-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 10px;
+}
+
 .form-label {
   display: block;
   font-size: 11px;
@@ -661,16 +671,6 @@ input, select, textarea {
   margin-bottom: 10px;
 }
 
-.section-title {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  margin-bottom: 10px;
-}
-
 .mapping-column-labels {
   display: grid;
   grid-template-columns: 1fr 160px 1fr 28px;
@@ -731,15 +731,6 @@ input, select, textarea {
   border-radius: var(--radius);
   padding: 12px 16px;
   margin-top: 8px;
-}
-
-.payload-preview-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  margin-bottom: 8px;
 }
 
 .payload-preview-content {

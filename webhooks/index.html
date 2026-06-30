@@ -190,8 +190,8 @@
         <hr class="section-divider">
 
         <!-- Payload mode toggle -->
-        <div class="form-group">
-          <span class="form-label">Payload configuration</span>
+        <div class="dynamic-section">
+          <span class="section-title">Payload configuration</span>
           <div class="mode-toggle">
             <button type="button" class="mode-toggle-btn active" id="mode-mapping">Mapping</button>
             <button type="button" class="mode-toggle-btn" id="mode-json">Custom JSON</button>
@@ -218,7 +218,7 @@
 
         <!-- Custom JSON section -->
         <div class="json-editor-section" id="json-section">
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom:0;">
             <label class="form-label" for="field-custom-json">Custom JSON payload</label>
             <textarea class="form-textarea" id="field-custom-json" rows="8" placeholder='{"key": "value"}'></textarea>
             <div class="form-error" id="json-error"></div>
@@ -227,7 +227,7 @@
 
         <!-- Payload preview -->
         <div class="payload-preview">
-          <div class="section-title" style="margin-bottom:8px;">Payload preview</div>
+          <div class="section-title">Payload preview</div>
           <div class="payload-preview-content" id="payload-preview-content">
             <span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>
           </div>
