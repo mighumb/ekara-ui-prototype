@@ -1,0 +1,47 @@
+/* Ekara UI Prototype — design tokens (source of truth)
+   Edit values here. Do not duplicate in docs or per-page CSS. */
+
+:root {
+  /* Layout */
+  --sidebar-width: 220px;
+  --modal-width: 680px;
+  --radius: 3px;
+
+  /* Typography */
+  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Colors — surfaces */
+  --sidebar-bg: #1e2a3a;
+  --topbar-bg: #1e2a3a;
+  --content-bg: #eef1f5;
+  --card-bg: #ffffff;
+  --overlay: rgba(30, 42, 58, 0.45);
+
+  /* Colors — sidebar */
+  --sidebar-text: #a8b4c4;
+  --sidebar-text-active: #ffffff;
+  --sidebar-active-bg: rgba(74, 144, 217, 0.25);
+  --sidebar-active-border: #4a90d9;
+
+  /* Colors — text */
+  --text-primary: #1a2b4b;
+  --text-secondary: #6b7c93;
+  --text-muted: #9aa5b4;
+
+  /* Colors — brand & status */
+  --primary: #2d5a8e;
+  --primary-hover: #1e4a7a;
+  --primary-light: #4a90d9;
+  --danger: #d9534f;
+  --success: #3c9a5f;
+
+  /* Colors — borders */
+  --border-color: #dde3ea;
+
+  /* Labels — all form/component labels (class: form-label) */
+  --label-font-size: 12px;
+  --label-font-weight: 500;
+  --label-color: var(--primary);
+  --label-letter-spacing: 0.4px;
+  --label-margin-bottom: 6px;
+}

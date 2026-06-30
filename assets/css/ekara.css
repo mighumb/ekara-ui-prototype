@@ -1,36 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-
-:root {
-  --sidebar-bg: #1e2a3a;
-  --sidebar-text: #a8b4c4;
-  --sidebar-text-active: #ffffff;
-  --sidebar-active-bg: rgba(74, 144, 217, 0.25);
-  --sidebar-active-border: #4a90d9;
-  --topbar-bg: #1e2a3a;
-  --content-bg: #eef1f5;
-  --card-bg: #ffffff;
-  --text-primary: #1a2b4b;
-  --text-secondary: #6b7c93;
-  --text-muted: #9aa5b4;
-  --border-color: #dde3ea;
-  --primary: #2d5a8e;
-  --primary-hover: #1e4a7a;
-  --primary-light: #4a90d9;
-  --danger: #d9534f;
-  --success: #3c9a5f;
-  --overlay: rgba(30, 42, 58, 0.45);
-  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-  --sidebar-width: 220px;
-  --modal-width: 680px;
-  --radius: 3px;
-
-  /* ── Label tokens (all pages — do not override per component) ── */
-  --label-font-size: 12px;
-  --label-font-weight: 500;
-  --label-color: var(--primary);
-  --label-letter-spacing: 0.4px;
-  --label-margin-bottom: 6px;
-}
+@import url('tokens.css');
 
 *, *::before, *::after {
   box-sizing: border-box;
