@@ -611,7 +611,7 @@ span.form-label {
 }
 
 .service-help {
-  flex: 1;
+  grid-column: 2;
   min-width: 0;
   margin: 0;
   padding: 0;
