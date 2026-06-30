@@ -259,6 +259,7 @@ function resetForm() {
   els.urlInput.value = '';
   els.oauthToggle.checked = false;
   els.headersContainer.innerHTML = '';
+  addHeaderRow();
   els.mappingsContainer.innerHTML = '';
   els.customJsonInput.value = '';
   els.jsonError.textContent = '';
