@@ -108,7 +108,7 @@
   /* ── Semantic: text ── */
   --text-primary: var(--color-n900);
   --text-secondary: var(--color-n400);
-  --text-muted: var(--color-n200);
+  --text-muted: var(--color-n30);
   --text-placeholder: var(--color-n100);
   --text-on-primary: var(--color-n0);
   --text-on-dark: var(--color-n0);
