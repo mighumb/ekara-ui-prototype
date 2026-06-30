@@ -72,6 +72,39 @@
   --color-b100: #d0ebf9;
   --color-b50: #e8f4fc;
 
+  /* ── Palette: Reds R900 → R100 ── */
+  --color-r900: #7a0e28;
+  --color-r800: #93182c;
+  --color-r700: #b72632;
+  --color-r600: #db3838;
+  --color-r500: #ff5c4d;
+  --color-r400: #ff8f79;
+  --color-r300: #ffae94;
+  --color-r200: #ffcfb7;
+  --color-r100: #ffeadb;
+
+  /* ── Palette: Oranges O900 → O100 ── */
+  --color-o900: #783306;
+  --color-o800: #92460a;
+  --color-o700: #b56010;
+  --color-o600: #d87d18;
+  --color-o500: #fc9e21;
+  --color-o400: #fdbd58;
+  --color-o300: #fed079;
+  --color-o200: #fee4a6;
+  --color-o100: #fef3d2;
+
+  /* ── Palette: Yellows Y900 → Y100 ── */
+  --color-y900: #7a6203;
+  --color-y800: #937905;
+  --color-y700: #b79909;
+  --color-y600: #dbba0d;
+  --color-y500: #ffdd12;
+  --color-y400: #ffe84d;
+  --color-y300: #ffee70;
+  --color-y200: #fff5a0;
+  --color-y100: #fffbcf;
+
   /* ── Semantic: text ── */
   --text-primary: var(--color-n900);
   --text-secondary: var(--color-n400);
@@ -112,8 +145,8 @@
   --primary: var(--color-b500);
   --primary-hover: var(--color-b600);
   --primary-light: var(--color-b400);
-  --danger: #d9534f;
-  --danger-hover: #c9302c;
+  --danger: var(--color-r600);
+  --danger-hover: var(--color-r700);
   --success: var(--color-g700);
 
   /* ── Semantic: borders ── */

@@ -15,7 +15,7 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 All **values** live in `tokens.css` only. `ekara.css` references semantic tokens — no hardcoded hex/rgba.
 
-**Palette families:** Neutrals (`--color-n*`), Greens (`--color-g*`), Teals (`--color-t*`), Blues (`--color-b*`).
+**Palette families:** Neutrals (`--color-n*`), Greens (`--color-g*`), Teals (`--color-t*`), Blues (`--color-b*`), Reds (`--color-r*`), Oranges (`--color-o*`), Yellows (`--color-y*`).
 
 **Semantic layers** (in `tokens.css`):
 - Text: `--text-primary`, `--text-secondary`, `--text-muted`, `--text-on-primary`
@@ -33,6 +33,8 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 | `--surface-hover-light` | `var(--color-b50)` — hover on outline/text buttons |
 | `--border-color` | `var(--color-n30)` — dividers, table borders, mode-toggle border |
 | `--input-border-color` | `var(--color-n60)` — input/select at rest |
+| `--danger` | `var(--color-r600)` — delete button, errors |
+| `--danger-hover` | `var(--color-r700)` |
 
 Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
 
