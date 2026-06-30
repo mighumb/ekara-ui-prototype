@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhooks — Ekara Management</title>
+  <link rel="stylesheet" href="../assets/css/ekara.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg class="topbar-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 18c0-6 4-10 10-12 2 4 2 8 0 12-2 2-4 2-6 0-3-2-4-4-4 0z" fill="#fff" opacity="0.9"/>
+          <path d="M18 6c6 2 10 8 8 14-4 2-8 0-10-4-2-4 0-8 2-10z" fill="#fff"/>
+        </svg>
+        <div class="topbar-breadcrumb">
+          Management | Integrations &gt; <span>Webhooks</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-account">
+          My account
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M1 1l4 4 4-4"/></svg>
+        </div>
+        <button class="topbar-icon-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="topbar-badge"></span>
+        </button>
+        <div class="topbar-avatar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v1h20v-1c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Accounts
+        </div>
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Workspaces
+        </div>
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Applications
+        </div>
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Users
+        </div>
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          User profiles
+        </div>
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Proxies
+        </div>
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Browser Agent
+        </div>
+
+        <!-- Integrations group -->
+        <div class="sidebar-item active">
+          <div class="sidebar-group-toggle">
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Integrations
+            </span>
+            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems">
+          <div class="sidebar-item sidebar-subitem active">Webhooks</div>
+          <div class="sidebar-item sidebar-subitem">SSO</div>
+          <div class="sidebar-item sidebar-subitem">Groups</div>
+          <div class="sidebar-item sidebar-subitem">API keys</div>
+          <div class="sidebar-item sidebar-subitem">Export OpenTelemetry</div>
+        </div>
+
+        <!-- Usage group -->
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle">
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Usage
+            </span>
+            <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Tags
+        </div>
+      </nav>
+      <div class="sidebar-footer">v2.11.0 © 2026 ip-label</div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Webhooks</h1>
+        <button class="btn btn-primary" id="btn-add-webhook">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add a webhook
+        </button>
+      </div>
+
+      <div class="data-table">
+        <div class="data-table-header">
+          <div class="data-table-header-cell">Name</div>
+          <div class="data-table-header-cell">Service</div>
+          <div class="data-table-header-cell">URL</div>
+          <div class="data-table-header-cell"></div>
+        </div>
+        <div id="webhook-table-body"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal overlay -->
+  <div class="modal-overlay" id="modal-overlay"></div>
+
+  <!-- Slide-in panel -->
+  <div class="slide-panel" id="slide-panel">
+    <div class="slide-panel-header">
+      <h2 class="slide-panel-title" id="panel-title">New webhook</h2>
+      <button class="slide-panel-close" id="panel-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="slide-panel-body">
+      <form id="webhook-form" onsubmit="return false;">
+        <!-- Name -->
+        <div class="form-group">
+          <label class="form-label" for="field-name">Name</label>
+          <input type="text" class="form-input" id="field-name" placeholder="Webhook name">
+        </div>
+
+        <!-- Service -->
+        <div class="form-group">
+          <label class="form-label" for="field-service">Service</label>
+          <div class="form-row-service">
+            <select class="form-select" id="field-service">
+              <option value="Generic">Generic</option>
+              <option value="Teams">Teams</option>
+              <option value="PagerDuty">PagerDuty</option>
+              <option value="WeCom">WeCom</option>
+              <option value="ilert">ilert</option>
+            </select>
+            <div class="service-help" id="service-help"></div>
+          </div>
+        </div>
+
+        <!-- URL -->
+        <div class="form-group">
+          <label class="form-label" for="field-url">URL</label>
+          <input type="text" class="form-input" id="field-url" placeholder="URL">
+        </div>
+
+        <!-- OAuth -->
+        <div class="form-group toggle-row">
+          <span class="toggle-label">OAuth authentication</span>
+          <label class="toggle">
+            <input type="checkbox" id="field-oauth">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- HTTP Headers -->
+        <div class="dynamic-section">
+          <div class="dynamic-section-header">
+            <span class="form-label" style="margin-bottom:0;">HTTP Header (optional)</span>
+          </div>
+          <div id="headers-container"></div>
+          <button type="button" class="btn btn-outline" id="btn-add-header" style="margin-top:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add a header
+          </button>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- Payload mode toggle -->
+        <div class="form-group">
+          <span class="form-label">Payload configuration</span>
+          <div class="mode-toggle">
+            <button type="button" class="mode-toggle-btn active" id="mode-mapping">Mapping</button>
+            <button type="button" class="mode-toggle-btn" id="mode-json">Custom JSON</button>
+          </div>
+        </div>
+
+        <!-- Mapping section -->
+        <div id="mapping-section">
+          <div class="dynamic-section">
+            <div class="dynamic-section-header">
+              <span class="form-label" style="margin-bottom:0;">Mapping (optional)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 140px 1fr 28px;gap:8px;margin-bottom:6px;">
+              <span class="form-label" style="margin:0;">Target key</span>
+              <span class="form-label" style="margin:0;">Source</span>
+              <span class="form-label" style="margin:0;">Value</span>
+              <span></span>
+            </div>
+            <div id="mappings-container"></div>
+            <button type="button" class="btn btn-outline" id="btn-add-mapping" style="margin-top:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add a mapping
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom JSON section -->
+        <div class="json-editor-section" id="json-section">
+          <div class="form-group">
+            <label class="form-label" for="field-custom-json">Custom JSON payload</label>
+            <textarea class="form-textarea" id="field-custom-json" rows="8" placeholder='{"key": "value"}'></textarea>
+            <div class="form-error" id="json-error"></div>
+          </div>
+        </div>
+
+        <!-- Payload preview -->
+        <div class="payload-preview">
+          <div class="payload-preview-label">Payload preview</div>
+          <div class="payload-preview-content" id="payload-preview-content">
+            <span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="slide-panel-footer">
+      <button type="button" class="btn btn-text" id="btn-cancel">Cancel</button>
+      <button type="button" class="btn btn-primary" id="save-btn">Create</button>
+    </div>
+  </div>
+
+  <!-- Confirm delete dialog -->
+  <div class="modal-overlay" id="confirm-overlay" style="z-index:450;"></div>
+  <div class="confirm-dialog" id="confirm-dialog">
+    <div class="confirm-dialog-title">Delete webhook</div>
+    <div class="confirm-dialog-message" id="confirm-message"></div>
+    <div class="confirm-dialog-actions">
+      <button class="btn btn-text" id="confirm-cancel">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+
+  <script src="../assets/js/webhooks.js"></script>
+</body>
+</html>
