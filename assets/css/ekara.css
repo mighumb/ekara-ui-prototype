@@ -594,24 +594,20 @@ span.form-label {
 }
 
 .form-row-service {
-  display: table;
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 16px 0;
-}
-
-.form-row-service .form-select,
-.form-row-service .service-help {
-  display: table-cell;
-  vertical-align: top;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .form-row-service .form-select {
+  flex: 0 0 160px;
   width: 160px;
   margin: 0;
 }
 
 .service-help {
+  flex: 1;
+  min-width: 0;
   margin: 0;
   padding: 0;
   font-size: 12px;
