@@ -21,6 +21,6 @@ Built incrementally for UX validation and dev handoff.
 /webhooks/               Webhooks page (DFY-23383)
 ```
 
-**Design system:** see [docs/design-system.md](docs/design-system.md).
+**Design system:** [docs/design-system.md](docs/design-system.md) (maintained by agent; values in `tokens.css` only).
 
 Not production code.

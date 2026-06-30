@@ -1,38 +1,38 @@
 # Ekara UI Prototype — Design system
 
-Conventions and usage for shared UI. **Not** a duplicate of token values.
+Conventions for shared UI. Token **values** live in CSS only — not duplicated here.
 
 ## Source of truth
 
 | What | Where |
 |------|-------|
-| Token values (colors, sizes, spacing) | [`assets/css/tokens.css`](../assets/css/tokens.css) |
-| Component styles (layout, forms, tables) | [`assets/css/ekara.css`](../assets/css/ekara.css) |
+| Token values | [`assets/css/tokens.css`](../assets/css/tokens.css) |
+| Component styles | [`assets/css/ekara.css`](../assets/css/ekara.css) |
 
-When you change a visual value, edit **`tokens.css` only**. Do not copy values into this doc or into page-specific CSS.
-
-## Adding new tokens
-
-1. Add the custom property in `tokens.css`, grouped by category (colors, labels, buttons, etc.).
-2. Reference it from `ekara.css` or page styles via `var(--token-name)`.
-3. If needed, add a short **usage** note below (class name, when to use) — not the literal value.
+Change a color, size, or weight → edit `tokens.css`. Nothing else required from the product owner.
 
 ## Labels
 
-- **Class:** `form-label` on every form/component label (Name, Service, HTTP Header, Mapping, etc.).
+- **Class:** `form-label` on every form/component label.
 - **Tokens:** `--label-*` in `tokens.css`.
-- **Do not** set `font-size`, `color`, or `font-weight` on labels in page HTML or per-page CSS.
+- Never hardcode label typography in page HTML or per-page CSS.
 
 ## Pages
-
-Each US adds a folder under the repo root (e.g. `/webhooks/`). Pages link shared assets:
 
 ```html
 <link rel="stylesheet" href="../assets/css/ekara.css">
 ```
 
-Bump the `?v=` query param on the stylesheet when you need to bust browser cache after a deploy.
+Bump `?v=` on the stylesheet after deploy if the browser cache is sticky.
 
-## Future token groups
+## Maintenance (agent)
 
-As the prototype grows, extend `tokens.css` with new sections (e.g. buttons, inputs, tables). Keep one file until it becomes unwieldy; split into `tokens-colors.css`, etc. only if necessary.
+Documentation in this repo is maintained by the agent when implementing US — not by the product owner.
+
+When adding or changing tokens, components, or patterns:
+
+1. Put values in `tokens.css` (or `ekara.css` for component rules).
+2. Update this file with **usage** only if a new pattern needs to be reused on future pages (class names, when to use, what not to do).
+3. Do not duplicate literal values (px, hex) in markdown — they go stale.
+
+Future token groups (buttons, inputs, tables, etc.) follow the same rule: values in `tokens.css`, usage notes here when introduced.
