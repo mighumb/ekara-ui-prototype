@@ -594,15 +594,20 @@ span.form-label {
 }
 
 .form-row-service {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  column-gap: 16px;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .form-row-service .form-select {
-  flex: 0 0 160px;
-  width: 160px;
+  width: 100%;
+  min-width: 0;
   margin: 0;
+  grid-column: 1;
 }
 
 .service-help {
