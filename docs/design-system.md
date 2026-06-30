@@ -31,7 +31,7 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 |----------------|---------|
 | `--primary` | `var(--color-b500)` — filled primary buttons (`.btn-primary`, active mode toggle) |
 | `--primary-hover` | `var(--color-b600)` |
-| `--primary-light` | `var(--color-b400)` — links, outline/text buttons, focus rings, toggles |
+| `--primary-light` | `var(--color-b400)` — links, text buttons, focus rings, toggles |
 
 Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label`.
 
