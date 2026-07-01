@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=38');
+@import url('tokens.css?v=39');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -171,8 +171,6 @@ input, select, textarea {
   background: var(--sidebar-active-bg);
   color: var(--sidebar-text-active);
   border-left-color: transparent;
-  margin: 0 8px;
-  border-radius: var(--radius);
 }
 
 .sidebar-item svg {
