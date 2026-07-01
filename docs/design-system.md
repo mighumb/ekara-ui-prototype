@@ -58,9 +58,13 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 ## Typography (Ekara DS)
 
-- **Family:** Open Sans — loaded via Google Fonts in page `<head>`, token `--font-family`.
-- **Weights:** `--font-weight-regular` (400), `--font-weight-semibold` (600), etc. in `tokens.css`.
-- **Labels:** `--label-font-weight` → `var(--font-weight-regular)` (400).
+- **Family:** Open Sans — `--font-family`
+- **Weights:** `--font-weight-regular` (400), `--font-weight-semibold` (600), etc.
+- **Scale (base 16px):** `--font-size-12` (12px) through `--font-size-48` (48px) — even px values only
+- **Semantic:** `--font-size-body` (14px), `--sidebar-font-size` (14px), `--page-title-font-size` (22px), `--label-font-size` (12px)
+- **Labels:** `--label-font-weight` → 400
+
+Do not use off-scale sizes (e.g. 13px, 20px) — pick from the scale.
 
 ## Labels
 

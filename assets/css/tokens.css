@@ -17,6 +17,19 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
+  /* Typography scale (Ekara DS — base 16px, even px values) */
+  --font-size-12: 0.75rem;    /* 12px */
+  --font-size-14: 0.875rem;   /* 14px */
+  --font-size-16: 1rem;       /* 16px */
+  --font-size-18: 1.125rem;   /* 18px */
+  --font-size-22: 1.375rem;   /* 22px */
+  --font-size-24: 1.5rem;     /* 24px */
+  --font-size-28: 1.75rem;    /* 28px */
+  --font-size-32: 2rem;       /* 32px */
+  --font-size-36: 2.25rem;    /* 36px */
+  --font-size-42: 2.625rem;   /* 42px */
+  --font-size-48: 3rem;       /* 48px */
+
   /* ── Palette: Neutrals (Ekara DS) N900 darkest → N0 Coconut ── */
   --color-n900: #0c1524;
   --color-n800: #182533;
@@ -156,7 +169,7 @@
   --surface-muted: var(--color-n10);
   --surface-subtle: var(--color-n20);
   --surface-hover-neutral: var(--color-n10);
-  --table-header-bg: var(--color-n0);
+  --table-header-bg: var(--color-n20);
   --table-row-hover-bg: var(--surface-hover-neutral);
   --payload-preview-bg: var(--color-n10);
   --avatar-bg: var(--color-n500);
@@ -205,12 +218,16 @@
   --select-chevron-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2359708b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 
   /* ── Labels (class: form-label) ── */
-  --label-font-size: 12px;
+  --label-font-size: var(--font-size-12);
   --label-font-weight: var(--font-weight-regular);
   --label-color: var(--color-n900);
   --label-letter-spacing: 0.4px;
   --label-margin-bottom: 6px;
 
-  /* ── Page titles ── */
-  --page-title-font-size: 20px;
+  /* ── Typography — semantic sizes ── */
+  --font-size-body: var(--font-size-14);
+  --sidebar-font-size: var(--font-size-14);
+  --sidebar-footer-font-size: var(--font-size-12);
+  --page-title-font-size: var(--font-size-22);
+  --panel-title-font-size: var(--font-size-18);
 }
