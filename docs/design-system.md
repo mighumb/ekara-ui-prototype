@@ -15,7 +15,7 @@ Change a color, size, or weight → edit `tokens.css`. Nothing else required fro
 
 All **values** live in `tokens.css` only. `ekara.css` references semantic tokens — no hardcoded hex/rgba.
 
-**Palette families:** Neutrals (`--color-n*`), Greens (`--color-g*`), Teals (`--color-t*`), Blues (`--color-b*`), Reds (`--color-r*`), Oranges (`--color-o*`), Yellows (`--color-y*`).
+**Palette families:** Neutrals (`--color-n*`), Greens (`--color-g*`), Teals (`--color-t*`), Blues (`--color-b*`), Reds (`--color-r*`), Oranges (`--color-o*`), Yellows (`--color-y*`), Lavenders (`--color-l*`), Violets (`--color-v*`), Pinks (`--color-p*`).
 
 **Semantic layers** (in `tokens.css`):
 - Text: `--text-primary`, `--text-secondary`, `--text-muted`, `--text-on-primary`

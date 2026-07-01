@@ -105,6 +105,39 @@
   --color-y200: #fff5a0;
   --color-y100: #fffbcf;
 
+  /* ── Palette: Lavenders L900 → L100 ── */
+  --color-l900: #1b1f68;
+  --color-l800: #2c327d;
+  --color-l700: #474d9c;
+  --color-l600: #676dba;
+  --color-l500: #8d94d9;
+  --color-l400: #abb1e8;
+  --color-l300: #c0c6f3;
+  --color-l200: #d8dcfb;
+  --color-l100: #ebedfd;
+
+  /* ── Palette: Violets V900 → V100 ── */
+  --color-v900: #231149;
+  --color-v800: #331d58;
+  --color-v700: #492e6e;
+  --color-v600: #624383;
+  --color-v500: #7d5d99;
+  --color-v400: #aa88c1;
+  --color-v300: #cdabe0;
+  --color-v200: #e8cef4;
+  --color-v100: #f4e6f9;
+
+  /* ── Palette: Pinks P900 → P100 ── */
+  --color-p900: #72144d;
+  --color-p800: #8a2257;
+  --color-p700: #ab3667;
+  --color-p600: #cc4f77;
+  --color-p500: #ee6d8a;
+  --color-p400: #f4919e;
+  --color-p300: #f9a8ab;
+  --color-p200: #fdc9c6;
+  --color-p100: #fee6e2;
+
   /* ── Semantic: text ── */
   --text-primary: var(--color-n900);
   --text-secondary: var(--color-n400);
