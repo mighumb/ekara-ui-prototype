@@ -163,8 +163,8 @@
   --text-on-dark-muted: var(--color-n40);
 
   /* ── Semantic: surfaces ── */
-  --sidebar-bg: var(--color-n700);
-  --topbar-bg: var(--color-n700);
+  --sidebar-bg: var(--color-n800);
+  --topbar-bg: var(--color-n800);
   --content-bg: var(--color-n05);
   --card-bg: var(--color-n0);
   --surface-default: var(--color-n0);
@@ -184,7 +184,7 @@
   --sidebar-text-active: var(--text-on-dark);
   --sidebar-footer-text: var(--color-n500);
   --sidebar-hover-bg: var(--surface-on-dark-subtle);
-  --sidebar-active-bg: color-mix(in srgb, var(--color-b400) 50%, var(--sidebar-bg));
+  --sidebar-active-bg: var(--color-n500);
   --topbar-text: var(--text-on-dark-muted);
   --topbar-text-active: var(--text-on-dark);
   --topbar-hover-bg: var(--surface-on-dark-hover);

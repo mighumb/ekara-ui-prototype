@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=41');
+@import url('tokens.css?v=43');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -313,7 +313,7 @@ input, select, textarea {
 
 .data-table-header {
   display: grid;
-  grid-template-columns: 1fr 140px 1fr 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
   padding: 12px 20px;
   border-bottom: 1px solid var(--border-color);
   background: var(--table-header-bg);
