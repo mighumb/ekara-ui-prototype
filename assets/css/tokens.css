@@ -156,7 +156,7 @@
   --surface-muted: var(--color-n10);
   --surface-subtle: var(--color-n20);
   --surface-hover-neutral: var(--color-n10);
-  --table-header-bg: var(--color-n10);
+  --table-header-bg: var(--color-n0);
   --table-row-hover-bg: var(--surface-hover-neutral);
   --payload-preview-bg: var(--color-n10);
   --avatar-bg: var(--color-n500);
