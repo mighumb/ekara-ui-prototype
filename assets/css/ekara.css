@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=44');
+@import url('tokens.css?v=45');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -311,7 +311,6 @@ input, select, textarea {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  padding: 0 20px;
 }
 
 .data-table-header,
@@ -327,6 +326,16 @@ input, select, textarea {
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 16px;
+}
+
+.data-table-header-cell:first-child,
+.data-table-cell:first-child {
+  padding-left: 20px;
+}
+
+.data-table-header-cell:last-child,
+.data-table-actions {
+  padding-right: 20px;
 }
 
 .data-table-header-cell {
