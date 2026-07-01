@@ -329,7 +329,7 @@ input, select, textarea {
 
 .data-table-row {
   display: grid;
-  grid-template-columns: 1fr 140px 1fr 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
   padding: 14px 20px;
   border-bottom: 1px solid var(--border-color);
   align-items: center;
