@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=33');
+@import url('tokens.css?v=34');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -11,7 +11,7 @@ html, body {
   height: 100%;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
-  color: var(--text-primary);
+  color: var(--text-neutral);
   background: var(--content-bg);
 }
 
@@ -239,7 +239,7 @@ input, select, textarea {
 .page-title {
   font-size: var(--page-title-font-size);
   font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
+  color: var(--text-neutral);
   line-height: 1.3;
 }
 
@@ -296,7 +296,7 @@ input, select, textarea {
 
 .btn-icon:hover {
   background: var(--surface-hover-neutral);
-  color: var(--text-primary);
+  color: var(--text-neutral);
 }
 
 .btn-icon svg {
@@ -346,7 +346,7 @@ input, select, textarea {
 
 .data-table-cell {
   font-size: 14px;
-  color: var(--text-primary);
+  color: var(--text-neutral);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -388,7 +388,7 @@ input, select, textarea {
   gap: 8px;
   padding: 10px 16px;
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--text-neutral);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -517,7 +517,7 @@ span.form-label {
   padding: 8px 12px;
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
-  color: var(--text-primary);
+  color: var(--text-neutral);
   background: var(--surface-default);
   transition: border-color 0.15s;
   -webkit-appearance: none;
@@ -729,7 +729,7 @@ span.form-label {
 .payload-preview-content {
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 12px;
-  color: var(--text-primary);
+  color: var(--text-neutral);
   white-space: pre-wrap;
   word-break: break-all;
   line-height: 1.6;

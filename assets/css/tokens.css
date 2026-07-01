@@ -153,7 +153,7 @@
   --color-p100: #fee6e2;
 
   /* ── Semantic: text ── */
-  --text-primary: var(--color-n900);
+  --text-neutral: var(--color-n900);
   --text-secondary: var(--color-n400);
   --text-muted: var(--color-n30);
   --text-placeholder: var(--color-n100);
@@ -229,6 +229,6 @@
   --font-size-body: var(--font-size-14);
   --sidebar-font-size: var(--font-size-14);
   --sidebar-footer-font-size: var(--font-size-12);
-  --page-title-font-size: var(--font-size-22);
+  --page-title-font-size: var(--font-size-20);
   --panel-title-font-size: var(--font-size-18);
 }

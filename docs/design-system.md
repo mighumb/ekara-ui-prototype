@@ -18,7 +18,7 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 **Palette families:** Neutrals (`--color-n*`), Greens (`--color-g*`), Teals (`--color-t*`), Blues (`--color-b*`), Reds (`--color-r*`), Oranges (`--color-o*`), Yellows (`--color-y*`), Lavenders (`--color-l*`), Violets (`--color-v*`), Pinks (`--color-p*`).
 
 **Semantic layers** (in `tokens.css`):
-- Text: `--text-primary`, `--text-secondary`, `--text-muted`, `--text-on-primary`
+- Text: `--text-neutral` (N900, default body/headings), `--text-secondary`, `--text-muted`, `--text-on-primary` (on B500 surfaces)
 - Surfaces: `--surface-default`, `--surface-muted`, `--surface-hover-neutral`, `--surface-hover-action`, `--content-bg`, `--card-bg`
 - Borders: `--border-color` → N30, `--input-border-color` → N60
 - Shadows: `--shadow-dropdown`, `--shadow-panel`, `--shadow-dialog`
@@ -27,7 +27,8 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 
 | Semantic token | Maps to |
 |----------------|---------|
-| `--primary` | `var(--color-b500)` — filled primary buttons, active toggles, links, input focus |
+| `--primary` | `var(--color-b500)` — brand: filled buttons, active toggles, links, input focus |
+| `--text-neutral` | `var(--color-n900)` — default text (body, page titles, table cells) |
 | `--primary-hover` | `var(--color-b600)` |
 | `--primary-light` | `var(--color-b400)` — sidebar active border |
 | `--surface-hover-action` | `var(--color-b50)` — hover on action buttons (Cancel, outline, close) |
@@ -64,7 +65,7 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 - **Semantic:** `--font-size-body` (14px), `--sidebar-font-size` (14px), `--page-title-font-size` (20px), `--label-font-size` (12px)
 - **Labels:** `--label-font-weight` → 400
 
-Do not use off-scale sizes (e.g. 13px, 20px) — pick from the scale.
+Do not use off-scale sizes (e.g. 13px) — pick from the scale.
 
 ## Labels
 
