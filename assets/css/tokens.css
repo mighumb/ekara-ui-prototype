@@ -163,8 +163,8 @@
   --text-on-dark-muted: var(--color-n40);
 
   /* ── Semantic: surfaces ── */
-  --sidebar-bg: var(--color-n800);
-  --topbar-bg: var(--color-n800);
+  --sidebar-bg: var(--color-n700);
+  --topbar-bg: var(--color-n700);
   --content-bg: var(--color-n05);
   --card-bg: var(--color-n0);
   --surface-default: var(--color-n0);

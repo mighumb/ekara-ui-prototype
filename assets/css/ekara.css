@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=39');
+@import url('tokens.css?v=41');
 
 *, *::before, *::after {
   box-sizing: border-box;
