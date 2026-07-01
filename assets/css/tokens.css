@@ -173,6 +173,8 @@
   --surface-hover-neutral: var(--color-n10);
   --table-header-bg: var(--color-n30);
   --table-row-hover-bg: var(--color-n10);
+  --table-header-font-size: var(--font-size-14);
+  --table-header-font-weight: var(--font-weight-semibold);
   --payload-preview-bg: var(--color-n10);
   --avatar-bg: var(--color-n500);
   --overlay: color-mix(in srgb, var(--color-n900) 45%, transparent);

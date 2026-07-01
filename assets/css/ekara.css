@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=43');
+@import url('tokens.css?v=44');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -332,8 +332,8 @@ input, select, textarea {
 .data-table-header-cell {
   padding-top: 12px;
   padding-bottom: 12px;
-  font-size: var(--label-font-size);
-  font-weight: var(--label-font-weight);
+  font-size: var(--table-header-font-size);
+  font-weight: var(--table-header-font-weight);
   color: var(--label-color);
   text-transform: uppercase;
   letter-spacing: var(--label-letter-spacing);
