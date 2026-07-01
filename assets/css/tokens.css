@@ -185,7 +185,6 @@
   --sidebar-footer-text: var(--color-n500);
   --sidebar-hover-bg: var(--surface-on-dark-subtle);
   --sidebar-active-bg: color-mix(in srgb, var(--color-b500) 25%, transparent);
-  --sidebar-active-border: var(--color-b400);
   --topbar-text: var(--text-on-dark-muted);
   --topbar-text-active: var(--text-on-dark);
   --topbar-hover-bg: var(--surface-on-dark-hover);
