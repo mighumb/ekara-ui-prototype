@@ -170,8 +170,8 @@
   --surface-muted: var(--color-n10);
   --surface-subtle: var(--color-n20);
   --surface-hover-neutral: var(--color-n10);
-  --table-header-bg: var(--color-n20);
-  --table-row-hover-bg: var(--surface-hover-neutral);
+  --table-header-bg: var(--color-n30);
+  --table-row-hover-bg: var(--color-n20);
   --payload-preview-bg: var(--color-n10);
   --avatar-bg: var(--color-n500);
   --overlay: color-mix(in srgb, var(--color-n900) 45%, transparent);
