@@ -210,4 +210,7 @@
   --label-color: var(--color-n900);
   --label-letter-spacing: 0.4px;
   --label-margin-bottom: 6px;
+
+  /* ── Page titles ── */
+  --page-title-font-size: 20px;
 }
