@@ -50,6 +50,7 @@
   --color-n30: #dbe3ec;
   --color-n20: #e8edf3;
   --color-n10: #f3f6f9;
+  --color-n05: #f8fafb;
   --color-n0: #ffffff;
 
   /* ── Palette: Greens G900 → G100 ── */
@@ -164,7 +165,7 @@
   /* ── Semantic: surfaces ── */
   --sidebar-bg: var(--color-n800);
   --topbar-bg: var(--color-n800);
-  --content-bg: var(--color-n20);
+  --content-bg: var(--color-n10);
   --card-bg: var(--color-n0);
   --surface-default: var(--color-n0);
   --surface-muted: var(--color-n10);
