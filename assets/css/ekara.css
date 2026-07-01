@@ -306,62 +306,71 @@ input, select, textarea {
 
 /* Table */
 .data-table {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
+  padding: 0 20px;
 }
 
-.data-table-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--table-header-bg);
-}
-
-.data-table-header-cell {
-  font-size: var(--label-font-size);
-  font-weight: var(--label-font-weight);
-  color: var(--label-color);
-  text-transform: uppercase;
-  letter-spacing: var(--label-letter-spacing);
-}
-
+.data-table-header,
+#webhook-table-body,
 .data-table-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border-color);
-  align-items: center;
-  transition: background 0.1s;
+  display: contents;
 }
 
-.data-table-row:last-child {
-  border-bottom: none;
-}
-
-.data-table-row:hover {
-  background: var(--table-row-hover-bg);
-}
-
+.data-table-header-cell,
 .data-table-cell {
-  font-size: 14px;
-  color: var(--text-neutral);
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 16px;
 }
 
+.data-table-header-cell {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-size: var(--label-font-size);
+  font-weight: var(--label-font-weight);
+  color: var(--label-color);
+  text-transform: uppercase;
+  letter-spacing: var(--label-letter-spacing);
+  background: var(--table-header-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table-row:hover .data-table-cell,
+.data-table-row:hover .data-table-actions {
+  background: var(--table-row-hover-bg);
+}
+
+.data-table-cell {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table-row:last-child .data-table-cell,
+.data-table-row:last-child .data-table-actions {
+  border-bottom: none;
+}
+
 .data-table-cell.url {
   color: var(--text-secondary);
-  font-size: 13px;
 }
 
 .data-table-actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   position: relative;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 /* Dropdown menu */
