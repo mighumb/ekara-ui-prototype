@@ -342,27 +342,9 @@ const MAPPING_DRAG_HANDLE_SVG = `<svg width="12" height="16" viewBox="0 0 12 16"
 function initMappingDragDrop() {
   const container = els.mappingsContainer;
 
-  container.addEventListener('dragstart', (e) => {
-    const row = e.target.closest('.mapping-row');
-    if (!row || !e.target.closest('.mapping-drag-handle')) {
-      e.preventDefault();
-      return;
-    }
-    draggedMappingRow = row;
-    row.classList.add('mapping-row--dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', '');
-  });
-
-  container.addEventListener('dragend', (e) => {
-    const row = e.target.closest('.mapping-row');
-    if (row) row.classList.remove('mapping-row--dragging');
-    draggedMappingRow = null;
-    updatePayloadPreview();
-  });
-
   container.addEventListener('dragover', (e) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
     if (!draggedMappingRow) return;
     const afterElement = getMappingDragAfterElement(container, e.clientY);
     if (afterElement == null) {
@@ -370,6 +352,42 @@ function initMappingDragDrop() {
     } else if (afterElement !== draggedMappingRow) {
       container.insertBefore(draggedMappingRow, afterElement);
     }
+  });
+
+  container.addEventListener('drop', (e) => {
+    e.preventDefault();
+  });
+}
+
+function setupMappingRowDrag(row) {
+  const handle = row.querySelector('.mapping-drag-handle');
+
+  handle.addEventListener('mousedown', () => {
+    row.dataset.dragFromHandle = 'true';
+  });
+
+  handle.addEventListener('mouseup', () => {
+    if (!row.classList.contains('mapping-row--dragging')) {
+      delete row.dataset.dragFromHandle;
+    }
+  });
+
+  row.addEventListener('dragstart', (e) => {
+    if (row.dataset.dragFromHandle !== 'true') {
+      e.preventDefault();
+      return;
+    }
+    draggedMappingRow = row;
+    row.classList.add('mapping-row--dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', row.dataset.rowId || '');
+  });
+
+  row.addEventListener('dragend', () => {
+    row.classList.remove('mapping-row--dragging');
+    delete row.dataset.dragFromHandle;
+    draggedMappingRow = null;
+    updatePayloadPreview();
   });
 }
 
@@ -400,8 +418,6 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
     <button type="button" class="btn-icon remove-mapping" aria-label="Remove mapping">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>`;
-
-  row.querySelector('.mapping-drag-handle').addEventListener('mousedown', (e) => e.preventDefault());
 
   const sourceSelect = row.querySelector('.mapping-source');
   const valueContainer = row.querySelector('.mapping-value-container');
@@ -469,6 +485,7 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
     updatePayloadPreview();
   });
 
+  setupMappingRowDrag(row);
   els.mappingsContainer.appendChild(row);
   updateMappingLabelsVisibility();
   updatePayloadPreview();
