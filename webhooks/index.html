@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/tokens.css?v=47">
-  <link rel="stylesheet" href="../assets/css/ekara.css?v=47">
+  <link rel="stylesheet" href="../assets/css/tokens.css?v=48">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=48">
 </head>
 <body>
   <div class="app-layout">
@@ -156,6 +156,7 @@
               <option value="PagerDuty">PagerDuty</option>
               <option value="WeCom">WeCom</option>
               <option value="ilert">ilert</option>
+              <option value="Custom">Custom</option>
             </select>
             <div class="service-help" id="service-help"></div>
           </div>
@@ -176,6 +177,17 @@
           </label>
         </div>
 
+        <!-- PagerDuty mandatory header -->
+        <div class="service-section hidden" id="pagerduty-section">
+          <div class="dynamic-section">
+            <span class="form-label">HTTP header (mandatory)</span>
+            <div class="mandatory-header-row">
+              <span class="mandatory-header-key">x-routing-key</span>
+              <input type="text" class="form-input" id="field-routing-key" placeholder="Value">
+            </div>
+          </div>
+        </div>
+
         <hr class="section-divider">
 
         <!-- HTTP Headers -->
@@ -193,19 +205,10 @@
           </button>
         </div>
 
-        <hr class="section-divider">
+        <hr class="section-divider service-section hidden" id="custom-section-divider">
 
-        <!-- Payload mode toggle -->
-        <div class="dynamic-section">
-          <span class="form-label">Payload configuration</span>
-          <div class="mode-toggle">
-            <button type="button" class="mode-toggle-btn active" id="mode-mapping">Mapping</button>
-            <button type="button" class="mode-toggle-btn" id="mode-json">Custom JSON</button>
-          </div>
-        </div>
-
-        <!-- Mapping section -->
-        <div id="mapping-section">
+        <!-- Mapping section (Custom only) -->
+        <div class="service-section mapping-section hidden" id="mapping-section">
           <div class="dynamic-section">
             <span class="form-label">Mapping (optional)</span>
             <div class="field-column-labels field-column-labels--mapping hidden" id="mapping-column-labels">
@@ -222,20 +225,13 @@
           </div>
         </div>
 
-        <!-- Custom JSON section -->
-        <div class="json-editor-section" id="json-section">
-          <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label" for="field-custom-json">Custom JSON payload</label>
-            <textarea class="form-textarea" id="field-custom-json" rows="8" placeholder='{"key": "value"}'></textarea>
-            <div class="form-error" id="json-error"></div>
-          </div>
-        </div>
-
-        <!-- Payload preview -->
-        <div class="payload-preview">
-          <span class="form-label">Payload preview</span>
-          <div class="payload-preview-content" id="payload-preview-content">
-            <span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>
+        <!-- Payload preview (Custom only) -->
+        <div class="service-section hidden" id="payload-preview-section">
+          <div class="payload-preview">
+            <span class="form-label">Payload preview</span>
+            <div class="payload-preview-content" id="payload-preview-content">
+              <span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>
+            </div>
           </div>
         </div>
       </form>
@@ -258,6 +254,6 @@
     </div>
   </div>
 
-  <script src="../assets/js/webhooks.js?v=13"></script>
+  <script src="../assets/js/webhooks.js?v=14"></script>
 </body>
 </html>

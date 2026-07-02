@@ -52,7 +52,6 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
 | Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border` |
-| Mode toggle (active) | `.mode-toggle-btn.active` | `--primary` |
 | Link | `a` | `--link-color` |
 
 New pages/modals: use these classes — do not hardcode colors in HTML or per-page CSS.

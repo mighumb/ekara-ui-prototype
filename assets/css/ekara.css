@@ -800,8 +800,23 @@ span.form-label {
   display: block;
 }
 
-.mapping-section.hidden {
+.mapping-section.hidden,
+.service-section.hidden {
   display: none;
+}
+
+/* PagerDuty mandatory header */
+.mandatory-header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.mandatory-header-key {
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
 }
 
 /* Confirm dialog */

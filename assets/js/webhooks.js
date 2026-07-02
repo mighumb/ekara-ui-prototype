@@ -13,6 +13,8 @@ const SERVICE_HELP = {
     'A WeCom webhook allows you to send Ekara alert notifications to a WeCom group (WeChat Work) in your organization. All you need to do is add a Bot to your WeCom group and copy the webhook URL.',
   ilert:
     'An ilert webhook allows you to easily and quickly integrate Ekara alerts directly into ilert. All you need to do is define a new Ekara alert source in ilert and copy the webhook URL.',
+  Custom:
+    'Define a custom JSON payload by mapping Ekara fields and scenario tags to target keys in the request body.',
 };
 
 const ALERT_CONTEXT_FIELDS = [
@@ -21,6 +23,8 @@ const ALERT_CONTEXT_FIELDS = [
   { value: '@AlertDesc', label: '@AlertDesc', description: 'Alert description' },
   { value: '@ScenarioName', label: '@ScenarioName', description: 'Scenario name' },
 ];
+
+const SCENARIO_TAGS = ['abcd', 'bbb', 'Param1', 'DFY-18578-2', 'DFY-18578-3'];
 
 const EXAMPLE_VALUES = {
   '@StartTime': '2026-06-30T14:32:00.000Z',
@@ -40,8 +44,7 @@ let webhooks = [
     oauth: false,
     headers: [],
     mappings: [],
-    payloadMode: 'mapping',
-    customJson: '',
+    routingKey: '',
   },
   {
     id: 2,
@@ -51,8 +54,7 @@ let webhooks = [
     oauth: false,
     headers: [{ key: 'Content-Type', value: 'application/json' }],
     mappings: [],
-    payloadMode: 'mapping',
-    customJson: '',
+    routingKey: '',
   },
   {
     id: 3,
@@ -62,8 +64,7 @@ let webhooks = [
     oauth: false,
     headers: [],
     mappings: [],
-    payloadMode: 'mapping',
-    customJson: '',
+    routingKey: '',
   },
   {
     id: 4,
@@ -72,9 +73,8 @@ let webhooks = [
     url: 'https://events.pagerduty.com/v2/enqueue',
     oauth: false,
     headers: [],
-    mappings: [{ targetKey: 'routing_key', source: 'Static value', value: 'abc123integrationkey' }],
-    payloadMode: 'mapping',
-    customJson: '',
+    mappings: [],
+    routingKey: 'abc123integrationkey',
   },
   {
     id: 5,
@@ -84,8 +84,7 @@ let webhooks = [
     oauth: false,
     headers: [],
     mappings: [],
-    payloadMode: 'mapping',
-    customJson: '',
+    routingKey: '',
   },
 ];
 
@@ -110,18 +109,17 @@ function init() {
     serviceHelp: document.getElementById('service-help'),
     urlInput: document.getElementById('field-url'),
     oauthToggle: document.getElementById('field-oauth'),
+    routingKeyInput: document.getElementById('field-routing-key'),
+    pagerdutySection: document.getElementById('pagerduty-section'),
+    customSectionDivider: document.getElementById('custom-section-divider'),
     headersContainer: document.getElementById('headers-container'),
     headerColumnLabels: document.getElementById('header-column-labels'),
     mappingsContainer: document.getElementById('mappings-container'),
     mappingColumnLabels: document.getElementById('mapping-column-labels'),
+    mappingSection: document.getElementById('mapping-section'),
+    payloadPreviewSection: document.getElementById('payload-preview-section'),
     payloadPreview: document.getElementById('payload-preview-content'),
     saveBtn: document.getElementById('save-btn'),
-    modeMapping: document.getElementById('mode-mapping'),
-    modeJson: document.getElementById('mode-json'),
-    mappingSection: document.getElementById('mapping-section'),
-    jsonSection: document.getElementById('json-section'),
-    customJsonInput: document.getElementById('field-custom-json'),
-    jsonError: document.getElementById('json-error'),
     confirmOverlay: document.getElementById('confirm-overlay'),
     confirmDialog: document.getElementById('confirm-dialog'),
     confirmMessage: document.getElementById('confirm-message'),
@@ -140,17 +138,9 @@ function bindGlobalEvents() {
   els.overlay.addEventListener('click', closePanel);
   els.saveBtn.addEventListener('click', saveWebhook);
 
-  els.serviceSelect.addEventListener('change', updateServiceHelp);
+  els.serviceSelect.addEventListener('change', onServiceChange);
   document.getElementById('btn-add-header').addEventListener('click', () => addHeaderRow());
   document.getElementById('btn-add-mapping').addEventListener('click', () => addMappingRow());
-
-  els.modeMapping.addEventListener('click', () => setPayloadMode('mapping'));
-  els.modeJson.addEventListener('click', () => setPayloadMode('json'));
-
-  els.customJsonInput.addEventListener('input', () => {
-    validateJsonField();
-    updatePayloadPreview();
-  });
 
   els.confirmCancel.addEventListener('click', closeConfirm);
   els.confirmOverlay.addEventListener('click', closeConfirm);
@@ -160,6 +150,11 @@ function bindGlobalEvents() {
       closeAllMenus();
     }
   });
+}
+
+function onServiceChange() {
+  updateServiceHelp();
+  updateServiceSections();
 }
 
 /* ── Table rendering ── */
@@ -260,15 +255,12 @@ function resetForm() {
   els.serviceSelect.value = 'Generic';
   els.urlInput.value = '';
   els.oauthToggle.checked = false;
+  els.routingKeyInput.value = '';
   els.headersContainer.innerHTML = '';
   updateHeaderLabelsVisibility();
   els.mappingsContainer.innerHTML = '';
   updateMappingLabelsVisibility();
-  els.customJsonInput.value = '';
-  els.jsonError.textContent = '';
-  els.customJsonInput.classList.remove('error');
-  setPayloadMode('mapping');
-  updateServiceHelp();
+  onServiceChange();
   updatePayloadPreview();
 }
 
@@ -277,7 +269,7 @@ function populateForm(wh) {
   els.serviceSelect.value = wh.service;
   els.urlInput.value = wh.url;
   els.oauthToggle.checked = wh.oauth;
-  els.customJsonInput.value = wh.customJson || '';
+  els.routingKeyInput.value = wh.routingKey || '';
 
   els.headersContainer.innerHTML = '';
   (wh.headers || []).forEach((h) => addHeaderRow(h.key, h.value));
@@ -287,15 +279,25 @@ function populateForm(wh) {
   (wh.mappings || []).forEach((m) => addMappingRow(m.targetKey, m.source, m.value));
   updateMappingLabelsVisibility();
 
-  setPayloadMode(wh.payloadMode || 'mapping');
-  updateServiceHelp();
+  onServiceChange();
   updatePayloadPreview();
 }
 
-/* ── Service help ── */
+/* ── Service-specific sections ── */
 function updateServiceHelp() {
   const service = els.serviceSelect.value;
   els.serviceHelp.textContent = SERVICE_HELP[service] || '';
+}
+
+function updateServiceSections() {
+  const service = els.serviceSelect.value;
+  const isCustom = service === 'Custom';
+  const isPagerDuty = service === 'PagerDuty';
+
+  els.mappingSection.classList.toggle('hidden', !isCustom);
+  els.payloadPreviewSection.classList.toggle('hidden', !isCustom);
+  els.customSectionDivider.classList.toggle('hidden', !isCustom);
+  els.pagerdutySection.classList.toggle('hidden', !isPagerDuty);
 }
 
 /* ── Dynamic header rows ── */
@@ -362,11 +364,34 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
       if (!val && ALERT_CONTEXT_FIELDS.length) select.value = ALERT_CONTEXT_FIELDS[0].value;
       select.addEventListener('change', updatePayloadPreview);
       valueContainer.appendChild(select);
+    } else if (src === 'Scenario tag') {
+      const select = document.createElement('select');
+      select.className = 'form-select mapping-value scenario-tag-select';
+      const emptyOpt = document.createElement('option');
+      emptyOpt.value = '';
+      emptyOpt.textContent = 'Select a tag';
+      select.appendChild(emptyOpt);
+      SCENARIO_TAGS.forEach((tag) => {
+        const opt = document.createElement('option');
+        opt.value = tag;
+        opt.textContent = tag;
+        if (tag === val) opt.selected = true;
+        select.appendChild(opt);
+      });
+      if (val && !SCENARIO_TAGS.includes(val)) {
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = val;
+        opt.selected = true;
+        select.appendChild(opt);
+      }
+      select.addEventListener('change', updatePayloadPreview);
+      valueContainer.appendChild(select);
     } else {
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'form-input mapping-value';
-      input.placeholder = src === 'Scenario tag' ? 'Tag name' : 'Value';
+      input.placeholder = 'Value';
       input.value = val;
       input.addEventListener('input', updatePayloadPreview);
       valueContainer.appendChild(input);
@@ -410,19 +435,6 @@ function collectMappings() {
   return mappings;
 }
 
-/* ── Payload mode toggle ── */
-function setPayloadMode(mode) {
-  els.modeMapping.classList.toggle('active', mode === 'mapping');
-  els.modeJson.classList.toggle('active', mode === 'json');
-  els.mappingSection.classList.toggle('hidden', mode === 'json');
-  els.jsonSection.classList.toggle('visible', mode === 'json');
-  updatePayloadPreview();
-}
-
-function getPayloadMode() {
-  return els.modeJson.classList.contains('active') ? 'json' : 'mapping';
-}
-
 /* ── Payload preview ── */
 function resolveMappingValue(mapping) {
   const { source, value } = mapping;
@@ -446,51 +458,17 @@ function buildPayloadFromMappings(mappings) {
 }
 
 function updatePayloadPreview() {
-  const mode = getPayloadMode();
-
-  if (mode === 'json') {
-    const text = els.customJsonInput.value.trim();
-    if (!text) {
-      els.payloadPreview.innerHTML = '<span class="payload-preview-empty">No custom JSON defined. Enter a JSON payload below.</span>';
-      return;
-    }
-    try {
-      const parsed = JSON.parse(text);
-      els.payloadPreview.textContent = JSON.stringify(parsed, null, 2);
-    } catch {
-      els.payloadPreview.innerHTML = '<span class="payload-preview-empty" style="color: var(--danger);">Invalid JSON — fix errors to see preview.</span>';
-    }
-    return;
-  }
+  if (els.serviceSelect.value !== 'Custom') return;
 
   const mappings = collectMappings();
   if (!mappings.length) {
-    els.payloadPreview.innerHTML = '<span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>';
+    els.payloadPreview.innerHTML =
+      '<span class="payload-preview-empty">No mappings defined. Add mapping rows to preview the outgoing payload.</span>';
     return;
   }
 
   const payload = buildPayloadFromMappings(mappings);
   els.payloadPreview.textContent = JSON.stringify(payload, null, 2);
-}
-
-/* ── JSON validation ── */
-function validateJsonField() {
-  const text = els.customJsonInput.value.trim();
-  if (!text) {
-    els.jsonError.textContent = '';
-    els.customJsonInput.classList.remove('error');
-    return true;
-  }
-  try {
-    JSON.parse(text);
-    els.jsonError.textContent = '';
-    els.customJsonInput.classList.remove('error');
-    return true;
-  } catch (e) {
-    els.jsonError.textContent = `Invalid JSON: ${e.message}`;
-    els.customJsonInput.classList.add('error');
-    return false;
-  }
 }
 
 /* ── Save ── */
@@ -503,8 +481,7 @@ function saveWebhook() {
   const oauth = els.oauthToggle.checked;
   const headers = collectHeaders();
   const mappings = collectMappings();
-  const payloadMode = getPayloadMode();
-  const customJson = els.customJsonInput.value;
+  const routingKey = els.routingKeyInput.value.trim();
 
   let hasError = false;
 
@@ -517,13 +494,9 @@ function saveWebhook() {
     hasError = true;
   }
 
-  if (payloadMode === 'json' && customJson.trim() && !validateJsonField()) {
-    hasError = true;
-  }
-
   if (hasError) return;
 
-  const data = { name, service, url, oauth, headers, mappings, payloadMode, customJson };
+  const data = { name, service, url, oauth, headers, mappings, routingKey };
 
   if (editingId !== null) {
     const idx = webhooks.findIndex((w) => w.id === editingId);
