@@ -42,6 +42,10 @@ let webhooks = [
     service: 'Generic',
     url: 'https://webhook.site/8a3f2b1c-4d5e-6f7a-8b9c-0d1e2f3a4b5c',
     oauth: false,
+    tokenEndpoint: '',
+    clientId: '',
+    clientSecret: '',
+    scopes: '',
     headers: [],
     mappings: [],
     routingKey: '',
@@ -62,6 +66,10 @@ let webhooks = [
     service: 'Generic',
     url: 'https://webhook.site/clone-webhook-1',
     oauth: false,
+    tokenEndpoint: '',
+    clientId: '',
+    clientSecret: '',
+    scopes: '',
     headers: [],
     mappings: [],
     routingKey: '',
@@ -72,6 +80,10 @@ let webhooks = [
     service: 'PagerDuty',
     url: 'https://events.pagerduty.com/v2/enqueue',
     oauth: false,
+    tokenEndpoint: '',
+    clientId: '',
+    clientSecret: '',
+    scopes: '',
     headers: [],
     mappings: [],
     routingKey: 'abc123integrationkey',
@@ -82,6 +94,10 @@ let webhooks = [
     service: 'WeCom',
     url: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=abc-def-123',
     oauth: false,
+    tokenEndpoint: '',
+    clientId: '',
+    clientSecret: '',
+    scopes: '',
     headers: [],
     mappings: [],
     routingKey: '',
@@ -110,6 +126,17 @@ function init() {
     serviceHelp: document.getElementById('service-help'),
     urlInput: document.getElementById('field-url'),
     oauthToggle: document.getElementById('field-oauth'),
+    oauthFieldsSection: document.getElementById('oauth-fields-section'),
+    tokenEndpointInput: document.getElementById('field-token-endpoint'),
+    clientIdInput: document.getElementById('field-client-id'),
+    clientSecretInput: document.getElementById('field-client-secret'),
+    scopesInput: document.getElementById('field-scopes'),
+    nameError: document.getElementById('error-name'),
+    urlError: document.getElementById('error-url'),
+    tokenEndpointError: document.getElementById('error-token-endpoint'),
+    clientIdError: document.getElementById('error-client-id'),
+    clientSecretError: document.getElementById('error-client-secret'),
+    scopesError: document.getElementById('error-scopes'),
     routingKeyInput: document.getElementById('field-routing-key'),
     pagerdutySection: document.getElementById('pagerduty-section'),
     customSectionDivider: document.getElementById('custom-section-divider'),
@@ -141,8 +168,11 @@ function bindGlobalEvents() {
   els.saveBtn.addEventListener('click', saveWebhook);
 
   els.serviceSelect.addEventListener('change', onServiceChange);
+  els.oauthToggle.addEventListener('change', updateOAuthFieldsVisibility);
   document.getElementById('btn-add-header').addEventListener('click', () => addHeaderRow());
   document.getElementById('btn-add-mapping').addEventListener('click', () => addMappingRow());
+
+  bindFieldErrorClearing();
 
   els.confirmCancel.addEventListener('click', closeConfirm);
   els.confirmOverlay.addEventListener('click', closeConfirm);
@@ -157,6 +187,38 @@ function bindGlobalEvents() {
 function onServiceChange() {
   updateServiceHelp();
   updateServiceSections();
+}
+
+const VALIDATED_FIELDS = [];
+
+function bindFieldErrorClearing() {
+  VALIDATED_FIELDS.length = 0;
+  const fields = [
+    { input: els.nameInput, error: els.nameError },
+    { input: els.urlInput, error: els.urlError },
+    { input: els.tokenEndpointInput, error: els.tokenEndpointError },
+    { input: els.clientIdInput, error: els.clientIdError },
+    { input: els.clientSecretInput, error: els.clientSecretError },
+    { input: els.scopesInput, error: els.scopesError },
+  ];
+  fields.forEach((field) => {
+    VALIDATED_FIELDS.push(field);
+    field.input.addEventListener('input', () => clearFieldError(field));
+  });
+}
+
+function clearFieldError({ input, error }) {
+  input.classList.remove('error');
+  error.textContent = '';
+}
+
+function setFieldError({ input, error }, message) {
+  input.classList.add('error');
+  error.textContent = message;
+}
+
+function updateOAuthFieldsVisibility() {
+  els.oauthFieldsSection.classList.toggle('hidden', !els.oauthToggle.checked);
 }
 
 /* ── Table rendering ── */
@@ -257,13 +319,19 @@ function resetForm() {
   els.serviceSelect.value = 'Generic';
   els.urlInput.value = '';
   els.oauthToggle.checked = false;
+  els.tokenEndpointInput.value = '';
+  els.clientIdInput.value = '';
+  els.clientSecretInput.value = '';
+  els.scopesInput.value = '';
   els.routingKeyInput.value = '';
   els.headersContainer.innerHTML = '';
   updateHeaderLabelsVisibility();
   els.mappingsContainer.innerHTML = '';
   updateMappingLabelsVisibility();
+  updateOAuthFieldsVisibility();
   onServiceChange();
   updatePayloadPreview();
+  clearFormErrors();
 }
 
 function populateForm(wh) {
@@ -271,6 +339,10 @@ function populateForm(wh) {
   els.serviceSelect.value = wh.service;
   els.urlInput.value = wh.url;
   els.oauthToggle.checked = wh.oauth;
+  els.tokenEndpointInput.value = wh.tokenEndpoint || '';
+  els.clientIdInput.value = wh.clientId || '';
+  els.clientSecretInput.value = wh.clientSecret || '';
+  els.scopesInput.value = wh.scopes || '';
   els.routingKeyInput.value = wh.routingKey || '';
 
   els.headersContainer.innerHTML = '';
@@ -281,8 +353,10 @@ function populateForm(wh) {
   (wh.mappings || []).forEach((m) => addMappingRow(m.targetKey, m.source, m.value));
   updateMappingLabelsVisibility();
 
+  updateOAuthFieldsVisibility();
   onServiceChange();
   updatePayloadPreview();
+  clearFormErrors();
 }
 
 /* ── Service-specific sections ── */
@@ -380,7 +454,7 @@ function setupMappingRowDrag(row) {
     draggedMappingRow = row;
     row.classList.add('mapping-row--dragging');
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', row.dataset.rowId || '');
+    e.dataTransfer.setData('text/plain', '');
   });
 
   row.addEventListener('dragend', () => {
@@ -553,6 +627,10 @@ function saveWebhook() {
   const service = els.serviceSelect.value;
   const url = els.urlInput.value.trim();
   const oauth = els.oauthToggle.checked;
+  const tokenEndpoint = els.tokenEndpointInput.value.trim();
+  const clientId = els.clientIdInput.value.trim();
+  const clientSecret = els.clientSecretInput.value.trim();
+  const scopes = els.scopesInput.value.trim();
   const headers = collectHeaders();
   const mappings = collectMappings();
   const routingKey = els.routingKeyInput.value.trim();
@@ -560,17 +638,48 @@ function saveWebhook() {
   let hasError = false;
 
   if (!name) {
-    els.nameInput.classList.add('error');
+    setFieldError({ input: els.nameInput, error: els.nameError }, 'Name required');
     hasError = true;
   }
   if (!url) {
-    els.urlInput.classList.add('error');
+    setFieldError({ input: els.urlInput, error: els.urlError }, 'URL required');
     hasError = true;
+  }
+
+  if (oauth) {
+    if (!tokenEndpoint) {
+      setFieldError({ input: els.tokenEndpointInput, error: els.tokenEndpointError }, 'This field is required');
+      hasError = true;
+    }
+    if (!clientId) {
+      setFieldError({ input: els.clientIdInput, error: els.clientIdError }, 'This field is required');
+      hasError = true;
+    }
+    if (!clientSecret) {
+      setFieldError({ input: els.clientSecretInput, error: els.clientSecretError }, 'This field is required');
+      hasError = true;
+    }
+    if (!scopes) {
+      setFieldError({ input: els.scopesInput, error: els.scopesError }, 'This field is required');
+      hasError = true;
+    }
   }
 
   if (hasError) return;
 
-  const data = { name, service, url, oauth, headers, mappings, routingKey };
+  const data = {
+    name,
+    service,
+    url,
+    oauth,
+    tokenEndpoint,
+    clientId,
+    clientSecret,
+    scopes,
+    headers,
+    mappings,
+    routingKey,
+  };
 
   if (editingId !== null) {
     const idx = webhooks.findIndex((w) => w.id === editingId);
@@ -584,8 +693,7 @@ function saveWebhook() {
 }
 
 function clearFormErrors() {
-  els.nameInput.classList.remove('error');
-  els.urlInput.classList.remove('error');
+  VALIDATED_FIELDS.forEach(clearFieldError);
 }
 
 /* ── Delete ── */

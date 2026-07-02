@@ -582,6 +582,14 @@ span.form-label {
   margin-top: 4px;
 }
 
+.form-error:empty {
+  display: none;
+}
+
+.oauth-fields.hidden {
+  display: none;
+}
+
 .form-row-service {
   display: grid;
   grid-template-columns: 160px minmax(0, 1fr);

@@ -88,6 +88,8 @@ Visibility is driven by the **Service** dropdown (`updateServiceSections` in `we
 | **PagerDuty** | HTTP header (mandatory) — fixed `x-routing-key` + Value (`.mandatory-header-row`) |
 | **Other** | Base form only (Name, Service, URL, OAuth, optional headers) |
 
+**OAuth** — when the toggle is on, show Token Endpoint, Client ID, Client Secret, Scopes (all required on save). Values persist when toggled off. Field errors use `.form-error` under the input (`Name required`, `URL required`, `This field is required`).
+
 - Hide service-specific blocks with `.service-section.hidden`.
 - Form state (mappings, routing key) is preserved when switching services — only visibility changes.
 - Mapping rows are reorderable via drag handle (`.mapping-drag-handle`) on the left; order drives payload preview key order.
