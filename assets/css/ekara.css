@@ -681,7 +681,7 @@ span.form-label {
 }
 
 .field-column-labels--mapping {
-  grid-template-columns: 1fr 160px 1fr 28px;
+  grid-template-columns: 28px 1fr 160px 1fr 28px;
 }
 
 .field-column-labels.hidden {
@@ -715,10 +715,36 @@ span.form-label {
 
 .mapping-row {
   display: grid;
-  grid-template-columns: 1fr 160px 1fr 28px;
+  grid-template-columns: 28px 1fr 160px 1fr 28px;
   gap: 8px;
   align-items: start;
   margin-bottom: 8px;
+}
+
+.mapping-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 32px;
+  margin-top: 2px;
+  cursor: grab;
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  touch-action: none;
+}
+
+.mapping-drag-handle:hover {
+  color: var(--text-secondary);
+  background: var(--surface-hover-neutral);
+}
+
+.mapping-drag-handle:active {
+  cursor: grabbing;
+}
+
+.mapping-row--dragging {
+  opacity: 0.45;
 }
 
 .mapping-row .form-select option {

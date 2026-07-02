@@ -91,6 +91,7 @@ let webhooks = [
 let nextId = 6;
 let editingId = null;
 let openMenuId = null;
+let draggedMappingRow = null;
 
 /* ── DOM refs (set on DOMContentLoaded) ── */
 let els = {};
@@ -129,6 +130,7 @@ function init() {
 
   renderTable();
   bindGlobalEvents();
+  initMappingDragDrop();
 }
 
 function bindGlobalEvents() {
@@ -335,16 +337,71 @@ function collectHeaders() {
 }
 
 /* ── Dynamic mapping rows ── */
+const MAPPING_DRAG_HANDLE_SVG = `<svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1.5"/><circle cx="8" cy="3" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="4" cy="13" r="1.5"/><circle cx="8" cy="13" r="1.5"/></svg>`;
+
+function initMappingDragDrop() {
+  const container = els.mappingsContainer;
+
+  container.addEventListener('dragstart', (e) => {
+    const row = e.target.closest('.mapping-row');
+    if (!row || !e.target.closest('.mapping-drag-handle')) {
+      e.preventDefault();
+      return;
+    }
+    draggedMappingRow = row;
+    row.classList.add('mapping-row--dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');
+  });
+
+  container.addEventListener('dragend', (e) => {
+    const row = e.target.closest('.mapping-row');
+    if (row) row.classList.remove('mapping-row--dragging');
+    draggedMappingRow = null;
+    updatePayloadPreview();
+  });
+
+  container.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (!draggedMappingRow) return;
+    const afterElement = getMappingDragAfterElement(container, e.clientY);
+    if (afterElement == null) {
+      container.appendChild(draggedMappingRow);
+    } else if (afterElement !== draggedMappingRow) {
+      container.insertBefore(draggedMappingRow, afterElement);
+    }
+  });
+}
+
+function getMappingDragAfterElement(container, y) {
+  const rows = [...container.querySelectorAll('.mapping-row:not(.mapping-row--dragging)')];
+  return rows.reduce(
+    (closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) {
+        return { offset, element: child };
+      }
+      return closest;
+    },
+    { offset: Number.NEGATIVE_INFINITY }
+  ).element;
+}
+
 function addMappingRow(targetKey = '', source = 'Static value', value = '') {
   const row = document.createElement('div');
   row.className = 'mapping-row';
+  row.draggable = true;
   row.innerHTML = `
+    <div class="mapping-drag-handle" role="button" tabindex="0" aria-label="Drag to reorder">${MAPPING_DRAG_HANDLE_SVG}</div>
     <input type="text" class="form-input mapping-target" placeholder="Target key" value="${escapeAttr(targetKey)}">
     <select class="form-select mapping-source">${SOURCE_TYPES.map((s) => `<option value="${s}"${s === source ? ' selected' : ''}>${s}</option>`).join('')}</select>
     <div class="mapping-value-container"></div>
     <button type="button" class="btn-icon remove-mapping" aria-label="Remove mapping">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>`;
+
+  row.querySelector('.mapping-drag-handle').addEventListener('mousedown', (e) => e.preventDefault());
 
   const sourceSelect = row.querySelector('.mapping-source');
   const valueContainer = row.querySelector('.mapping-value-container');

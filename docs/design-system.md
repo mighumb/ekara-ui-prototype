@@ -78,6 +78,20 @@ Do not use off-scale sizes (e.g. 13px) — pick from the scale.
 - Column label classes: `field-column-labels--header` (Key / Value), `field-column-labels--mapping` (Target key / Source / Value).
 - `margin-top: 12px` on `field-column-labels` separates column labels from the section label.
 
+## Webhook modal — service-specific sections
+
+Visibility is driven by the **Service** dropdown (`updateServiceSections` in `webhooks.js`):
+
+| Service | Sections shown |
+|---------|----------------|
+| **Custom** | Mapping (optional), Payload preview |
+| **PagerDuty** | HTTP header (mandatory) — fixed `x-routing-key` + Value (`.mandatory-header-row`) |
+| **Other** | Base form only (Name, Service, URL, OAuth, optional headers) |
+
+- Hide service-specific blocks with `.service-section.hidden`.
+- Form state (mappings, routing key) is preserved when switching services — only visibility changes.
+- Mapping rows are reorderable via drag handle (`.mapping-drag-handle`) on the left; order drives payload preview key order.
+
 ## Pages
 
 ```html
