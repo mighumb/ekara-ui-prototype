@@ -65,10 +65,9 @@ input, select, textarea {
 }
 
 .topbar-logo {
-  width: 28px;
-  height: 28px;
-  fill: var(--text-on-dark);
-  color: var(--text-on-dark);
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .topbar-breadcrumb {
