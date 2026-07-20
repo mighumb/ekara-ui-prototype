@@ -12,8 +12,7 @@ Styles: `tokens.css`, `ekara.css`. Preview from `main` via GitHub Pages.
 
 ## Product shell
 
-- **Header** — logo, breadcrumb (`Module | Section > Page`), account, notifications, avatar
-- **Module switcher** — 9-dot grid (top-right) → six modules
+- **Header** — logo, breadcrumb (`Module | Section > Page`), account, notifications, avatar, module switcher (9-dot bento)
 - **Sidebar** — navigation for the active module (changes with the module)
 - **Main content** — the active page
 
