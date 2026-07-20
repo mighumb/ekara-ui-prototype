@@ -93,6 +93,7 @@ Visibility is driven by the **Service** dropdown (`updateServiceSections` in `we
 - Hide service-specific blocks with `.service-section.hidden`.
 - Form state (mappings, routing key) is preserved when switching services — only visibility changes.
 - Mapping rows are reorderable via drag handle (`.mapping-drag-handle`) on the left; order drives payload preview key order.
+- Mapping is optional as a section, but each added row must be complete on save (Target key + Value). Scenario tag with « Select a tag » is invalid.
 
 ## Pages
 

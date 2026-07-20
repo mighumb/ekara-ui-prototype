@@ -572,6 +572,7 @@ span.form-label {
 }
 
 .form-input.error,
+.form-select.error,
 .form-textarea.error {
   border-color: var(--danger);
 }
@@ -727,6 +728,13 @@ span.form-label {
   gap: 8px;
   align-items: start;
   margin-bottom: 8px;
+}
+
+.mapping-field,
+.mapping-value-cell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .mapping-drag-handle {

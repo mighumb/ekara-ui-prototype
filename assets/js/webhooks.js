@@ -490,18 +490,34 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
   row.draggable = true;
   row.innerHTML = `
     <div class="mapping-drag-handle" role="button" tabindex="0" aria-label="Drag to reorder">${MAPPING_DRAG_HANDLE_SVG}</div>
-    <input type="text" class="form-input mapping-target" placeholder="Target key" value="${escapeAttr(targetKey)}">
+    <div class="mapping-field">
+      <input type="text" class="form-input mapping-target" placeholder="Target key" value="${escapeAttr(targetKey)}">
+      <div class="form-error mapping-target-error"></div>
+    </div>
     <select class="form-select mapping-source">${SOURCE_TYPES.map((s) => `<option value="${s}"${s === source ? ' selected' : ''}>${s}</option>`).join('')}</select>
-    <div class="mapping-value-container"></div>
+    <div class="mapping-value-cell">
+      <div class="mapping-value-container"></div>
+      <div class="form-error mapping-value-error"></div>
+    </div>
     <button type="button" class="btn-icon remove-mapping" aria-label="Remove mapping">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>`;
 
   const sourceSelect = row.querySelector('.mapping-source');
   const valueContainer = row.querySelector('.mapping-value-container');
+  const targetInput = row.querySelector('.mapping-target');
+  const targetError = row.querySelector('.mapping-target-error');
+  const valueError = row.querySelector('.mapping-value-error');
+
+  function clearValueError() {
+    const valueEl = row.querySelector('.mapping-value');
+    if (valueEl) valueEl.classList.remove('error');
+    valueError.textContent = '';
+  }
 
   function renderValueField(src, val) {
     valueContainer.innerHTML = '';
+    clearValueError();
     if (src === 'Alert context field') {
       const select = document.createElement('select');
       select.className = 'form-select mapping-value alert-field-select';
@@ -513,7 +529,10 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
         select.appendChild(opt);
       });
       if (!val && ALERT_CONTEXT_FIELDS.length) select.value = ALERT_CONTEXT_FIELDS[0].value;
-      select.addEventListener('change', updatePayloadPreview);
+      select.addEventListener('change', () => {
+        clearValueError();
+        updatePayloadPreview();
+      });
       valueContainer.appendChild(select);
     } else if (src === 'Scenario tag') {
       const select = document.createElement('select');
@@ -536,7 +555,10 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
         opt.selected = true;
         select.appendChild(opt);
       }
-      select.addEventListener('change', updatePayloadPreview);
+      select.addEventListener('change', () => {
+        clearValueError();
+        updatePayloadPreview();
+      });
       valueContainer.appendChild(select);
     } else {
       const input = document.createElement('input');
@@ -544,7 +566,10 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
       input.className = 'form-input mapping-value';
       input.placeholder = 'Value';
       input.value = val;
-      input.addEventListener('input', updatePayloadPreview);
+      input.addEventListener('input', () => {
+        clearValueError();
+        updatePayloadPreview();
+      });
       valueContainer.appendChild(input);
     }
   }
@@ -556,7 +581,12 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
     updatePayloadPreview();
   });
 
-  row.querySelector('.mapping-target').addEventListener('input', updatePayloadPreview);
+  targetInput.addEventListener('input', () => {
+    targetInput.classList.remove('error');
+    targetError.textContent = '';
+    updatePayloadPreview();
+  });
+
   row.querySelector('.remove-mapping').addEventListener('click', () => {
     row.remove();
     updateMappingLabelsVisibility();
@@ -574,6 +604,47 @@ function updateMappingLabelsVisibility() {
   els.mappingColumnLabels.classList.toggle('hidden', !hasRows);
 }
 
+function clearMappingErrors() {
+  els.mappingsContainer.querySelectorAll('.mapping-row').forEach((row) => {
+    const targetInput = row.querySelector('.mapping-target');
+    const targetError = row.querySelector('.mapping-target-error');
+    const valueEl = row.querySelector('.mapping-value');
+    const valueError = row.querySelector('.mapping-value-error');
+    if (targetInput) targetInput.classList.remove('error');
+    if (targetError) targetError.textContent = '';
+    if (valueEl) valueEl.classList.remove('error');
+    if (valueError) valueError.textContent = '';
+  });
+}
+
+function validateMappings() {
+  const rows = els.mappingsContainer.querySelectorAll('.mapping-row');
+  let isValid = true;
+
+  rows.forEach((row) => {
+    const targetInput = row.querySelector('.mapping-target');
+    const targetError = row.querySelector('.mapping-target-error');
+    const valueEl = row.querySelector('.mapping-value');
+    const valueError = row.querySelector('.mapping-value-error');
+    const targetKey = targetInput ? targetInput.value.trim() : '';
+    const value = valueEl ? valueEl.value.trim() : '';
+
+    if (!targetKey) {
+      targetInput.classList.add('error');
+      targetError.textContent = 'This field is required';
+      isValid = false;
+    }
+
+    if (!value) {
+      if (valueEl) valueEl.classList.add('error');
+      valueError.textContent = 'This field is required';
+      isValid = false;
+    }
+  });
+
+  return isValid;
+}
+
 function collectMappings() {
   const rows = els.mappingsContainer.querySelectorAll('.mapping-row');
   const mappings = [];
@@ -582,7 +653,7 @@ function collectMappings() {
     const source = row.querySelector('.mapping-source').value;
     const valueEl = row.querySelector('.mapping-value');
     const value = valueEl ? valueEl.value.trim() : '';
-    if (targetKey) mappings.push({ targetKey, source, value });
+    if (targetKey && value) mappings.push({ targetKey, source, value });
   });
   return mappings;
 }
@@ -669,6 +740,10 @@ function saveWebhook() {
     }
   }
 
+  if (service === 'Custom' && !validateMappings()) {
+    hasError = true;
+  }
+
   if (hasError) return;
 
   const data = {
@@ -698,6 +773,7 @@ function saveWebhook() {
 
 function clearFormErrors() {
   VALIDATED_FIELDS.forEach(clearFieldError);
+  clearMappingErrors();
 }
 
 /* ── Delete ── */
