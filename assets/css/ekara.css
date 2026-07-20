@@ -130,6 +130,59 @@ input, select, textarea {
   color: var(--text-on-dark);
 }
 
+.bento-menu-wrap {
+  position: relative;
+}
+
+.bento-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 12px;
+  min-width: 280px;
+  background: var(--surface-default);
+  border-radius: var(--radius-dialog);
+  box-shadow: var(--shadow-dropdown);
+}
+
+.bento-menu[hidden] {
+  display: none;
+}
+
+.bento-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border-radius: var(--radius-dialog);
+  color: var(--text-secondary);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.bento-menu-item:hover {
+  background: var(--surface-hover-neutral);
+}
+
+.bento-menu-item.active {
+  background: var(--surface-hover-action);
+  color: var(--primary);
+}
+
+.bento-menu-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+}
+
 /* Sidebar */
 .sidebar {
   position: fixed;

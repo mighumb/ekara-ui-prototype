@@ -162,6 +162,41 @@ function init() {
   renderTable();
   bindGlobalEvents();
   initMappingDragDrop();
+  initBentoMenu();
+}
+
+function initBentoMenu() {
+  const btn = document.getElementById('btn-bento');
+  const menu = document.getElementById('bento-menu');
+  if (!btn || !menu) return;
+
+  function openBento() {
+    menu.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeBento() {
+    menu.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleBento() {
+    if (menu.hidden) openBento();
+    else closeBento();
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleBento();
+  });
+
+  menu.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener('click', () => {
+    if (!menu.hidden) closeBento();
+  });
 }
 
 function bindGlobalEvents() {
