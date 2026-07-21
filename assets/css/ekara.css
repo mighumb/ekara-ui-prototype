@@ -180,6 +180,10 @@ input, select, textarea {
 .bento-menu-icon {
   width: 28px;
   height: 28px;
+  color: var(--color-n600);
+}
+
+.bento-menu-item.active .bento-menu-icon {
   color: var(--primary);
 }
 
