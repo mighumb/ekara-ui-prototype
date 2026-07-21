@@ -54,7 +54,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border` |
 | Link | `a` | `--link-color` |
 
-**Module switcher (bento)** — `.bento-menu-wrap` in the topbar (far right). Toggle via `#btn-bento`; menu `.bento-menu` lists the six modules. Icons at rest: `--color-n600`; active module uses `.bento-menu-item.active` (`--surface-hover-action`, label + icon `--primary`). Hover on items: `--surface-hover-neutral`.
+**Module switcher (bento)** — `.bento-menu-wrap` in the topbar (far right). Toggle via `#btn-bento`; menu `.bento-menu` lists the six modules. Icons at rest: `--color-n400`; active module uses `.bento-menu-item.active` (`--surface-hover-action`, label + icon `--primary`). Hover on items: `--surface-hover-neutral`.
 
 New pages/modals: use these classes — do not hardcode colors in HTML or per-page CSS.
 
