@@ -561,6 +561,7 @@ html.slide-panel-open body {
   min-height: 0;
   overflow-y: hidden;
   padding: 20px 24px;
+  scrollbar-gutter: stable;
 }
 
 .slide-panel-body.is-scrollable {
@@ -1146,15 +1147,31 @@ span.form-label {
   margin-bottom: 0;
 }
 
+.applications-field-slot {
+  position: relative;
+  height: 36px;
+}
+
+.applications-field-slot #applications-global-wrap,
+.applications-field-slot .applications-picker {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+
 .applications-picker {
   position: relative;
 }
 
 .applications-picker-trigger {
   width: 100%;
-  min-height: 36px;
+  height: 36px;
   text-align: left;
   cursor: pointer;
+}
+
+.applications-field-slot .form-select {
+  height: 36px;
 }
 
 .applications-picker-menu {
