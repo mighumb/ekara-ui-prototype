@@ -307,13 +307,13 @@ function openPanel(mode, id) {
 
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockPageScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
-  document.body.style.overflow = '';
+  unlockPageScroll();
   editingId = null;
   clearFormErrors();
 }

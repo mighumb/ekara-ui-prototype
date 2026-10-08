@@ -7,6 +7,10 @@
   padding: 0;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html, body {
   height: 100%;
   font-family: var(--font-family);
@@ -1229,8 +1233,17 @@ span.form-label {
   gap: 10px;
 }
 
+.form-row-inline-2.channel-recipients-row {
+  align-items: start;
+}
+
 .channel-recipients-row .form-group {
   margin-bottom: 0;
+  min-width: 0;
+}
+
+.channel-recipients-row .channel-options--stacked {
+  margin-top: 0;
 }
 
 .channel-option {
