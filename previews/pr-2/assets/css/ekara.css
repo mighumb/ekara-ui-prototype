@@ -996,7 +996,7 @@ span.form-label {
 /* Alerts table */
 .data-table--alerts {
   grid-template-columns:
-    44px
+    56px
     minmax(120px, 1.1fr)
     minmax(100px, 1fr)
     minmax(100px, 0.9fr)
@@ -1006,9 +1006,24 @@ span.form-label {
     48px;
 }
 
+.data-table--alerts .data-table-header-cell:first-child,
+.data-table--alerts .data-table-cell:first-child {
+  padding-left: 16px;
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.data-table--alerts .data-table-cell:nth-child(2) {
+  padding-left: 4px;
+}
+
 .alert-table-icon {
   width: 28px;
   height: 28px;
+  flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid var(--primary);
   display: flex;
