@@ -815,19 +815,26 @@ function updatePanelBodyScroll() {
   });
 }
 
+let savedScrollY = 0;
+
 function lockPageScroll() {
-  const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+  savedScrollY = window.scrollY;
   document.documentElement.classList.add('slide-panel-open');
-  document.documentElement.style.paddingRight = `${scrollbarGap}px`;
-  const topbar = document.querySelector('.topbar');
-  if (topbar) topbar.style.paddingRight = `${scrollbarGap}px`;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
 }
 
 function unlockPageScroll() {
   document.documentElement.classList.remove('slide-panel-open');
-  document.documentElement.style.paddingRight = '';
-  const topbar = document.querySelector('.topbar');
-  if (topbar) topbar.style.paddingRight = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, savedScrollY);
 }
 
 /* ── Utilities ── */

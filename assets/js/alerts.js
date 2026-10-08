@@ -205,6 +205,8 @@ const alerts = [
 
 let openMenuId = null;
 let editingId = null;
+let savedScrollY = 0;
+let panelBodyResizeObserver = null;
 
 let els = {};
 
@@ -295,10 +297,25 @@ function closeApplicationsMenu() {
 function updatePanelBodyScroll() {
   if (!els.panelBody || !els.panel.classList.contains('open')) return;
   requestAnimationFrame(() => {
-    const body = els.panelBody;
-    const needsScroll = body.scrollHeight > body.clientHeight + 1;
-    body.classList.toggle('is-scrollable', needsScroll);
+    requestAnimationFrame(() => {
+      const body = els.panelBody;
+      const needsScroll = body.scrollHeight > body.clientHeight + 4;
+      body.classList.toggle('is-scrollable', needsScroll);
+    });
   });
+}
+
+function startPanelBodyObserver() {
+  if (!els.panelBody || panelBodyResizeObserver) return;
+  panelBodyResizeObserver = new ResizeObserver(() => updatePanelBodyScroll());
+  panelBodyResizeObserver.observe(els.panelBody);
+}
+
+function stopPanelBodyObserver() {
+  if (panelBodyResizeObserver) {
+    panelBodyResizeObserver.disconnect();
+    panelBodyResizeObserver = null;
+  }
 }
 
 function syncGlobalApplicationsUI() {
@@ -454,12 +471,14 @@ function openPanel(mode, id) {
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
+  startPanelBodyObserver();
   updatePanelBodyScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  stopPanelBodyObserver();
   if (els.panelBody) els.panelBody.classList.remove('is-scrollable');
   unlockPageScroll();
   closeApplicationsMenu();
@@ -467,18 +486,23 @@ function closePanel() {
 }
 
 function lockPageScroll() {
-  const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+  savedScrollY = window.scrollY;
   document.documentElement.classList.add('slide-panel-open');
-  document.documentElement.style.paddingRight = `${scrollbarGap}px`;
-  const topbar = document.querySelector('.topbar');
-  if (topbar) topbar.style.paddingRight = `${scrollbarGap}px`;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
 }
 
 function unlockPageScroll() {
   document.documentElement.classList.remove('slide-panel-open');
-  document.documentElement.style.paddingRight = '';
-  const topbar = document.querySelector('.topbar');
-  if (topbar) topbar.style.paddingRight = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, savedScrollY);
 }
 
 function escapeHtml(str) {
