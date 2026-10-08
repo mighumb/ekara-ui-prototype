@@ -1,6 +1,12 @@
-# Static site: production (main) + PR previews via GitHub Pages (Actions).
-# One-time repo setting: Settings → Pages → Build and deployment → Source: GitHub Actions.
-# On a PR: open the workflow run → environment "github-pages" → View deployment (preview URL).
+# Publish static site to branch `gh-pages` (production + PR previews).
+#
+# One-time (repo admin): Settings → Pages → Build and deployment
+#   → Source: Deploy from branch → Branch: gh-pages → Folder: / (root)
+#
+# Preview URL (PR #N):
+#   https://mighumb.github.io/ekara-ui-prototype/previews/pr-N/settings/alerts/
+# Production (after merge to main):
+#   https://mighumb.github.io/ekara-ui-prototype/
 
 name: Deploy Pages
 
@@ -8,72 +14,58 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: pages-${{ github.event.pull_request.number || 'main' }}
+  cancel-in-progress: false
 
 jobs:
-  build:
-    if: github.event_name == 'push' || github.event.action != 'closed'
+  publish-preview:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish PR preview to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: .
-
-  deploy:
-    if: github.event_name == 'push' || github.event.action != 'closed'
-    needs: build
-    runs-on: ubuntu-latest
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          branch: gh-pages
+          folder: .
+          target-folder: previews/pr-${{ github.event.pull_request.number }}
+          clean: false
 
   comment-preview:
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
-    needs: deploy
+    if: github.event_name == 'pull_request'
+    needs: publish-preview
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
-      - name: Comment preview link on PR
+      - name: Comment preview URL
         uses: actions/github-script@v7
         with:
           script: |
-            const url = '${{ needs.deploy.outputs.page_url }}';
             const prNumber = context.payload.pull_request.number;
+            const base = 'https://mighumb.github.io/ekara-ui-prototype';
+            const url = `${base}/previews/pr-${prNumber}/`;
             const marker = '<!-- ekara-pages-preview -->';
             const body = `${marker}
-            ### Ekara UI prototype — PR preview
+### Ekara UI prototype — preview PR #${prNumber}
 
-            **Preview URL:** ${url}
+**Prérequis :** Pages doit être publiée depuis la branche \`gh-pages\` (voir README).
 
-            Try navigation:
-            - [Alert rules (Settings)](${url}settings/alerts/)
-            - [Webhooks (Management)](${url}webhooks/)
+**Preview :** ${url}
 
-            _Updated on each push to this branch. Production stays on \`main\` until merge._
-            `;
+- [Alert rules (Settings)](${url}settings/alerts/)
+- [Webhooks (Management)](${url}webhooks/)
+
+_Mis à jour à chaque push sur cette branche._
+`;
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -95,3 +87,19 @@ jobs:
                 body,
               });
             }
+
+  publish-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish production to gh-pages (keep previews)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: .
+          clean: true
+          clean-exclude: |
+            previews/**

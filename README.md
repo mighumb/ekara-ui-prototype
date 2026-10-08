@@ -25,15 +25,13 @@ Saving a file locally does not update the live URL. Only push to `main` does (le
 
 ## Preview a pull request before merge
 
-To test a branch on the real hosted site **without merging to `main`**:
+Workflow **Deploy Pages** pushes each PR to `gh-pages` under `previews/pr-<number>/`.
 
-1. **One-time (repo admin):** GitHub → **Settings** → **Pages** → **Build and deployment** → **Source:** **GitHub Actions** (not “Deploy from branch `main`”).
-2. Open the PR → tab **Checks** → workflow **Deploy Pages** → when green, click **View deployment** (or read the bot comment with the preview URL).
-3. Useful entry points on the preview host:
-   - `…/settings/alerts/` — Settings alert rules
-   - `…/webhooks/` — Management webhooks
-
-Each push to the PR branch refreshes the preview. Merging to `main` updates production.
+1. **One-time (repo admin):** **Settings** → **Pages** → **Build and deployment** → **Deploy from a branch** → branch **`gh-pages`**, folder **`/` (root)**.  
+   (While Pages still points at `main`, preview URLs under `gh-pages` are not served.)
+2. Open the PR → wait for green **Deploy Pages** → read the comment with the preview URL, e.g.  
+   `https://mighumb.github.io/ekara-ui-prototype/previews/pr-2/settings/alerts/`
+3. After merge to `main`, the workflow updates the site root on `gh-pages` (preview folders are kept).
 
 Asset cache-bust query params (`ekara.css?v=…`, `webhooks.js?v=…`) are bumped on each deploy-worthy change so the live page loads fresh files.
 
