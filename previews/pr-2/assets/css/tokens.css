@@ -1,0 +1,236 @@
+/* Ekara UI Prototype — design tokens (source of truth)
+   Edit values here. Do not duplicate in docs or per-page CSS. */
+
+:root {
+  /* Layout */
+  --sidebar-width: 220px;
+  --modal-width: 680px;
+  --radius: 3px;
+  --radius-dialog: 4px;
+
+  /* Typography — Open Sans (Ekara DS) */
+  --font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Typography scale (Ekara DS — base 16px, even px values) */
+  --font-size-12: 0.75rem;    /* 12px */
+  --font-size-14: 0.875rem;   /* 14px */
+  --font-size-16: 1rem;       /* 16px */
+  --font-size-18: 1.125rem;   /* 18px */
+  --font-size-20: 1.25rem;    /* 20px */
+  --font-size-22: 1.375rem;   /* 22px */
+  --font-size-24: 1.5rem;     /* 24px */
+  --font-size-28: 1.75rem;    /* 28px */
+  --font-size-32: 2rem;       /* 32px */
+  --font-size-36: 2.25rem;    /* 36px */
+  --font-size-42: 2.625rem;   /* 42px */
+  --font-size-48: 3rem;       /* 48px */
+
+  /* ── Palette: Neutrals (Ekara DS) N900 darkest → N0 Coconut ── */
+  --color-n900: #0c1524;
+  --color-n800: #182533;
+  --color-n700: #223347;
+  --color-n600: #3c4f67;
+  --color-n500: #4a5f78;
+  --color-n400: #59708b;
+  --color-n300: #69819d;
+  --color-n200: #7791ae;
+  --color-n100: #86a2c1;
+  --color-n90: #92acc7;
+  --color-n80: #9eb5ce;
+  --color-n70: #abbed4;
+  --color-n60: #b7c7da;
+  --color-n50: #c2d0e0;
+  --color-n40: #cedae6;
+  --color-n30: #dbe3ec;
+  --color-n20: #e8edf3;
+  --color-n10: #f3f6f9;
+  --color-n05: #f8fafb;
+  --color-n0: #ffffff;
+
+  /* ── Palette: Greens G900 → G100 ── */
+  --color-g900: #0c6a5b;
+  --color-g800: #158065;
+  --color-g700: #219f73;
+  --color-g600: #30be7e;
+  --color-g500: #43de88;
+  --color-g400: #70eb9a;
+  --color-g300: #8ef5a7;
+  --color-g200: #b5fbbf;
+  --color-g100: #d9fdbb;
+
+  /* ── Palette: Teals T900 → T100 ── */
+  --color-t900: #003250;
+  --color-t800: #004561;
+  --color-t700: #006078;
+  --color-t600: #007f90;
+  --color-t500: #00a3a8;
+  --color-t400: #32cac2;
+  --color-t300: #5be4d1;
+  --color-t200: #93f6e0;
+  --color-t100: #c8faeb;
+
+  /* ── Palette: Blues B900 → B50 ── */
+  --color-b900: #041645;
+  --color-b800: #072053;
+  --color-b700: #0c2e67;
+  --color-b600: #123e7b;
+  --color-b500: #195190;
+  --color-b400: #4784bc;
+  --color-b300: #6faddd;
+  --color-b200: #a3d4f3;
+  --color-b100: #d0ebf9;
+  --color-b50: #e8f4fc;
+
+  /* ── Palette: Reds R900 → R100 ── */
+  --color-r900: #7a0e28;
+  --color-r800: #93182c;
+  --color-r700: #b72632;
+  --color-r600: #db3838;
+  --color-r500: #ff5c4d;
+  --color-r400: #ff8f79;
+  --color-r300: #ffae94;
+  --color-r200: #ffcfb7;
+  --color-r100: #ffeadb;
+
+  /* ── Palette: Oranges O900 → O100 ── */
+  --color-o900: #783306;
+  --color-o800: #92460a;
+  --color-o700: #b56010;
+  --color-o600: #d87d18;
+  --color-o500: #fc9e21;
+  --color-o400: #fdbd58;
+  --color-o300: #fed079;
+  --color-o200: #fee4a6;
+  --color-o100: #fef3d2;
+
+  /* ── Palette: Yellows Y900 → Y100 ── */
+  --color-y900: #7a6203;
+  --color-y800: #937905;
+  --color-y700: #b79909;
+  --color-y600: #dbba0d;
+  --color-y500: #ffdd12;
+  --color-y400: #ffe84d;
+  --color-y300: #ffee70;
+  --color-y200: #fff5a0;
+  --color-y100: #fffbcf;
+
+  /* ── Palette: Lavenders L900 → L100 ── */
+  --color-l900: #1b1f68;
+  --color-l800: #2c327d;
+  --color-l700: #474d9c;
+  --color-l600: #676dba;
+  --color-l500: #8d94d9;
+  --color-l400: #abb1e8;
+  --color-l300: #c0c6f3;
+  --color-l200: #d8dcfb;
+  --color-l100: #ebedfd;
+
+  /* ── Palette: Violets V900 → V100 ── */
+  --color-v900: #231149;
+  --color-v800: #331d58;
+  --color-v700: #492e6e;
+  --color-v600: #624383;
+  --color-v500: #7d5d99;
+  --color-v400: #aa88c1;
+  --color-v300: #cdabe0;
+  --color-v200: #e8cef4;
+  --color-v100: #f4e6f9;
+
+  /* ── Palette: Pinks P900 → P100 ── */
+  --color-p900: #72144d;
+  --color-p800: #8a2257;
+  --color-p700: #ab3667;
+  --color-p600: #cc4f77;
+  --color-p500: #ee6d8a;
+  --color-p400: #f4919e;
+  --color-p300: #f9a8ab;
+  --color-p200: #fdc9c6;
+  --color-p100: #fee6e2;
+
+  /* ── Semantic: text ── */
+  --text-neutral: var(--color-n900);
+  --text-secondary: var(--color-n400);
+  --text-muted: var(--color-n30);
+  --text-placeholder: var(--color-n100);
+  --text-on-primary: var(--color-n0);
+  --text-on-dark: var(--color-n0);
+  --text-on-dark-muted: var(--color-n40);
+
+  /* ── Semantic: surfaces ── */
+  --sidebar-bg: var(--color-n800);
+  --topbar-bg: var(--color-n800);
+  --content-bg: var(--color-n05);
+  --card-bg: var(--color-n0);
+  --surface-default: var(--color-n0);
+  --surface-muted: var(--color-n10);
+  --surface-subtle: var(--color-n20);
+  --surface-hover-neutral: var(--color-n10);
+  --table-header-bg: var(--color-n30);
+  --table-row-hover-bg: var(--color-n10);
+  --table-header-font-size: var(--font-size-14);
+  --table-header-font-weight: var(--font-weight-semibold);
+  --payload-preview-bg: var(--color-n10);
+  --avatar-bg: var(--color-n500);
+  --overlay: color-mix(in srgb, var(--color-n900) 45%, transparent);
+  --surface-on-dark-hover: color-mix(in srgb, var(--color-n0) 10%, transparent);
+  --surface-on-dark-subtle: color-mix(in srgb, var(--color-n0) 5%, transparent);
+
+  /* ── Semantic: sidebar / topbar ── */
+  --sidebar-text: var(--color-n70);
+  --sidebar-text-active: var(--text-on-dark);
+  --sidebar-footer-text: var(--color-n500);
+  --sidebar-hover-bg: var(--surface-on-dark-subtle);
+  --sidebar-active-bg: var(--color-n500);
+  --topbar-text: var(--text-on-dark-muted);
+  --topbar-text-active: var(--text-on-dark);
+  --topbar-hover-bg: var(--surface-on-dark-hover);
+
+  /* ── Semantic: brand & status ── */
+  --primary: var(--color-b500);
+  --primary-hover: var(--color-b600);
+  --primary-light: var(--color-b400);
+  --danger: var(--color-r600);
+  --danger-hover: var(--color-r700);
+  --success: var(--color-g700);
+
+  /* ── Semantic: borders ── */
+  --border-color: var(--color-n30);
+  --input-border-color: var(--color-n60);
+
+  /* ── Semantic: shadows ── */
+  --shadow-dropdown: 0 4px 12px color-mix(in srgb, var(--color-n900) 12%, transparent);
+  --shadow-panel: -4px 0 20px color-mix(in srgb, var(--color-n900) 15%, transparent);
+  --shadow-dialog: 0 8px 30px color-mix(in srgb, var(--color-n900) 20%, transparent);
+
+  /* ── Components — interactive (reuse on every page/modal) ── */
+  --link-color: var(--primary);
+  --input-focus-border: var(--primary);
+  --surface-hover-light: var(--color-b50);
+  --surface-hover-action: var(--color-b50);
+  --toggle-track-off: var(--color-n50);
+  --toggle-track-on: var(--primary);
+  --toggle-thumb: var(--color-n0);
+  --select-chevron-color: var(--color-n400);
+  --mode-toggle-divider: var(--color-n20);
+  --select-chevron-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2359708b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+
+  /* ── Labels (class: form-label) ── */
+  --label-font-size: var(--font-size-12);
+  --label-font-weight: var(--font-weight-regular);
+  --label-color: var(--color-n900);
+  --label-letter-spacing: 0.4px;
+  --label-margin-bottom: 6px;
+
+  /* ── Typography — semantic sizes ── */
+  --font-size-body: var(--font-size-14);
+  --sidebar-font-size: var(--font-size-14);
+  --sidebar-footer-font-size: var(--font-size-12);
+  --page-title-font-size: var(--font-size-20);
+  --panel-title-font-size: var(--font-size-18);
+}
