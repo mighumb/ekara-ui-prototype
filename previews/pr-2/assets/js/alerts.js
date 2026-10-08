@@ -440,15 +440,30 @@ function openPanel(mode, id) {
   }
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
-  document.documentElement.classList.add('slide-panel-open');
+  lockPageScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
-  document.documentElement.classList.remove('slide-panel-open');
+  unlockPageScroll();
   closeApplicationsMenu();
   editingId = null;
+}
+
+function lockPageScroll() {
+  const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.classList.add('slide-panel-open');
+  document.documentElement.style.paddingRight = `${scrollbarGap}px`;
+  const topbar = document.querySelector('.topbar');
+  if (topbar) topbar.style.paddingRight = `${scrollbarGap}px`;
+}
+
+function unlockPageScroll() {
+  document.documentElement.classList.remove('slide-panel-open');
+  document.documentElement.style.paddingRight = '';
+  const topbar = document.querySelector('.topbar');
+  if (topbar) topbar.style.paddingRight = '';
 }
 
 function escapeHtml(str) {
