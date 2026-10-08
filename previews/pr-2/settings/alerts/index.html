@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/tokens.css?v=59">
-  <link rel="stylesheet" href="../../assets/css/ekara.css?v=59">
+  <link rel="stylesheet" href="../../assets/css/tokens.css?v=60">
+  <link rel="stylesheet" href="../../assets/css/ekara.css?v=60">
 </head>
 <body>
   <div class="app-layout">
@@ -212,41 +212,77 @@
           </div>
         </div>
 
-        <div class="scope-block">
-          <div class="mode-toggle" role="group" aria-label="Alert scope">
-            <button type="button" class="mode-toggle-btn active" data-scope="global" id="scope-global">Global</button>
-            <button type="button" class="mode-toggle-btn" data-scope="applications" id="scope-applications">Applications</button>
-          </div>
-          <div class="scope-hint" id="scope-hint">Apply to all applications in the account</div>
-        </div>
+        <hr class="section-divider">
 
-        <div class="form-group">
-          <span class="form-label">Alert trigger event</span>
-          <div class="form-row-inline-2" style="margin-top:8px;">
-            <div class="form-group">
-              <select class="form-select" id="field-trigger">
-                <option value="Incident">Incident</option>
-                <option value="Warning on availability">Warning on availability</option>
-                <option value="Performance degradation">Performance degradation</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="field-time-wait">Time to wait</label>
-              <div class="time-field-wrap">
-                <input type="text" class="form-input" id="field-time-wait" value="00:00" inputmode="numeric">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="form-row-inline-2 form-row-align-start">
+          <div class="form-group">
+            <span class="form-label">Global</span>
+            <label class="toggle toggle-below-label">
+              <input type="checkbox" id="field-global" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="form-group">
+            <span class="form-label">Applications</span>
+            <select class="form-select" id="field-applications-global" disabled>
+              <option>Apply to all applications in the account</option>
+            </select>
+            <div class="applications-picker hidden" id="applications-picker">
+              <button type="button" class="form-select applications-picker-trigger" id="applications-picker-trigger" aria-haspopup="listbox" aria-expanded="false">
+                Select applications
+              </button>
+              <div class="applications-picker-menu hidden" id="applications-picker-menu" role="listbox">
+                <label class="applications-picker-item">
+                  <input type="checkbox" id="applications-select-all">
+                  <span>Select all</span>
+                </label>
+                <label class="applications-picker-item">
+                  <input type="checkbox" class="applications-option" value="3615-15_new">
+                  <span>3615-15_new</span>
+                </label>
+                <label class="applications-picker-item">
+                  <input type="checkbox" class="applications-option" value="3615-2">
+                  <span>3615-2</span>
+                </label>
+                <label class="applications-picker-item">
+                  <input type="checkbox" class="applications-option" value="Application cva">
+                  <span>Application cva</span>
+                </label>
+                <label class="applications-picker-item">
+                  <input type="checkbox" class="applications-option" value="Application demo">
+                  <span>Application demo</span>
+                </label>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="form-group toggle-row">
-          <span class="form-label">Send end of alert</span>
+        <hr class="section-divider">
+
+        <div class="form-row-inline-2 form-row-align-start">
+          <div class="form-group">
+            <label class="form-label" for="field-trigger">Alert trigger event</label>
+            <select class="form-select" id="field-trigger">
+              <option value="Incident">Incident</option>
+              <option value="Warning on availability">Warning on availability</option>
+              <option value="Performance degradation">Performance degradation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-time-wait">Time to wait</label>
+            <input type="text" class="form-input" id="field-time-wait" value="00:00" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="form-group toggle-row send-end-row">
+          <span class="form-label send-end-label">Send end of alert</span>
           <label class="toggle">
             <input type="checkbox" id="field-send-end">
             <span class="toggle-slider"></span>
           </label>
         </div>
+
+        <hr class="section-divider">
 
         <div class="form-group">
           <span class="form-label">Days</span>
@@ -261,59 +297,55 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <div class="form-row-inline-3">
-            <div class="form-group">
-              <label class="form-label" for="field-starts">Starts</label>
-              <div class="time-field-wrap">
-                <input type="text" class="form-input" id="field-starts" value="00:00">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="field-ends">Ends</label>
-              <div class="time-field-wrap">
-                <input type="text" class="form-input" id="field-ends" value="23:59">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="field-timezone">Time zones</label>
-              <select class="form-select" id="field-timezone">
-                <option value="Europe/Paris">Europe/Paris</option>
-                <option value="UTC">UTC</option>
-                <option value="America/New_York">America/New_York</option>
-              </select>
-            </div>
+        <div class="form-row-inline-3 form-row-align-start">
+          <div class="form-group">
+            <label class="form-label" for="field-starts">Starts</label>
+            <input type="text" class="form-input" id="field-starts" value="00:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-ends">Ends</label>
+            <input type="text" class="form-input" id="field-ends" value="23:59">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-timezone">Time zones</label>
+            <select class="form-select" id="field-timezone">
+              <option value="Europe/Paris">Europe/Paris</option>
+              <option value="Europe/Berlin">Europe/Berlin</option>
+              <option value="UTC">UTC</option>
+              <option value="America/New_York">America/New_York</option>
+            </select>
           </div>
         </div>
 
-        <div class="form-group">
-          <span class="form-label">Channel</span>
-          <div class="channel-options">
-            <label class="channel-option">
-              <input type="checkbox" name="channel" value="Email" checked>
-              Email
-            </label>
-            <label class="channel-option">
-              <input type="checkbox" name="channel" value="Sms">
-              Sms
-            </label>
-            <label class="channel-option">
-              <input type="checkbox" name="channel" value="Webhook">
-              Webhook
-            </label>
-          </div>
-        </div>
+        <hr class="section-divider">
 
-        <div class="form-group">
-          <label class="form-label" for="field-recipients">Add recipients</label>
-          <select class="form-select" id="field-recipients">
-            <option value="">Select recipients</option>
-            <option value="team-ops">Operations team</option>
-            <option value="team-sre">SRE on-call</option>
-            <option value="user-demo">demo@example.com</option>
-          </select>
+        <div class="form-row-inline-2 form-row-align-start channel-recipients-row">
+          <div class="form-group">
+            <span class="form-label">Channel</span>
+            <div class="channel-options channel-options--stacked">
+              <label class="channel-option">
+                <input type="radio" name="channel" value="Email" checked>
+                Email
+              </label>
+              <label class="channel-option">
+                <input type="radio" name="channel" value="Sms">
+                Sms
+              </label>
+              <label class="channel-option">
+                <input type="radio" name="channel" value="Webhook">
+                Webhook
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-recipients">Add recipients</label>
+            <select class="form-select" id="field-recipients">
+              <option value="">Select recipients</option>
+              <option value="team-ops">Operations team</option>
+              <option value="team-sre">SRE on-call</option>
+              <option value="user-demo">demo@example.com</option>
+            </select>
+          </div>
         </div>
       </form>
     </div>
@@ -325,6 +357,6 @@
   </div>
 
   <script src="../../assets/js/bento.js?v=1"></script>
-  <script src="../../assets/js/alerts.js?v=2"></script>
+  <script src="../../assets/js/alerts.js?v=3"></script>
 </body>
 </html>

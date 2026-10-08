@@ -218,15 +218,20 @@ function init() {
     panelTitle: document.getElementById('panel-title'),
     description: document.getElementById('field-description'),
     charCounter: document.getElementById('char-counter'),
-    scopeHint: document.getElementById('scope-hint'),
-    scopeGlobal: document.getElementById('scope-global'),
-    scopeApplications: document.getElementById('scope-applications'),
+    fieldGlobal: document.getElementById('field-global'),
+    applicationsGlobal: document.getElementById('field-applications-global'),
+    applicationsPicker: document.getElementById('applications-picker'),
+    applicationsTrigger: document.getElementById('applications-picker-trigger'),
+    applicationsMenu: document.getElementById('applications-picker-menu'),
+    applicationsSelectAll: document.getElementById('applications-select-all'),
+    applicationOptions: document.querySelectorAll('.applications-option'),
   };
 
   renderTable();
   bindEvents();
   initSidebarGroups();
   updateCharCounter();
+  syncGlobalApplicationsUI();
 }
 
 function bindEvents() {
@@ -238,14 +243,83 @@ function bindEvents() {
 
   els.description.addEventListener('input', updateCharCounter);
 
-  els.scopeGlobal.addEventListener('click', () => setScope('global'));
-  els.scopeApplications.addEventListener('click', () => setScope('applications'));
+  els.fieldGlobal.addEventListener('change', syncGlobalApplicationsUI);
+
+  els.applicationsTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (els.fieldGlobal.checked) return;
+    const open = els.applicationsMenu.classList.toggle('open');
+    els.applicationsMenu.classList.toggle('hidden', !open);
+    els.applicationsTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  els.applicationsSelectAll.addEventListener('change', () => {
+    const checked = els.applicationsSelectAll.checked;
+    els.applicationOptions.forEach((opt) => {
+      opt.checked = checked;
+    });
+    updateApplicationsTriggerLabel();
+  });
+
+  els.applicationOptions.forEach((opt) => {
+    opt.addEventListener('change', () => {
+      const allChecked = [...els.applicationOptions].every((o) => o.checked);
+      const noneChecked = [...els.applicationOptions].every((o) => !o.checked);
+      els.applicationsSelectAll.checked = allChecked;
+      els.applicationsSelectAll.indeterminate = !allChecked && !noneChecked;
+      updateApplicationsTriggerLabel();
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    closeAllMenus();
+    if (!e.target.closest('.applications-picker')) {
+      closeApplicationsMenu();
+    }
+  });
 
   document.querySelectorAll('.day-pill').forEach((pill) => {
     pill.addEventListener('click', () => pill.classList.toggle('active'));
   });
+}
 
-  document.addEventListener('click', () => closeAllMenus());
+function closeApplicationsMenu() {
+  els.applicationsMenu.classList.remove('open');
+  els.applicationsMenu.classList.add('hidden');
+  els.applicationsTrigger.setAttribute('aria-expanded', 'false');
+}
+
+function syncGlobalApplicationsUI() {
+  const isGlobal = els.fieldGlobal.checked;
+  els.applicationsGlobal.classList.toggle('hidden', !isGlobal);
+  els.applicationsPicker.classList.toggle('hidden', isGlobal);
+  if (isGlobal) {
+    closeApplicationsMenu();
+  } else {
+    updateApplicationsTriggerLabel();
+  }
+}
+
+function updateApplicationsTriggerLabel() {
+  const selected = [...els.applicationOptions].filter((o) => o.checked);
+  if (selected.length === 0) {
+    els.applicationsTrigger.textContent = 'Select applications';
+  } else if (selected.length === els.applicationOptions.length) {
+    els.applicationsTrigger.textContent = 'All applications selected';
+  } else if (selected.length === 1) {
+    els.applicationsTrigger.textContent = selected[0].value;
+  } else {
+    els.applicationsTrigger.textContent = `${selected.length} applications selected`;
+  }
+}
+
+function resetApplicationsSelection() {
+  els.applicationOptions.forEach((o) => {
+    o.checked = false;
+  });
+  els.applicationsSelectAll.checked = false;
+  els.applicationsSelectAll.indeterminate = false;
+  updateApplicationsTriggerLabel();
 }
 
 function initSidebarGroups() {
@@ -258,15 +332,6 @@ function initSidebarGroups() {
       if (chevron) chevron.classList.toggle('expanded', !collapsed);
     });
   });
-}
-
-function setScope(scope) {
-  const isGlobal = scope === 'global';
-  els.scopeGlobal.classList.toggle('active', isGlobal);
-  els.scopeApplications.classList.toggle('active', !isGlobal);
-  els.scopeHint.textContent = isGlobal
-    ? 'Apply to all applications in the account'
-    : 'Select one or more applications for this alert rule';
 }
 
 function updateCharCounter() {
@@ -349,7 +414,9 @@ function openPanel(mode, id) {
   els.panelTitle.textContent = mode === 'edit' ? 'Edit alert' : 'New alert';
   if (mode === 'create') {
     document.getElementById('alert-form').reset();
-    setScope('global');
+    els.fieldGlobal.checked = true;
+    resetApplicationsSelection();
+    syncGlobalApplicationsUI();
     document.querySelectorAll('.day-pill').forEach((p) => p.classList.add('active'));
     updateCharCounter();
   } else {
@@ -357,16 +424,30 @@ function openPanel(mode, id) {
     if (row) {
       document.getElementById('field-name').value = row.name.replace(/\.\.\.$/, '');
       document.getElementById('field-description').value = row.description;
+      if (row.applications) {
+        els.fieldGlobal.checked = false;
+        resetApplicationsSelection();
+        els.applicationOptions.forEach((opt) => {
+          if (opt.value === row.applications) opt.checked = true;
+        });
+        syncGlobalApplicationsUI();
+      } else {
+        els.fieldGlobal.checked = true;
+        syncGlobalApplicationsUI();
+      }
       updateCharCounter();
     }
   }
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
+  document.documentElement.classList.add('slide-panel-open');
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  document.documentElement.classList.remove('slide-panel-open');
+  closeApplicationsMenu();
   editingId = null;
 }
 
