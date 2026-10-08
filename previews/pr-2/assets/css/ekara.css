@@ -657,6 +657,10 @@ span.form-label {
   display: none;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .oauth-fields.hidden {
   display: none;
 }
@@ -695,8 +699,13 @@ span.form-label {
   justify-content: space-between;
 }
 
+.toggle-row .toggle {
+  flex-shrink: 0;
+}
+
 .toggle {
   position: relative;
+  display: inline-block;
   width: 44px;
   height: 24px;
   cursor: pointer;
@@ -1117,20 +1126,13 @@ span.form-label {
   margin-bottom: 0;
 }
 
-.toggle-below-label {
-  margin-top: 4px;
-}
-
-.send-end-row {
-  margin-top: 4px;
-  margin-bottom: 20px;
-}
-
-.send-end-label {
+.alert-scope-row .alert-global-toggle {
+  align-self: center;
   margin-bottom: 0;
-  text-transform: none;
-  font-size: var(--font-size-body);
-  letter-spacing: normal;
+}
+
+.alert-scope-row .toggle-row .form-label {
+  margin-bottom: 0;
 }
 
 .applications-picker {

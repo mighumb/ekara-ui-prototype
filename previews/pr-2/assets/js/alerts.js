@@ -219,7 +219,7 @@ function init() {
     description: document.getElementById('field-description'),
     charCounter: document.getElementById('char-counter'),
     fieldGlobal: document.getElementById('field-global'),
-    applicationsGlobal: document.getElementById('field-applications-global'),
+    applicationsGlobalWrap: document.getElementById('applications-global-wrap'),
     applicationsPicker: document.getElementById('applications-picker'),
     applicationsTrigger: document.getElementById('applications-picker-trigger'),
     applicationsMenu: document.getElementById('applications-picker-menu'),
@@ -291,7 +291,7 @@ function closeApplicationsMenu() {
 
 function syncGlobalApplicationsUI() {
   const isGlobal = els.fieldGlobal.checked;
-  els.applicationsGlobal.classList.toggle('hidden', !isGlobal);
+  els.applicationsGlobalWrap.classList.toggle('hidden', !isGlobal);
   els.applicationsPicker.classList.toggle('hidden', isGlobal);
   if (isGlobal) {
     closeApplicationsMenu();
