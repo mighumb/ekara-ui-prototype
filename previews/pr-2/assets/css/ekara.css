@@ -514,6 +514,7 @@ input, select, textarea {
   z-index: 400;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   transform: translateX(100%);
   transition: transform 0.25s ease;
   box-shadow: var(--shadow-panel);
@@ -557,8 +558,13 @@ html.slide-panel-open body {
 
 .slide-panel-body {
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
+  overflow-y: hidden;
   padding: 20px 24px;
+}
+
+.slide-panel-body.is-scrollable {
+  overflow-y: auto;
 }
 
 .slide-panel-footer {
@@ -568,6 +574,7 @@ html.slide-panel-open body {
   gap: 12px;
   padding: 16px 24px;
   flex-shrink: 0;
+  border-top: 1px solid var(--border-color);
 }
 
 /* Form */
@@ -1145,6 +1152,7 @@ span.form-label {
 
 .applications-picker-trigger {
   width: 100%;
+  min-height: 36px;
   text-align: left;
   cursor: pointer;
 }
