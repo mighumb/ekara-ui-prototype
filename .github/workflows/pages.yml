@@ -54,18 +54,19 @@ jobs:
             const base = 'https://mighumb.github.io/ekara-ui-prototype';
             const url = `${base}/previews/pr-${prNumber}/`;
             const marker = '<!-- ekara-pages-preview -->';
-            const body = `${marker}
-### Ekara UI prototype — preview PR #${prNumber}
-
-**Prérequis :** Pages doit être publiée depuis la branche \`gh-pages\` (voir README).
-
-**Preview :** ${url}
-
-- [Alert rules (Settings)](${url}settings/alerts/)
-- [Webhooks (Management)](${url}webhooks/)
-
-_Mis à jour à chaque push sur cette branche._
-`;
+            const body = [
+              marker,
+              `### Ekara UI prototype — preview PR #${prNumber}`,
+              '',
+              'Prerequisite: publish GitHub Pages from the `gh-pages` branch (see README).',
+              '',
+              `Preview: ${url}`,
+              '',
+              `- [Alert rules (Settings)](${url}settings/alerts/)`,
+              `- [Webhooks (Management)](${url}webhooks/)`,
+              '',
+              '_Updated on each push to this branch._',
+            ].join('\n');
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -89,7 +90,7 @@ _Mis à jour à chaque push sur cette branche._
             }
 
   publish-production:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
