@@ -215,6 +215,7 @@ function init() {
     tableBody: document.getElementById('alert-table-body'),
     overlay: document.getElementById('modal-overlay'),
     panel: document.getElementById('slide-panel'),
+    panelBody: document.querySelector('.slide-panel-body'),
     panelTitle: document.getElementById('panel-title'),
     description: document.getElementById('field-description'),
     charCounter: document.getElementById('char-counter'),
@@ -251,6 +252,7 @@ function bindEvents() {
     const open = els.applicationsMenu.classList.toggle('open');
     els.applicationsMenu.classList.toggle('hidden', !open);
     els.applicationsTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    updatePanelBodyScroll();
   });
 
   els.applicationsSelectAll.addEventListener('change', () => {
@@ -287,6 +289,16 @@ function closeApplicationsMenu() {
   els.applicationsMenu.classList.remove('open');
   els.applicationsMenu.classList.add('hidden');
   els.applicationsTrigger.setAttribute('aria-expanded', 'false');
+  updatePanelBodyScroll();
+}
+
+function updatePanelBodyScroll() {
+  if (!els.panelBody || !els.panel.classList.contains('open')) return;
+  requestAnimationFrame(() => {
+    const body = els.panelBody;
+    const needsScroll = body.scrollHeight > body.clientHeight + 1;
+    body.classList.toggle('is-scrollable', needsScroll);
+  });
 }
 
 function syncGlobalApplicationsUI() {
@@ -298,6 +310,7 @@ function syncGlobalApplicationsUI() {
   } else {
     updateApplicationsTriggerLabel();
   }
+  updatePanelBodyScroll();
 }
 
 function updateApplicationsTriggerLabel() {
@@ -441,11 +454,13 @@ function openPanel(mode, id) {
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
+  updatePanelBodyScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  if (els.panelBody) els.panelBody.classList.remove('is-scrollable');
   unlockPageScroll();
   closeApplicationsMenu();
   editingId = null;
