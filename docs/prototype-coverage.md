@@ -19,7 +19,9 @@ Only implemented screens are listed.
 
 ## Settings
 
-*(none yet)*
+| Page | Path | JIRA |
+|------|------|------|
+| Alert rules | [/settings/alerts/](https://mighumb.github.io/ekara-ui-prototype/settings/alerts/) | [DFY-23972](https://iplabel.atlassian.net/browse/DFY-23972) (shell — in progress) |
 
 ## Ekara Green
 

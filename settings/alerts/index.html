@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alert rules — Ekara Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/tokens.css?v=58">
+  <link rel="stylesheet" href="../../assets/css/ekara.css?v=58">
+</head>
+<body>
+  <div class="app-layout">
+    <header class="topbar">
+      <div class="topbar-left">
+        <img src="../../assets/images/ekara-logo.svg" alt="" class="topbar-logo" width="32" height="32">
+        <div class="topbar-breadcrumb">
+          Settings | <span>Alerts</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-account">
+          My account
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M1 1l4 4 4-4"/></svg>
+        </div>
+        <button class="topbar-icon-btn" aria-label="Help">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+        <button class="topbar-icon-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="topbar-badge"></span>
+        </button>
+        <div class="topbar-avatar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v1h20v-1c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+        <div class="bento-menu-wrap">
+          <button type="button" class="topbar-icon-btn" id="btn-bento" aria-label="Modules" aria-expanded="false" aria-haspopup="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/>
+              <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+              <circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+            </svg>
+          </button>
+          <div class="bento-menu" id="bento-menu" hidden>
+            <button type="button" class="bento-menu-item" data-module="Measures">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M4 19V10"/><path d="M9 19V5"/><path d="M14 19v-7"/><path d="M19 19V8"/>
+                <circle cx="18" cy="6" r="3"/>
+              </svg>
+              <span>Measures</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Infrastructure">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="18" r="2"/><circle cx="6" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="18" cy="6" r="2"/>
+                <path d="M12 16V10"/><path d="M6 8v2a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/>
+              </svg>
+              <span>Infrastructure</span>
+            </button>
+            <button type="button" class="bento-menu-item active" data-module="Settings" aria-current="page">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span>Settings</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Management">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5"/>
+                <path d="M5.5 20c1.6-3.2 4.2-5 6.5-5s4.9 1.8 6.5 5"/>
+              </svg>
+              <span>Management</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Ekara Green">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M5 19c8-1 12-8 13-14-6 1-12 5-13 14Z"/>
+                <path d="M8 14c2-2 5-4 9-5"/>
+              </svg>
+              <span>Ekara Green</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Incident Guard">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 5 3.5 8.5 7 10 3.5-1.5 7-5 7-10V6l-7-3Z"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+              <span>Incident Guard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="sidebar-workspace">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        All Workspace
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="3"/><path d="M12 8v3"/></svg>
+              Robot
+            </span>
+            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Scenarios</div>
+          <div class="sidebar-item sidebar-subitem">User journeys</div>
+          <div class="sidebar-item sidebar-subitem">Schedules</div>
+          <div class="sidebar-item sidebar-subitem">SLA calendars</div>
+          <div class="sidebar-item sidebar-subitem">Deployment areas</div>
+          <div class="sidebar-item sidebar-subitem active">Alerts</div>
+          <div class="sidebar-item sidebar-subitem">Shared data</div>
+          <div class="sidebar-item sidebar-subitem">Data exclusions</div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              Browser Agent
+            </span>
+            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Trackers</div>
+          <div class="sidebar-item sidebar-subitem">Target urls</div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 5 5-9"/></svg>
+              RUM
+            </span>
+            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Page groups</div>
+          <div class="sidebar-item sidebar-subitem">Dimensions</div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              My reports
+            </span>
+            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Publish</div>
+          <div class="sidebar-item sidebar-subitem">Publish (new)</div>
+          <div class="sidebar-item sidebar-subitem">Share</div>
+        </div>
+      </nav>
+      <div class="sidebar-footer">v3.33.0 © 2026 ip-label</div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Alert rules</h1>
+        <button type="button" class="btn btn-primary" id="btn-add-alert">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add an alert
+        </button>
+      </div>
+
+      <div class="data-table data-table--alerts">
+        <div class="data-table-header">
+          <div class="data-table-header-cell"></div>
+          <div class="data-table-header-cell">Name</div>
+          <div class="data-table-header-cell">Description</div>
+          <div class="data-table-header-cell">Associated application(s)</div>
+          <div class="data-table-header-cell">Trigger event</div>
+          <div class="data-table-header-cell">Recipients</div>
+          <div class="data-table-header-cell">Associated scenarios</div>
+          <div class="data-table-header-cell"></div>
+        </div>
+        <div id="alert-table-body"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay"></div>
+
+  <div class="slide-panel" id="slide-panel">
+    <div class="slide-panel-header">
+      <h2 class="slide-panel-title" id="panel-title">New alert</h2>
+      <button type="button" class="slide-panel-close" id="panel-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="slide-panel-body">
+      <form id="alert-form" onsubmit="return false;">
+        <div class="form-group">
+          <label class="form-label" for="field-name">Name</label>
+          <input type="text" class="form-input" id="field-name" placeholder="Alert rule name">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-description">Description</label>
+          <div class="textarea-wrap">
+            <textarea class="form-textarea" id="field-description" maxlength="250" placeholder="Alert rule description" rows="3"></textarea>
+            <span class="char-counter" id="char-counter">0 / 250</span>
+          </div>
+        </div>
+
+        <div class="scope-block">
+          <div class="mode-toggle" role="group" aria-label="Alert scope">
+            <button type="button" class="mode-toggle-btn active" data-scope="global" id="scope-global">Global</button>
+            <button type="button" class="mode-toggle-btn" data-scope="applications" id="scope-applications">Applications</button>
+          </div>
+          <div class="scope-hint" id="scope-hint">Apply to all applications in the account</div>
+        </div>
+
+        <div class="form-group">
+          <span class="form-label">Alert trigger event</span>
+          <div class="form-row-inline-2" style="margin-top:8px;">
+            <div class="form-group">
+              <select class="form-select" id="field-trigger">
+                <option value="Incident">Incident</option>
+                <option value="Warning on availability">Warning on availability</option>
+                <option value="Performance degradation">Performance degradation</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-time-wait">Time to wait</label>
+              <div class="time-field-wrap">
+                <input type="text" class="form-input" id="field-time-wait" value="00:00" inputmode="numeric">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group toggle-row">
+          <span class="form-label">Send end of alert</span>
+          <label class="toggle">
+            <input type="checkbox" id="field-send-end">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <span class="form-label">Days</span>
+          <div class="day-pill-group" id="day-pills">
+            <button type="button" class="day-pill active" data-day="Mon">Mon</button>
+            <button type="button" class="day-pill active" data-day="Tue">Tue</button>
+            <button type="button" class="day-pill active" data-day="Wed">Wed</button>
+            <button type="button" class="day-pill active" data-day="Thu">Thu</button>
+            <button type="button" class="day-pill active" data-day="Fri">Fri</button>
+            <button type="button" class="day-pill active" data-day="Sat">Sat</button>
+            <button type="button" class="day-pill active" data-day="Sun">Sun</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-row-inline-3">
+            <div class="form-group">
+              <label class="form-label" for="field-starts">Starts</label>
+              <div class="time-field-wrap">
+                <input type="text" class="form-input" id="field-starts" value="00:00">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-ends">Ends</label>
+              <div class="time-field-wrap">
+                <input type="text" class="form-input" id="field-ends" value="23:59">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-timezone">Time zones</label>
+              <select class="form-select" id="field-timezone">
+                <option value="Europe/Paris">Europe/Paris</option>
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">America/New_York</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <span class="form-label">Channel</span>
+          <div class="channel-options">
+            <label class="channel-option">
+              <input type="checkbox" name="channel" value="Email" checked>
+              Email
+            </label>
+            <label class="channel-option">
+              <input type="checkbox" name="channel" value="Sms">
+              Sms
+            </label>
+            <label class="channel-option">
+              <input type="checkbox" name="channel" value="Webhook">
+              Webhook
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-recipients">Add recipients</label>
+          <select class="form-select" id="field-recipients">
+            <option value="">Select recipients</option>
+            <option value="team-ops">Operations team</option>
+            <option value="team-sre">SRE on-call</option>
+            <option value="user-demo">demo@example.com</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <div class="slide-panel-footer">
+      <button type="button" class="btn btn-text" id="btn-cancel">Cancel</button>
+      <button type="button" class="btn btn-primary" id="btn-save">Save</button>
+    </div>
+  </div>
+
+  <script src="../../assets/js/bento.js?v=1"></script>
+  <script src="../../assets/js/alerts.js?v=2"></script>
+</body>
+</html>
