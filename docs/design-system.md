@@ -55,7 +55,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Link | `a` | `--link-color` |
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
 
-**Tooltip** — set `data-tooltip="…"` on truncated table cells, buttons, etc. Do not use native `title` (migrated on load if present). Script: `assets/js/tooltip.js` after `tokens.css` / `ekara.css`.
+**Tooltip** — include `tooltip.js` on every page that needs it. Do not use native `title`. For table cells with ellipsis, set `data-tooltip-full="…"` and call `EkaraTooltip.syncTruncated(tableBody)` after render (sets `data-tooltip` only when text overflows). Static controls can use `data-tooltip` directly.
 
 **Module switcher (bento)** — `.bento-menu-wrap` in the topbar (far right). Toggle via `#btn-bento`; menu `.bento-menu` lists the six modules. Icons at rest: `--color-n400`; active module uses `.bento-menu-item.active` (`--surface-hover-action`, label + icon `--primary`). Hover on items: `--surface-hover-neutral`.
 
