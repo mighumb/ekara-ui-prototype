@@ -559,13 +559,8 @@ html.slide-panel-open body {
 .slide-panel-body {
   flex: 1;
   min-height: 0;
-  overflow-y: hidden;
-  padding: 20px 24px;
-  scrollbar-gutter: stable;
-}
-
-.slide-panel-body.is-scrollable {
   overflow-y: auto;
+  padding: 20px 24px;
 }
 
 .slide-panel-footer {
@@ -1138,25 +1133,13 @@ span.form-label {
   margin-bottom: 0;
 }
 
-.alert-scope-row .alert-global-toggle {
-  align-self: center;
-  margin-bottom: 0;
-}
-
-.alert-scope-row .toggle-row .form-label {
-  margin-bottom: 0;
-}
-
-.applications-field-slot {
-  position: relative;
-  height: 36px;
-}
-
-.applications-field-slot #applications-global-wrap,
-.applications-field-slot .applications-picker {
-  position: absolute;
-  inset: 0;
+.alert-form > .section-divider {
+  display: block;
   width: 100%;
+}
+
+.alert-global-field .toggle {
+  margin-top: 4px;
 }
 
 .applications-picker {
@@ -1165,13 +1148,8 @@ span.form-label {
 
 .applications-picker-trigger {
   width: 100%;
-  height: 36px;
   text-align: left;
   cursor: pointer;
-}
-
-.applications-field-slot .form-select {
-  height: 36px;
 }
 
 .applications-picker-menu {

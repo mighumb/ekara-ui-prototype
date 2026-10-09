@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/tokens.css?v=64">
-  <link rel="stylesheet" href="../../assets/css/ekara.css?v=64">
+  <link rel="stylesheet" href="../../assets/css/tokens.css?v=65">
+  <link rel="stylesheet" href="../../assets/css/ekara.css?v=65">
 </head>
 <body>
   <div class="app-layout">
@@ -198,7 +198,7 @@
     </div>
 
     <div class="slide-panel-body">
-      <form id="alert-form" onsubmit="return false;">
+      <form id="alert-form" class="alert-form" onsubmit="return false;">
         <div class="form-group">
           <label class="form-label" for="field-name">Name</label>
           <input type="text" class="form-input" id="field-name" placeholder="Alert rule name">
@@ -215,7 +215,7 @@
         <hr class="section-divider">
 
         <div class="form-row-inline-2 form-row-align-start alert-scope-row">
-          <div class="form-group toggle-row alert-global-toggle">
+          <div class="form-group alert-global-field">
             <span class="form-label">Global</span>
             <label class="toggle">
               <input type="checkbox" id="field-global" checked>
@@ -224,13 +224,12 @@
           </div>
           <div class="form-group">
             <span class="form-label">Applications</span>
-            <div class="applications-field-slot">
-              <div id="applications-global-wrap">
-                <select class="form-select" id="field-applications-global" disabled>
-                  <option>Apply to all applications in the account</option>
-                </select>
-              </div>
-              <div class="applications-picker hidden" id="applications-picker">
+            <div id="applications-global-wrap">
+              <select class="form-select" id="field-applications-global" disabled>
+                <option>Apply to all applications in the account</option>
+              </select>
+            </div>
+            <div class="applications-picker hidden" id="applications-picker">
               <button type="button" class="form-select applications-picker-trigger" id="applications-picker-trigger" aria-haspopup="listbox" aria-expanded="false">
                 Select applications
               </button>
@@ -322,7 +321,7 @@
 
         <hr class="section-divider">
 
-        <div class="form-row-inline-2 channel-recipients-row">
+        <div class="form-row-inline-2 form-row-align-start channel-recipients-row">
           <div class="form-group">
             <span class="form-label">Channel</span>
             <div class="channel-options channel-options--stacked">
@@ -360,6 +359,6 @@
   </div>
 
   <script src="../../assets/js/bento.js?v=1"></script>
-  <script src="../../assets/js/alerts.js?v=7"></script>
+  <script src="../../assets/js/alerts.js?v=8"></script>
 </body>
 </html>

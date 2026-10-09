@@ -191,7 +191,6 @@ function bindGlobalEvents() {
 function onServiceChange() {
   updateServiceHelp();
   updateServiceSections();
-  updatePanelBodyScroll();
 }
 
 const VALIDATED_FIELDS = [];
@@ -309,14 +308,11 @@ function openPanel(mode, id) {
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
-  updatePanelBodyScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
-  const panelBody = document.querySelector('.slide-panel-body');
-  if (panelBody) panelBody.classList.remove('is-scrollable');
   unlockPageScroll();
   editingId = null;
   clearFormErrors();
@@ -803,16 +799,6 @@ function closeConfirm() {
   els.confirmOverlay.classList.remove('open');
   els.confirmDialog.classList.remove('open');
   deleteTargetId = null;
-}
-
-function updatePanelBodyScroll() {
-  const panel = document.getElementById('slide-panel');
-  const body = document.querySelector('.slide-panel-body');
-  if (!panel || !body || !panel.classList.contains('open')) return;
-  requestAnimationFrame(() => {
-    const needsScroll = body.scrollHeight > body.clientHeight + 1;
-    body.classList.toggle('is-scrollable', needsScroll);
-  });
 }
 
 let savedScrollY = 0;
