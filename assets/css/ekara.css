@@ -1149,7 +1149,8 @@ span.form-label {
   width: 100%;
 }
 
-.alert-global-field .toggle {
+.alert-global-field .toggle,
+.alert-send-end-field .toggle {
   margin-top: 4px;
 }
 
