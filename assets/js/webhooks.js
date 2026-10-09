@@ -191,6 +191,7 @@ function bindGlobalEvents() {
 function onServiceChange() {
   updateServiceHelp();
   updateServiceSections();
+  updatePanelBodyScroll();
 }
 
 const VALIDATED_FIELDS = [];
@@ -308,11 +309,14 @@ function openPanel(mode, id) {
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
+  updatePanelBodyScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  const panelBody = document.querySelector('.slide-panel-body');
+  if (panelBody) panelBody.classList.remove('can-scroll');
   unlockPageScroll();
   editingId = null;
   clearFormErrors();
@@ -802,6 +806,15 @@ function closeConfirm() {
 }
 
 let savedScrollY = 0;
+
+function updatePanelBodyScroll() {
+  const panel = document.getElementById('slide-panel');
+  const body = document.querySelector('.slide-panel-body');
+  if (!panel || !body || !panel.classList.contains('open')) return;
+  requestAnimationFrame(() => {
+    body.classList.toggle('can-scroll', body.scrollHeight > body.clientHeight + 8);
+  });
+}
 
 function lockPageScroll() {
   savedScrollY = window.scrollY;

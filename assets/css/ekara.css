@@ -559,8 +559,12 @@ html.slide-panel-open body {
 .slide-panel-body {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding: 20px 24px;
+}
+
+.slide-panel-body.can-scroll {
+  overflow-y: auto;
 }
 
 .slide-panel-footer {
@@ -570,7 +574,6 @@ html.slide-panel-open body {
   gap: 12px;
   padding: 16px 24px;
   flex-shrink: 0;
-  border-top: 1px solid var(--border-color);
 }
 
 /* Form */
