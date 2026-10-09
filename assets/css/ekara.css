@@ -645,7 +645,7 @@ span.form-label {
 }
 
 .form-textarea {
-  resize: vertical;
+  resize: none;
   min-height: 80px;
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 13px;
@@ -1100,6 +1100,7 @@ span.form-label {
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   min-height: 72px;
+  resize: none;
 }
 
 .char-counter {
