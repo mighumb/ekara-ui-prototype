@@ -254,7 +254,7 @@ function bindEvents() {
   document.getElementById('panel-close').addEventListener('click', closePanel);
   document.getElementById('btn-cancel').addEventListener('click', closePanel);
   els.overlay.addEventListener('click', closePanel);
-  document.getElementById('btn-save').addEventListener('click', () => closePanel());
+  document.getElementById('btn-save').addEventListener('click', saveAlert);
 
   els.confirmCancel.addEventListener('click', closeConfirm);
   els.confirmOverlay.addEventListener('click', closeConfirm);
@@ -585,6 +585,7 @@ function openPanel(mode, id) {
     if (row) {
       document.getElementById('field-name').value = row.name.replace(/\.\.\.$/, '');
       document.getElementById('field-description').value = row.description;
+      document.getElementById('field-trigger').value = row.trigger || 'Incident';
       if (row.applications) {
         els.fieldGlobal.checked = false;
         resetApplicationsSelection();
@@ -603,6 +604,53 @@ function openPanel(mode, id) {
   els.panel.classList.add('open');
   lockPageScroll();
   updatePanelBodyScroll();
+}
+
+function formatRecipientsLabel(count) {
+  if (count <= 0) return '0 recipients';
+  if (count === 1) return '1 recipient';
+  return `${count} recipients`;
+}
+
+function getApplicationsValueFromForm() {
+  if (els.fieldGlobal.checked) return '';
+  const selected = [...els.applicationOptions].filter((o) => o.checked);
+  if (selected.length === 0) return '';
+  return selected[0].value;
+}
+
+function collectAlertFromForm() {
+  return {
+    name: document.getElementById('field-name').value.trim(),
+    description: document.getElementById('field-description').value.trim(),
+    applications: getApplicationsValueFromForm(),
+    trigger: document.getElementById('field-trigger').value,
+    recipients: formatRecipientsLabel(selectedRecipients.length),
+  };
+}
+
+function saveAlert() {
+  const data = collectAlertFromForm();
+  if (!data.name) {
+    document.getElementById('field-name').focus();
+    return;
+  }
+
+  if (editingId != null) {
+    const row = alerts.find((a) => a.id === editingId);
+    if (row) {
+      Object.assign(row, data);
+    }
+  } else {
+    alerts.push({
+      id: getNextAlertId(),
+      scenarios: 'None',
+      ...data,
+    });
+  }
+
+  renderTable();
+  closePanel();
 }
 
 function closePanel() {
