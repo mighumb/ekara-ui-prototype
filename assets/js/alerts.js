@@ -249,6 +249,8 @@ function init() {
     description: document.getElementById('field-description'),
     charCounter: document.getElementById('char-counter'),
     fieldGlobal: document.getElementById('field-global'),
+    fieldSendEnd: document.getElementById('field-send-end'),
+    fieldMinimumEndGap: document.getElementById('field-minimum-end-gap'),
     applicationsGlobalWrap: document.getElementById('applications-global-wrap'),
     applicationsPicker: document.getElementById('applications-picker'),
     applicationsTrigger: document.getElementById('applications-picker-trigger'),
@@ -273,6 +275,7 @@ function init() {
   initSidebarGroups();
   updateCharCounter();
   syncGlobalApplicationsUI();
+  syncSendEndGapUI();
 }
 
 function bindEvents() {
@@ -298,6 +301,11 @@ function bindEvents() {
 
   els.fieldGlobal.addEventListener('change', () => {
     syncGlobalApplicationsUI();
+    updatePanelBodyScroll();
+  });
+
+  els.fieldSendEnd.addEventListener('change', () => {
+    syncSendEndGapUI();
     updatePanelBodyScroll();
   });
 
@@ -442,6 +450,11 @@ function syncGlobalApplicationsUI() {
   } else {
     updateApplicationsTriggerLabel();
   }
+}
+
+function syncSendEndGapUI() {
+  const enabled = els.fieldSendEnd.checked;
+  els.fieldMinimumEndGap.disabled = !enabled;
 }
 
 function updateApplicationsTriggerLabel() {
@@ -610,6 +623,9 @@ function openPanel(mode, id) {
     resetApplicationsSelection();
     resetRecipientsSelection();
     syncGlobalApplicationsUI();
+    els.fieldSendEnd.checked = false;
+    els.fieldMinimumEndGap.value = '00:00';
+    syncSendEndGapUI();
     document.querySelectorAll('.day-pill').forEach((p) => p.classList.add('active'));
     updateCharCounter();
   } else {
@@ -618,6 +634,10 @@ function openPanel(mode, id) {
       document.getElementById('field-name').value = row.name.replace(/\.\.\.$/, '');
       document.getElementById('field-description').value = row.description;
       document.getElementById('field-trigger').value = row.trigger || 'Incident';
+      document.getElementById('field-time-wait').value = row.timeWait || '00:00';
+      els.fieldSendEnd.checked = Boolean(row.sendEnd);
+      els.fieldMinimumEndGap.value = row.minimumEndGap || '00:00';
+      syncSendEndGapUI();
       if (row.applications) {
         els.fieldGlobal.checked = false;
         resetApplicationsSelection();
@@ -657,6 +677,9 @@ function collectAlertFromForm() {
     description: document.getElementById('field-description').value.trim(),
     applications: getApplicationsValueFromForm(),
     trigger: document.getElementById('field-trigger').value,
+    timeWait: document.getElementById('field-time-wait').value.trim() || '00:00',
+    sendEnd: els.fieldSendEnd.checked,
+    minimumEndGap: els.fieldMinimumEndGap.value.trim() || '00:00',
     recipients: formatRecipientsLabel(selectedRecipients.length),
   };
 }

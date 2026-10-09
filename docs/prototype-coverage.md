@@ -21,7 +21,7 @@ Only implemented screens are listed.
 
 | Page | Path | JIRA |
 |------|------|------|
-| Alert rules | [/settings/alerts/](https://mighumb.github.io/ekara-ui-prototype/settings/alerts/) | [DFY-23972](https://iplabel.atlassian.net/browse/DFY-23972) (shell — in progress) |
+| Alert rules | [/settings/alerts/](https://mighumb.github.io/ekara-ui-prototype/settings/alerts/) | [DFY-23972](https://iplabel.atlassian.net/browse/DFY-23972) — minimum gap before end notification (drawer) |
 
 ## Ekara Green
 
