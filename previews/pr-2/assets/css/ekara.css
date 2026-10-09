@@ -1081,12 +1081,6 @@ span.form-label {
   height: 14px;
 }
 
-.data-table-cell--wrap {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-}
-
 .app-tag {
   display: inline-block;
   padding: 2px 8px;
