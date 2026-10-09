@@ -1153,6 +1153,29 @@ span.form-label {
   margin-top: 4px;
 }
 
+/* Fixed-height slot: global disabled select ↔ applications picker (no layout jump) */
+.applications-control-slot {
+  display: grid;
+  grid-template-rows: 38px;
+  width: 100%;
+  min-width: 0;
+}
+
+.applications-control-slot > #applications-global-wrap,
+.applications-control-slot > .applications-picker {
+  grid-row: 1;
+  grid-column: 1;
+  min-width: 0;
+}
+
+.applications-control-slot .form-select,
+.applications-control-slot .applications-picker-trigger {
+  height: 38px;
+  min-height: 38px;
+  box-sizing: border-box;
+  line-height: 20px;
+}
+
 .applications-picker {
   position: relative;
 }
