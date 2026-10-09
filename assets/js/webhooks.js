@@ -811,9 +811,12 @@ function updatePanelBodyScroll() {
   const panel = document.getElementById('slide-panel');
   const body = document.querySelector('.slide-panel-body');
   if (!panel || !body || !panel.classList.contains('open')) return;
-  requestAnimationFrame(() => {
-    body.classList.toggle('can-scroll', body.scrollHeight > body.clientHeight + 8);
-  });
+  const measure = () => {
+    body.classList.remove('can-scroll');
+    const overflow = body.scrollHeight - body.clientHeight;
+    body.classList.toggle('can-scroll', overflow > 2);
+  };
+  requestAnimationFrame(() => requestAnimationFrame(measure));
 }
 
 function lockPageScroll() {
