@@ -497,7 +497,7 @@ function renderTable() {
         </span>
       </div>
       <div class="data-table-cell" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
-      <div class="data-table-cell data-table-cell--wrap">${escapeHtml(row.description)}</div>
+      <div class="data-table-cell" title="${escapeHtml(row.description)}">${escapeHtml(row.description)}</div>
       <div class="data-table-cell">${appCell}</div>
       <div class="data-table-cell">${escapeHtml(row.trigger)}</div>
       <div class="data-table-cell">${escapeHtml(row.recipients)}</div>
