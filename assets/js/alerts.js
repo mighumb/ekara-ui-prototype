@@ -2,7 +2,7 @@
  * Ekara Settings — Alert rules prototype
  */
 
-const alerts = [
+let alerts = [
   {
     id: 1,
     name: '00-DFY-24047-Alerte-C...',
@@ -258,6 +258,14 @@ function bindEvents() {
 
   els.confirmCancel.addEventListener('click', closeConfirm);
   els.confirmOverlay.addEventListener('click', closeConfirm);
+  els.confirmOk.addEventListener('click', () => {
+    if (deleteTargetId == null) return;
+    const id = deleteTargetId;
+    alerts = alerts.filter((a) => a.id !== id);
+    if (editingId === id) closePanel();
+    renderTable();
+    closeConfirm();
+  });
 
   els.description.addEventListener('input', updateCharCounter);
 
@@ -535,14 +543,6 @@ function confirmDeleteAlert(id) {
   els.confirmMessage.textContent = `Are you sure you want to delete the alert "${row.name}"?`;
   els.confirmOverlay.classList.add('open');
   els.confirmDialog.classList.add('open');
-
-  els.confirmOk.onclick = () => {
-    alerts = alerts.filter((a) => a.id !== deleteTargetId);
-    if (editingId === deleteTargetId) closePanel();
-    deleteTargetId = null;
-    renderTable();
-    closeConfirm();
-  };
 }
 
 function closeConfirm() {
