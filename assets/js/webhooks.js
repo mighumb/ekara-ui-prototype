@@ -162,41 +162,6 @@ function init() {
   renderTable();
   bindGlobalEvents();
   initMappingDragDrop();
-  initBentoMenu();
-}
-
-function initBentoMenu() {
-  const btn = document.getElementById('btn-bento');
-  const menu = document.getElementById('bento-menu');
-  if (!btn || !menu) return;
-
-  function openBento() {
-    menu.hidden = false;
-    btn.setAttribute('aria-expanded', 'true');
-  }
-
-  function closeBento() {
-    menu.hidden = true;
-    btn.setAttribute('aria-expanded', 'false');
-  }
-
-  function toggleBento() {
-    if (menu.hidden) openBento();
-    else closeBento();
-  }
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleBento();
-  });
-
-  menu.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-
-  document.addEventListener('click', () => {
-    if (!menu.hidden) closeBento();
-  });
 }
 
 function bindGlobalEvents() {
@@ -226,6 +191,7 @@ function bindGlobalEvents() {
 function onServiceChange() {
   updateServiceHelp();
   updateServiceSections();
+  updatePanelBodyScroll();
 }
 
 const VALIDATED_FIELDS = [];
@@ -268,7 +234,7 @@ function renderTable() {
     <div class="data-table-row" data-id="${wh.id}">
       <div class="data-table-cell">${escapeHtml(wh.name)}</div>
       <div class="data-table-cell">${escapeHtml(wh.service)}</div>
-      <div class="data-table-cell url" title="${escapeHtml(wh.url)}">${escapeHtml(wh.url)}</div>
+      <div class="data-table-cell url" data-tooltip-full="${escapeHtml(wh.url)}">${escapeHtml(wh.url)}</div>
       <div class="data-table-actions">
         <button class="btn-icon menu-trigger" data-id="${wh.id}" aria-label="Actions">
           <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
@@ -287,6 +253,10 @@ function renderTable() {
     </div>`
     )
     .join('');
+
+  requestAnimationFrame(() => {
+    if (window.EkaraTooltip) window.EkaraTooltip.syncTruncated(els.tableBody);
+  });
 
   els.tableBody.querySelectorAll('.menu-trigger').forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -342,13 +312,16 @@ function openPanel(mode, id) {
 
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockPageScroll();
+  updatePanelBodyScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
-  document.body.style.overflow = '';
+  const panelBody = document.querySelector('.slide-panel-body');
+  if (panelBody) panelBody.classList.remove('can-scroll');
+  unlockPageScroll();
   editingId = null;
   clearFormErrors();
 }
@@ -834,6 +807,40 @@ function closeConfirm() {
   els.confirmOverlay.classList.remove('open');
   els.confirmDialog.classList.remove('open');
   deleteTargetId = null;
+}
+
+let savedScrollY = 0;
+
+function updatePanelBodyScroll() {
+  const panel = document.getElementById('slide-panel');
+  const body = document.querySelector('.slide-panel-body');
+  if (!panel || !body || !panel.classList.contains('open')) return;
+  const measure = () => {
+    body.classList.remove('can-scroll');
+    const overflow = body.scrollHeight - body.clientHeight;
+    body.classList.toggle('can-scroll', overflow > 2);
+  };
+  requestAnimationFrame(() => requestAnimationFrame(measure));
+}
+
+function lockPageScroll() {
+  savedScrollY = window.scrollY;
+  document.documentElement.classList.add('slide-panel-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+
+function unlockPageScroll() {
+  document.documentElement.classList.remove('slide-panel-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, savedScrollY);
 }
 
 /* ── Utilities ── */

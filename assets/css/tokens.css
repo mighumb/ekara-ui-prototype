@@ -208,6 +208,19 @@
   --shadow-panel: -4px 0 20px color-mix(in srgb, var(--color-n900) 15%, transparent);
   --shadow-dialog: 0 8px 30px color-mix(in srgb, var(--color-n900) 20%, transparent);
 
+  /* ── Semantic: tooltip ── */
+  --tooltip-bg: var(--color-n900);
+  --tooltip-text: var(--text-on-dark);
+  --tooltip-font-size: var(--font-size-12);
+  --tooltip-line-height: 1.4;
+  --tooltip-padding-x: 10px;
+  --tooltip-padding-y: 6px;
+  --tooltip-max-width: 280px;
+  --tooltip-radius: var(--radius);
+  --tooltip-shadow: var(--shadow-dropdown);
+  --tooltip-offset: 6px;
+  --tooltip-z-index: 600;
+
   /* ── Components — interactive (reuse on every page/modal) ── */
   --link-color: var(--primary);
   --input-focus-border: var(--primary);
