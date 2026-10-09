@@ -206,6 +206,7 @@ const alerts = [
 let openMenuId = null;
 let editingId = null;
 let savedScrollY = 0;
+let selectedRecipients = [];
 
 let els = {};
 
@@ -227,9 +228,15 @@ function init() {
     applicationsMenu: document.getElementById('applications-picker-menu'),
     applicationsSelectAll: document.getElementById('applications-select-all'),
     applicationOptions: document.querySelectorAll('.applications-option'),
+    recipientsField: document.getElementById('recipients-field'),
+    recipientsChips: document.getElementById('recipients-chips'),
+    recipientsPlaceholder: document.getElementById('recipients-placeholder'),
+    recipientsMenu: document.getElementById('recipients-picker-menu'),
+    recipientOptions: document.querySelectorAll('.recipients-picker-option'),
   };
 
   renderTable();
+  resetRecipientsSelection();
   bindEvents();
   initSidebarGroups();
   updateCharCounter();
@@ -281,10 +288,42 @@ function bindEvents() {
     if (!e.target.closest('.applications-picker')) {
       closeApplicationsMenu();
     }
+    if (!e.target.closest('.recipients-picker')) {
+      closeRecipientsMenu();
+    }
+  });
+
+  els.recipientsField.addEventListener('click', (e) => {
+    if (e.target.closest('.recipient-chip-remove')) return;
+    e.stopPropagation();
+    const open = els.recipientsMenu.classList.toggle('open');
+    els.recipientsMenu.classList.toggle('hidden', !open);
+    els.recipientsField.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  els.recipientOptions.forEach((opt) => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      addRecipient(opt.dataset.value, opt.dataset.label);
+    });
+  });
+
+  els.recipientsChips.addEventListener('click', (e) => {
+    const btn = e.target.closest('.recipient-chip-remove');
+    if (!btn) return;
+    e.stopPropagation();
+    removeRecipient(btn.dataset.value);
+  });
+
+  window.addEventListener('resize', () => {
+    if (els.panel.classList.contains('open')) updatePanelBodyScroll();
   });
 
   document.querySelectorAll('.day-pill').forEach((pill) => {
-    pill.addEventListener('click', () => pill.classList.toggle('active'));
+    pill.addEventListener('click', () => {
+      pill.classList.toggle('active');
+      updatePanelBodyScroll();
+    });
   });
 }
 
@@ -297,10 +336,55 @@ function closeApplicationsMenu() {
 
 function updatePanelBodyScroll() {
   if (!els.panelBody || !els.panel.classList.contains('open')) return;
-  requestAnimationFrame(() => {
+  const measure = () => {
     const { scrollHeight, clientHeight } = els.panelBody;
     els.panelBody.classList.toggle('can-scroll', scrollHeight > clientHeight + 8);
+  };
+  requestAnimationFrame(() => requestAnimationFrame(measure));
+}
+
+function closeRecipientsMenu() {
+  if (!els.recipientsMenu) return;
+  els.recipientsMenu.classList.remove('open');
+  els.recipientsMenu.classList.add('hidden');
+  els.recipientsField.setAttribute('aria-expanded', 'false');
+  updatePanelBodyScroll();
+}
+
+function addRecipient(value, label) {
+  if (!value || selectedRecipients.some((r) => r.value === value)) return;
+  selectedRecipients.push({ value, label });
+  renderRecipientsChips();
+}
+
+function removeRecipient(value) {
+  selectedRecipients = selectedRecipients.filter((r) => r.value !== value);
+  renderRecipientsChips();
+}
+
+function renderRecipientsChips() {
+  els.recipientsChips.innerHTML = selectedRecipients
+    .map(
+      (r) => `
+    <span class="recipient-chip">
+      <span class="recipient-chip-label">${escapeHtml(r.label)}</span>
+      <button type="button" class="recipient-chip-remove" data-value="${escapeHtml(r.value)}" aria-label="Remove ${escapeHtml(r.label)}">×</button>
+    </span>`
+    )
+    .join('');
+  els.recipientsPlaceholder.classList.toggle('hidden', selectedRecipients.length > 0);
+  els.recipientOptions.forEach((opt) => {
+    const isSelected = selectedRecipients.some((r) => r.value === opt.dataset.value);
+    opt.classList.toggle('is-selected', isSelected);
+    opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
   });
+  updatePanelBodyScroll();
+}
+
+function resetRecipientsSelection() {
+  selectedRecipients = [];
+  renderRecipientsChips();
+  closeRecipientsMenu();
 }
 
 function syncGlobalApplicationsUI() {
@@ -430,6 +514,7 @@ function openPanel(mode, id) {
     document.getElementById('alert-form').reset();
     els.fieldGlobal.checked = true;
     resetApplicationsSelection();
+    resetRecipientsSelection();
     syncGlobalApplicationsUI();
     document.querySelectorAll('.day-pill').forEach((p) => p.classList.add('active'));
     updateCharCounter();
@@ -464,6 +549,7 @@ function closePanel() {
   if (els.panelBody) els.panelBody.classList.remove('can-scroll');
   unlockPageScroll();
   closeApplicationsMenu();
+  closeRecipientsMenu();
   editingId = null;
 }
 

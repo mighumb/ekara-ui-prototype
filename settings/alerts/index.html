@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/tokens.css?v=69">
-  <link rel="stylesheet" href="../../assets/css/ekara.css?v=69">
+  <link rel="stylesheet" href="../../assets/css/tokens.css?v=70">
+  <link rel="stylesheet" href="../../assets/css/ekara.css?v=70">
 </head>
 <body>
   <div class="app-layout">
@@ -342,13 +342,20 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label" for="field-recipients">Add recipients</label>
-            <select class="form-select" id="field-recipients">
-              <option value="">Select recipients</option>
-              <option value="team-ops">Operations team</option>
-              <option value="team-sre">SRE on-call</option>
-              <option value="user-demo">demo@example.com</option>
-            </select>
+            <span class="form-label">Add recipients</span>
+            <div class="recipients-picker" id="recipients-picker">
+              <button type="button" class="recipients-field" id="recipients-field" aria-haspopup="listbox" aria-expanded="false">
+                <span class="recipients-chips" id="recipients-chips"></span>
+                <span class="recipients-placeholder" id="recipients-placeholder">Select recipients</span>
+                <span class="recipients-chevron" aria-hidden="true"></span>
+              </button>
+              <div class="recipients-picker-menu hidden" id="recipients-picker-menu" role="listbox" aria-label="Recipients">
+                <button type="button" class="recipients-picker-option" role="option" data-value="team-ops" data-label="Operations team">Operations team</button>
+                <button type="button" class="recipients-picker-option" role="option" data-value="team-sre" data-label="SRE on-call">SRE on-call</button>
+                <button type="button" class="recipients-picker-option" role="option" data-value="user-demo" data-label="demo@example.com">demo@example.com</button>
+                <button type="button" class="recipients-picker-option" role="option" data-value="user-alerts" data-label="alerts@example.com">alerts@example.com</button>
+              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -361,6 +368,6 @@
   </div>
 
   <script src="../../assets/js/bento.js?v=1"></script>
-  <script src="../../assets/js/alerts.js?v=9"></script>
+  <script src="../../assets/js/alerts.js?v=10"></script>
 </body>
 </html>
