@@ -254,6 +254,10 @@ function renderTable() {
     )
     .join('');
 
+  requestAnimationFrame(() => {
+    if (window.EkaraTooltip) window.EkaraTooltip.syncTruncated(els.tableBody);
+  });
+
   els.tableBody.querySelectorAll('.menu-trigger').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
