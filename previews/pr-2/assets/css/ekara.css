@@ -40,6 +40,12 @@ input, select, textarea {
   font-size: var(--font-size-body);
 }
 
+input[type="radio"]:not(:disabled),
+input[type="checkbox"]:not(:disabled),
+select:not(:disabled) {
+  cursor: pointer;
+}
+
 /* Layout */
 .app-layout {
   display: flex;
@@ -619,6 +625,7 @@ span.form-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
   background-image: var(--select-chevron-svg);
   background-repeat: no-repeat;
   background-position: right 10px center;
@@ -1265,5 +1272,6 @@ span.form-label {
   width: 16px;
   height: 16px;
   accent-color: var(--primary);
+  cursor: pointer;
 }
 
