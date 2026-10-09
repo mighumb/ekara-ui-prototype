@@ -32,6 +32,24 @@
     root.querySelectorAll('[title]').forEach(migrateTitle);
   }
 
+  /** Table cells: data-tooltip-full → data-tooltip only when text is truncated (ellipsis). */
+  function syncTruncatedTooltips(root) {
+    root.querySelectorAll('[data-tooltip-full]').forEach((el) => {
+      el.removeAttribute('title');
+      const full = el.getAttribute('data-tooltip-full');
+      if (!full) {
+        el.removeAttribute('data-tooltip');
+        return;
+      }
+      if (el.scrollWidth > el.clientWidth + 1) {
+        el.setAttribute('data-tooltip', full);
+      } else {
+        el.removeAttribute('data-tooltip');
+      }
+    });
+    migrateAll(root);
+  }
+
   function position(target) {
     const tip = ensureTip();
     if (tip.hidden) return;
@@ -128,11 +146,22 @@
   document.addEventListener('scroll', hideImmediate, true);
   window.addEventListener('resize', hideImmediate);
 
-  document.addEventListener('DOMContentLoaded', () => migrateAll(document));
+  function boot() {
+    migrateAll(document);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 
   window.EkaraTooltip = {
     refresh(root = document) {
       migrateAll(root);
+    },
+    syncTruncated(root = document) {
+      syncTruncatedTooltips(root);
     },
   };
 })();
