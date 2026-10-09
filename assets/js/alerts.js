@@ -496,8 +496,8 @@ function renderTable() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </span>
       </div>
-      <div class="data-table-cell" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
-      <div class="data-table-cell" title="${escapeHtml(row.description)}">${escapeHtml(row.description)}</div>
+      <div class="data-table-cell" data-tooltip-full="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
+      <div class="data-table-cell" data-tooltip-full="${escapeHtml(row.description)}">${escapeHtml(row.description)}</div>
       <div class="data-table-cell">${appCell}</div>
       <div class="data-table-cell">${escapeHtml(row.trigger)}</div>
       <div class="data-table-cell">${escapeHtml(row.recipients)}</div>
@@ -525,6 +525,10 @@ function renderTable() {
     </div>`;
     })
     .join('');
+
+  requestAnimationFrame(() => {
+    if (window.EkaraTooltip) window.EkaraTooltip.syncTruncated(els.tableBody);
+  });
 
   els.tableBody.querySelectorAll('.menu-trigger').forEach((btn) => {
     btn.addEventListener('click', (e) => {

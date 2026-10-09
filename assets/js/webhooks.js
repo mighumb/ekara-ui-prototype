@@ -234,7 +234,7 @@ function renderTable() {
     <div class="data-table-row" data-id="${wh.id}">
       <div class="data-table-cell">${escapeHtml(wh.name)}</div>
       <div class="data-table-cell">${escapeHtml(wh.service)}</div>
-      <div class="data-table-cell url" data-tooltip="${escapeHtml(wh.url)}">${escapeHtml(wh.url)}</div>
+      <div class="data-table-cell url" data-tooltip-full="${escapeHtml(wh.url)}">${escapeHtml(wh.url)}</div>
       <div class="data-table-actions">
         <button class="btn-icon menu-trigger" data-id="${wh.id}" aria-label="Actions">
           <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
