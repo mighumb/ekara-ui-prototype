@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/tokens.css?v=68">
-  <link rel="stylesheet" href="../../assets/css/ekara.css?v=68">
+  <link rel="stylesheet" href="../../assets/css/tokens.css?v=69">
+  <link rel="stylesheet" href="../../assets/css/ekara.css?v=69">
 </head>
 <body>
   <div class="app-layout">
@@ -224,16 +224,17 @@
           </div>
           <div class="form-group">
             <span class="form-label">Applications</span>
-            <div id="applications-global-wrap">
-              <select class="form-select" id="field-applications-global" disabled>
-                <option>Apply to all applications in the account</option>
-              </select>
-            </div>
-            <div class="applications-picker hidden" id="applications-picker">
-              <button type="button" class="form-select applications-picker-trigger" id="applications-picker-trigger" aria-haspopup="listbox" aria-expanded="false">
-                Select applications
-              </button>
-              <div class="applications-picker-menu hidden" id="applications-picker-menu" role="listbox">
+            <div class="applications-control-slot">
+              <div id="applications-global-wrap">
+                <select class="form-select" id="field-applications-global" disabled>
+                  <option>Apply to all applications in the account</option>
+                </select>
+              </div>
+              <div class="applications-picker hidden" id="applications-picker">
+                <button type="button" class="form-select applications-picker-trigger" id="applications-picker-trigger" aria-haspopup="listbox" aria-expanded="false">
+                  Select applications
+                </button>
+                <div class="applications-picker-menu hidden" id="applications-picker-menu" role="listbox">
                 <label class="applications-picker-item">
                   <input type="checkbox" id="applications-select-all">
                   <span>Select all</span>
@@ -254,6 +255,7 @@
                   <input type="checkbox" class="applications-option" value="Application demo">
                   <span>Application demo</span>
                 </label>
+                </div>
               </div>
             </div>
           </div>
