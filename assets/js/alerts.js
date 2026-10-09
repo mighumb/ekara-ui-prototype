@@ -2,7 +2,9 @@
  * Ekara Settings — Alert rules prototype
  */
 
-let alerts = [
+const ALERTS_STORAGE_KEY = 'ekara-prototype-alert-rules';
+
+const DEFAULT_ALERTS = [
   {
     id: 1,
     name: '00-DFY-24047-Alerte-C...',
@@ -203,6 +205,30 @@ let alerts = [
   },
 ];
 
+let alerts = loadAlerts();
+
+function loadAlerts() {
+  try {
+    const raw = localStorage.getItem(ALERTS_STORAGE_KEY);
+    if (!raw) return DEFAULT_ALERTS.map((row) => ({ ...row }));
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return DEFAULT_ALERTS.map((row) => ({ ...row }));
+    }
+    return parsed;
+  } catch {
+    return DEFAULT_ALERTS.map((row) => ({ ...row }));
+  }
+}
+
+function persistAlerts() {
+  try {
+    localStorage.setItem(ALERTS_STORAGE_KEY, JSON.stringify(alerts));
+  } catch {
+    /* quota / private mode — in-memory only for this session */
+  }
+}
+
 let openMenuId = null;
 let editingId = null;
 let deleteTargetId = null;
@@ -263,6 +289,7 @@ function bindEvents() {
     const id = deleteTargetId;
     alerts = alerts.filter((a) => a.id !== id);
     if (editingId === id) closePanel();
+    persistAlerts();
     renderTable();
     closeConfirm();
   });
@@ -533,6 +560,7 @@ function duplicateAlert(id) {
   };
   const index = alerts.findIndex((a) => a.id === id);
   alerts.splice(index + 1, 0, copy);
+  persistAlerts();
   renderTable();
 }
 
@@ -649,6 +677,7 @@ function saveAlert() {
     });
   }
 
+  persistAlerts();
   renderTable();
   closePanel();
 }
