@@ -1312,16 +1312,22 @@ span.form-label {
   align-items: center;
   gap: 4px;
   width: 100%;
-  min-height: 38px;
-  padding: 4px 32px 4px 8px;
+  padding: 8px 32px 8px 12px;
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
   background: var(--surface-default);
+  color: var(--text-neutral);
+  font-size: var(--font-size-body);
   text-align: left;
   position: relative;
   cursor: pointer;
   box-sizing: border-box;
   transition: border-color 0.15s;
+}
+
+.recipients-field:has(.recipient-chip) {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .recipients-field:focus {
@@ -1338,12 +1344,18 @@ span.form-label {
   min-width: 0;
 }
 
+.recipients-chips:empty {
+  display: none;
+}
+
 .recipients-placeholder {
   flex: 1 1 auto;
   min-width: 0;
-  color: var(--text-placeholder);
-  font-size: var(--font-size-body);
-  line-height: 20px;
+  color: var(--text-neutral);
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   pointer-events: none;
 }
 

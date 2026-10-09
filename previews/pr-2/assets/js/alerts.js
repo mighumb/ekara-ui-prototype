@@ -336,9 +336,11 @@ function closeApplicationsMenu() {
 
 function updatePanelBodyScroll() {
   if (!els.panelBody || !els.panel.classList.contains('open')) return;
+  const body = els.panelBody;
   const measure = () => {
-    const { scrollHeight, clientHeight } = els.panelBody;
-    els.panelBody.classList.toggle('can-scroll', scrollHeight > clientHeight + 8);
+    body.classList.remove('can-scroll');
+    const overflow = body.scrollHeight - body.clientHeight;
+    body.classList.toggle('can-scroll', overflow > 2);
   };
   requestAnimationFrame(() => requestAnimationFrame(measure));
 }
