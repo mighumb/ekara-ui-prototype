@@ -496,6 +496,12 @@ select:not(:disabled) {
   color: var(--danger);
 }
 
+.dropdown-divider {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--border-color);
+}
+
 /* Modal overlay */
 .modal-overlay {
   position: fixed;

@@ -205,6 +205,7 @@ const alerts = [
 
 let openMenuId = null;
 let editingId = null;
+let deleteTargetId = null;
 let savedScrollY = 0;
 let selectedRecipients = [];
 
@@ -233,6 +234,11 @@ function init() {
     recipientsPlaceholder: document.getElementById('recipients-placeholder'),
     recipientsMenu: document.getElementById('recipients-picker-menu'),
     recipientOptions: document.querySelectorAll('.recipients-picker-option'),
+    confirmOverlay: document.getElementById('confirm-overlay'),
+    confirmDialog: document.getElementById('confirm-dialog'),
+    confirmMessage: document.getElementById('confirm-message'),
+    confirmCancel: document.getElementById('confirm-cancel'),
+    confirmOk: document.getElementById('confirm-ok'),
   };
 
   renderTable();
@@ -249,6 +255,9 @@ function bindEvents() {
   document.getElementById('btn-cancel').addEventListener('click', closePanel);
   els.overlay.addEventListener('click', closePanel);
   document.getElementById('btn-save').addEventListener('click', () => closePanel());
+
+  els.confirmCancel.addEventListener('click', closeConfirm);
+  els.confirmOverlay.addEventListener('click', closeConfirm);
 
   els.description.addEventListener('input', updateCharCounter);
 
@@ -467,6 +476,15 @@ function renderTable() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             Edit
           </div>
+          <div class="dropdown-item" data-action="duplicate" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><line x1="17" y1="11" x2="17" y2="15"/><line x1="15" y1="13" x2="19" y2="13"/></svg>
+            Duplicate
+          </div>
+          <div class="dropdown-divider" role="separator"></div>
+          <div class="dropdown-item" data-action="delete" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </div>
         </div>
       </div>
     </div>`;
@@ -483,12 +501,54 @@ function renderTable() {
   els.tableBody.querySelectorAll('.dropdown-item').forEach((item) => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
+      const id = parseInt(item.dataset.id, 10);
+      const action = item.dataset.action;
       closeAllMenus();
-      if (item.dataset.action === 'edit') {
-        openPanel('edit', parseInt(item.dataset.id, 10));
-      }
+      if (action === 'edit') openPanel('edit', id);
+      if (action === 'duplicate') duplicateAlert(id);
+      if (action === 'delete') confirmDeleteAlert(id);
     });
   });
+}
+
+function getNextAlertId() {
+  return alerts.reduce((max, row) => Math.max(max, row.id), 0) + 1;
+}
+
+function duplicateAlert(id) {
+  const row = alerts.find((a) => a.id === id);
+  if (!row) return;
+  const copy = {
+    ...row,
+    id: getNextAlertId(),
+    name: row.name.endsWith('...') ? `${row.name.slice(0, -3)} (copy)...` : `${row.name} (copy)`,
+  };
+  const index = alerts.findIndex((a) => a.id === id);
+  alerts.splice(index + 1, 0, copy);
+  renderTable();
+}
+
+function confirmDeleteAlert(id) {
+  const row = alerts.find((a) => a.id === id);
+  if (!row) return;
+  deleteTargetId = id;
+  els.confirmMessage.textContent = `Are you sure you want to delete the alert "${row.name}"?`;
+  els.confirmOverlay.classList.add('open');
+  els.confirmDialog.classList.add('open');
+
+  els.confirmOk.onclick = () => {
+    alerts = alerts.filter((a) => a.id !== deleteTargetId);
+    if (editingId === deleteTargetId) closePanel();
+    deleteTargetId = null;
+    renderTable();
+    closeConfirm();
+  };
+}
+
+function closeConfirm() {
+  els.confirmOverlay.classList.remove('open');
+  els.confirmDialog.classList.remove('open');
+  deleteTargetId = null;
 }
 
 function toggleMenu(id) {
