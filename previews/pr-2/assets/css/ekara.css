@@ -1458,3 +1458,27 @@ span.form-label {
   background: transparent;
 }
 
+/* Tooltip — host: [data-tooltip]; floating node: .ekara-tooltip */
+.ekara-tooltip {
+  position: fixed;
+  z-index: var(--tooltip-z-index);
+  max-width: var(--tooltip-max-width);
+  padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  font-size: var(--tooltip-font-size);
+  line-height: var(--tooltip-line-height);
+  font-weight: var(--font-weight-regular);
+  border-radius: var(--tooltip-radius);
+  box-shadow: var(--tooltip-shadow);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.ekara-tooltip.is-visible {
+  opacity: 1;
+}
+
