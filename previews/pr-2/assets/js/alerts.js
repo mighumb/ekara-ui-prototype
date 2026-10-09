@@ -206,7 +206,6 @@ const alerts = [
 let openMenuId = null;
 let editingId = null;
 let savedScrollY = 0;
-let panelBodyResizeObserver = null;
 
 let els = {};
 
@@ -217,7 +216,6 @@ function init() {
     tableBody: document.getElementById('alert-table-body'),
     overlay: document.getElementById('modal-overlay'),
     panel: document.getElementById('slide-panel'),
-    panelBody: document.querySelector('.slide-panel-body'),
     panelTitle: document.getElementById('panel-title'),
     description: document.getElementById('field-description'),
     charCounter: document.getElementById('char-counter'),
@@ -254,7 +252,6 @@ function bindEvents() {
     const open = els.applicationsMenu.classList.toggle('open');
     els.applicationsMenu.classList.toggle('hidden', !open);
     els.applicationsTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    updatePanelBodyScroll();
   });
 
   els.applicationsSelectAll.addEventListener('change', () => {
@@ -291,31 +288,6 @@ function closeApplicationsMenu() {
   els.applicationsMenu.classList.remove('open');
   els.applicationsMenu.classList.add('hidden');
   els.applicationsTrigger.setAttribute('aria-expanded', 'false');
-  updatePanelBodyScroll();
-}
-
-function updatePanelBodyScroll() {
-  if (!els.panelBody || !els.panel.classList.contains('open')) return;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const body = els.panelBody;
-      const needsScroll = body.scrollHeight > body.clientHeight + 4;
-      body.classList.toggle('is-scrollable', needsScroll);
-    });
-  });
-}
-
-function startPanelBodyObserver() {
-  if (!els.panelBody || panelBodyResizeObserver) return;
-  panelBodyResizeObserver = new ResizeObserver(() => updatePanelBodyScroll());
-  panelBodyResizeObserver.observe(els.panelBody);
-}
-
-function stopPanelBodyObserver() {
-  if (panelBodyResizeObserver) {
-    panelBodyResizeObserver.disconnect();
-    panelBodyResizeObserver = null;
-  }
 }
 
 function syncGlobalApplicationsUI() {
@@ -327,7 +299,6 @@ function syncGlobalApplicationsUI() {
   } else {
     updateApplicationsTriggerLabel();
   }
-  updatePanelBodyScroll();
 }
 
 function updateApplicationsTriggerLabel() {
@@ -471,15 +442,11 @@ function openPanel(mode, id) {
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
-  startPanelBodyObserver();
-  updatePanelBodyScroll();
 }
 
 function closePanel() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
-  stopPanelBodyObserver();
-  if (els.panelBody) els.panelBody.classList.remove('is-scrollable');
   unlockPageScroll();
   closeApplicationsMenu();
   editingId = null;
