@@ -2,6 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 const WEBHOOKS_PATH = '/webhooks/index.html';
+const WEBHOOKS_STORAGE_KEY = 'ekara-prototype-webhooks';
 
 async function openWebhooks(page) {
   await page.goto(WEBHOOKS_PATH);
@@ -107,6 +108,22 @@ test.describe('Webhooks', () => {
     await page.locator('#save-btn').click();
     await expect(page.locator('.mapping-target-error').first()).toHaveText('This field is required');
     await expect(page.locator('#slide-panel.open')).toBeVisible();
+  });
+
+  test('created webhook persists after page reload', async ({ page }) => {
+    await page.goto(WEBHOOKS_PATH);
+    await page.evaluate((key) => localStorage.removeItem(key), WEBHOOKS_STORAGE_KEY);
+    await page.reload();
+
+    await openCreatePanel(page);
+    await page.locator('#field-name').fill('E2E persist webhook');
+    await page.locator('#field-url').fill('https://example.com/e2e-persist');
+    await page.locator('#save-btn').click();
+    await expect(page.locator('#webhook-table-body')).toContainText('E2E persist webhook');
+
+    await page.reload();
+    await expect(page.locator('#webhook-table-body')).toContainText('E2E persist webhook');
+    await expect(page.locator('#webhook-table-body .data-table-row')).toHaveCount(6);
   });
 
   test('creates a Generic webhook and lists it in the table', async ({ page }) => {
