@@ -202,6 +202,9 @@
   /* ── Semantic: borders ── */
   --border-color: var(--color-n30);
   --input-border-color: var(--color-n60);
+  --input-disabled-bg: var(--surface-muted);
+  --input-disabled-text: var(--text-secondary);
+  --input-disabled-border: var(--input-border-color);
 
   /* ── Semantic: shadows ── */
   --shadow-dropdown: 0 4px 12px color-mix(in srgb, var(--color-n900) 12%, transparent);
