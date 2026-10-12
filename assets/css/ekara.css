@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=46');
+@import url('tokens.css?v=80');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -434,7 +434,7 @@ select:not(:disabled) {
   color: inherit;
   cursor: pointer;
   text-align: left;
-  border-radius: var(--radius-sm, 4px);
+  border-radius: var(--radius-dialog);
 }
 
 .data-table-header-sort:hover {
