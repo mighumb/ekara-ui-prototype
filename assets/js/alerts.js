@@ -447,6 +447,13 @@ function hasActiveDays() {
   return document.querySelectorAll('.day-pill.active').length > 0;
 }
 
+function hasRecipientsForSave() {
+  if (selectedRecipients.length > 0) return true;
+  if (editingId == null) return false;
+  const row = alerts.find((a) => a.id === editingId);
+  return Boolean(row?.recipients && !row.recipients.startsWith('0 '));
+}
+
 function validateAlertForm() {
   clearAlertFormErrors();
   let hasError = false;
@@ -487,7 +494,7 @@ function validateAlertForm() {
     hasError = true;
   }
 
-  if (selectedRecipients.length === 0) {
+  if (!hasRecipientsForSave()) {
     setFieldError({ input: els.recipientsField, error: els.recipientsError }, 'Select at least one recipient');
     hasError = true;
   }
@@ -830,9 +837,8 @@ function saveAlert() {
 
   if (editingId != null) {
     const row = alerts.find((a) => a.id === editingId);
-    if (row) {
-      Object.assign(row, data, { updatedAt: now });
-    }
+    if (!row) return;
+    Object.assign(row, data, { updatedAt: now });
   } else {
     alerts.unshift({
       id: getNextAlertId(),
