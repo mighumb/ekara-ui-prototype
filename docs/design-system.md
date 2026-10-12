@@ -62,6 +62,8 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 
 New pages/modals: use these classes — do not hardcode colors in HTML or per-page CSS.
 
+**Module sidebar footer** — same line on every screen with a sidebar: `v3.43.0 © 2026 ip-label` (class `sidebar-footer`). Bump all pages when the product version changes.
+
 ## Typography (Ekara DS)
 
 - **Family:** Open Sans — `--font-family`
