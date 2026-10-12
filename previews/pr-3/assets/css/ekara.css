@@ -659,7 +659,9 @@ span.form-label {
 
 .form-input.error,
 .form-select.error,
-.form-textarea.error {
+.form-textarea.error,
+.applications-picker-trigger.error,
+.recipients-field.error {
   border-color: var(--danger);
 }
 

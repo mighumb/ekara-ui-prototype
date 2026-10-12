@@ -202,6 +202,7 @@
         <div class="form-group">
           <label class="form-label" for="field-name">Name</label>
           <input type="text" class="form-input" id="field-name" placeholder="Alert rule name">
+          <div class="form-error" id="error-name"></div>
         </div>
 
         <div class="form-group">
@@ -258,6 +259,7 @@
                 </div>
               </div>
             </div>
+            <div class="form-error" id="error-applications"></div>
           </div>
         </div>
 
@@ -275,6 +277,7 @@
           <div class="form-group">
             <label class="form-label" for="field-time-wait">Time to wait</label>
             <input type="text" class="form-input" id="field-time-wait" value="00:00" inputmode="numeric">
+            <div class="form-error" id="error-time-wait"></div>
           </div>
         </div>
 
@@ -289,6 +292,7 @@
           <div class="form-group">
             <label class="form-label" for="field-minimum-end-gap">Minimum gap</label>
             <input type="text" class="form-input" id="field-minimum-end-gap" value="00:00" inputmode="numeric" disabled>
+            <div class="form-error" id="error-minimum-end-gap"></div>
           </div>
         </div>
 
@@ -305,6 +309,7 @@
             <button type="button" class="day-pill active" data-day="Sat">Sat</button>
             <button type="button" class="day-pill active" data-day="Sun">Sun</button>
           </div>
+          <div class="form-error" id="error-days"></div>
         </div>
 
         <div class="form-row-inline-3 form-row-align-start">
@@ -362,6 +367,7 @@
                 <button type="button" class="recipients-picker-option" role="option" data-value="user-alerts" data-label="alerts@example.com">alerts@example.com</button>
               </div>
             </div>
+            <div class="form-error" id="error-recipients"></div>
           </div>
         </div>
       </form>
@@ -385,6 +391,6 @@
 
   <script src="../../assets/js/bento.js?v=1"></script>
   <script src="../../assets/js/tooltip.js?v=2"></script>
-  <script src="../../assets/js/alerts.js?v=19"></script>
+  <script src="../../assets/js/alerts.js?v=20"></script>
 </body>
 </html>
