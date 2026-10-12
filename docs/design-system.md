@@ -64,6 +64,8 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 **Module sidebar footer** — same line on every screen with a sidebar: `v3.43.0 © 2026 ip-label` (class `sidebar-footer`). Bump all pages when the product version changes.
 
+**RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`.
+
 ## Typography (Ekara DS)
 
 - **Family:** Open Sans — `--font-family`

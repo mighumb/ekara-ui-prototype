@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUM user journey mapping — Ekara Measures</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=81">
+  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=81">
+</head>
+<body>
+  <div class="app-layout">
+    <header class="topbar">
+      <div class="topbar-left">
+        <img src="../../../../assets/images/ekara-logo.svg" alt="" class="topbar-logo" width="32" height="32">
+        <div class="topbar-breadcrumb">
+          Measures | Explore &gt; <span>RUM user journey mapping</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-account">
+          My account
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M1 1l4 4 4-4"/></svg>
+        </div>
+        <button class="topbar-icon-btn" aria-label="Help">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+        <button class="topbar-icon-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="topbar-badge"></span>
+        </button>
+        <div class="topbar-avatar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v1h20v-1c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+        <div class="bento-menu-wrap">
+          <button type="button" class="topbar-icon-btn" id="btn-bento" aria-label="Modules" aria-expanded="false" aria-haspopup="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/>
+              <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+              <circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+            </svg>
+          </button>
+          <div class="bento-menu" id="bento-menu" hidden>
+            <button type="button" class="bento-menu-item active" data-module="Measures" aria-current="page">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M4 19V10"/><path d="M9 19V5"/><path d="M14 19v-7"/><path d="M19 19V8"/>
+                <circle cx="18" cy="6" r="3"/>
+              </svg>
+              <span>Measures</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Infrastructure">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="18" r="2"/><circle cx="6" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="18" cy="6" r="2"/>
+                <path d="M12 16V10"/><path d="M6 8v2a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/>
+              </svg>
+              <span>Infrastructure</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Settings">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span>Settings</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Management">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5"/>
+                <path d="M5.5 20c1.6-3.2 4.2-5 6.5-5s4.9 1.8 6.5 5"/>
+              </svg>
+              <span>Management</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Ekara Green">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M5 19c8-1 12-8 13-14-6 1-12 5-13 14Z"/>
+                <path d="M8 14c2-2 5-4 9-5"/>
+              </svg>
+              <span>Ekara Green</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Incident Guard">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 5 3.5 8.5 7 10 3.5-1.5 7-5 7-10V6l-7-3Z"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+              <span>Incident Guard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Overview
+            </span>
+            <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems collapsed" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Executive summary</div>
+          <div class="sidebar-item sidebar-subitem">Goals</div>
+          <div class="sidebar-item sidebar-subitem">Status timeline</div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              View in real time
+            </span>
+            <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems collapsed" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Console</div>
+          <div class="sidebar-item sidebar-subitem">Scenario status</div>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Explore
+            </span>
+            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Performance</div>
+          <div class="sidebar-item sidebar-subitem">Incidents</div>
+          <div class="sidebar-item sidebar-subitem">Failures</div>
+          <div class="sidebar-item sidebar-subitem">Trend</div>
+          <div class="sidebar-item sidebar-subitem">RUM</div>
+          <div class="sidebar-item sidebar-subitem">RUM trends</div>
+          <a href="./" class="sidebar-item sidebar-subitem sidebar-subitem-link active" aria-current="page">RUM user journey mapping</a>
+        </div>
+
+        <div class="sidebar-item">
+          <div class="sidebar-group-toggle" data-sidebar-toggle>
+            <span style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              Dive deeper
+            </span>
+            <svg class="sidebar-chevron collapsed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="sidebar-subitems collapsed" data-sidebar-group>
+          <div class="sidebar-item sidebar-subitem">Compare design</div>
+          <div class="sidebar-item sidebar-subitem">Compare sites</div>
+          <div class="sidebar-item sidebar-subitem">Failures by site</div>
+          <div class="sidebar-item sidebar-subitem">Step analysis</div>
+        </div>
+      </nav>
+      <div class="sidebar-footer">v3.43.0 © 2026 ip-label</div>
+    </aside>
+
+    <main class="main-content main-content--rum-journey">
+      <div class="rum-journey-filters" role="region" aria-label="Journey filters">
+        <div class="form-group">
+          <label class="form-label" for="filter-tracker">Tracker</label>
+          <select class="form-select" id="filter-tracker"></select>
+        </div>
+        <div class="form-group form-group--grow">
+          <label class="form-label" for="filter-date-range">Date range</label>
+          <input type="text" class="form-input" id="filter-date-range" value="01/09/2026 - 30/09/2026" aria-describedby="date-range-hint">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="filter-metric">Metric</label>
+          <select class="form-select" id="filter-metric">
+            <option value="sessions">Sessions</option>
+            <option value="users">Users</option>
+            <option value="transitions">Transitions</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <span class="form-label">Displayed step</span>
+          <p class="rum-journey-step-type" id="displayed-step">Page group</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="filter-breakdown">Breakdown</label>
+          <select class="form-select" id="filter-breakdown">
+            <option value="none">None</option>
+            <option value="device">Device</option>
+            <option value="browser">Browser</option>
+          </select>
+        </div>
+      </div>
+
+      <h1 class="rum-journey-page-title" id="page-title">RUM user journey mapping</h1>
+      <p class="rum-journey-scope" id="scope-label"></p>
+
+      <div id="journey-loading" class="rum-journey-state hidden" role="status" aria-live="polite">
+        <div class="rum-journey-spinner" aria-hidden="true"></div>
+        Loading journey data…
+      </div>
+
+      <div id="journey-empty" class="rum-journey-state hidden" role="status">
+        No paths found for the selected tracker and period.
+      </div>
+
+      <div id="journey-error" class="rum-journey-state rum-journey-state--error hidden" role="alert">
+        <p id="journey-error-message">Unable to load journey data.</p>
+        <button type="button" class="btn btn-primary" id="journey-retry" style="margin-top:16px;">Retry</button>
+      </div>
+
+      <div id="journey-content">
+        <div class="rum-journey-layout">
+          <section class="rum-journey-card" aria-labelledby="path-exploration-title">
+            <h2 class="rum-journey-card-title" id="path-exploration-title">Path exploration</h2>
+            <div id="path-graph" class="rum-journey-path-graph"></div>
+            <div id="node-focus-panel" class="rum-journey-focus hidden">
+              <h3 class="form-label">Selected page group</h3>
+              <div class="rum-journey-focus-grid">
+                <div>
+                  <h4 class="form-label">Incoming page groups</h4>
+                  <ul class="rum-journey-focus-list" id="focus-before"></ul>
+                </div>
+                <div>
+                  <h4 class="form-label">Outgoing page groups</h4>
+                  <ul class="rum-journey-focus-list" id="focus-after"></ul>
+                </div>
+              </div>
+              <div class="rum-journey-focus-through">
+                <h4 class="form-label">Paths through this page group</h4>
+                <ul class="rum-journey-focus-list" id="focus-through"></ul>
+              </div>
+            </div>
+          </section>
+
+          <div class="rum-journey-side">
+            <section class="rum-journey-card" aria-labelledby="top5-title">
+              <h2 class="rum-journey-card-title" id="top5-title">Top 5 paths</h2>
+              <ol class="rum-journey-top5-list" id="top5-list"></ol>
+            </section>
+
+            <section class="rum-journey-card hidden" id="breakdown-panel" aria-labelledby="breakdown-title">
+              <h2 class="rum-journey-card-title" id="breakdown-title"></h2>
+              <div id="breakdown-bars"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../../../assets/js/bento.js?v=2"></script>
+  <script src="../../../../assets/js/rum-user-journey.js?v=3"></script>
+</body>
+</html>
