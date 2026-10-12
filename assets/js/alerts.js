@@ -314,10 +314,12 @@ function bindEvents() {
     updatePanelBodyScroll();
   });
 
-  els.fieldSendEnd.addEventListener('change', () => {
-    syncSendEndGapUI();
-    updatePanelBodyScroll();
-  });
+  if (els.fieldSendEnd) {
+    els.fieldSendEnd.addEventListener('change', () => {
+      syncSendEndGapUI();
+      updatePanelBodyScroll();
+    });
+  }
 
   els.applicationsTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
