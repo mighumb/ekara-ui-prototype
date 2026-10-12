@@ -51,7 +51,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Text button | `.btn-text` | `--primary` text; hover `--surface-hover-action` |
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
-| Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border` |
+| Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` (same tokens for input and select) |
 | Link | `a` | `--link-color` |
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
 
