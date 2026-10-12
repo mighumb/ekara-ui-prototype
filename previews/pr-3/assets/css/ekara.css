@@ -417,6 +417,61 @@ select:not(:disabled) {
   border-bottom: 1px solid var(--border-color);
 }
 
+.data-table-header-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.data-table-header-sort:hover {
+  color: var(--text-neutral);
+}
+
+.data-table-header-sort:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.data-table-header-sort-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.data-table-header-sort-icon {
+  display: none;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+}
+
+.data-table-header-sort.is-sorted .data-table-header-sort-icon {
+  display: block;
+}
+
+.data-table-header-sort.is-sorted-asc .data-table-header-sort-icon {
+  transform: rotate(180deg);
+}
+
 .data-table-row:hover .data-table-cell,
 .data-table-row:hover .data-table-actions {
   background: var(--table-row-hover-bg);

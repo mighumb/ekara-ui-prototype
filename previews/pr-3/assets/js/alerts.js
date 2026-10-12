@@ -236,6 +236,25 @@ let savedScrollY = 0;
 let selectedRecipients = [];
 const ALERT_VALIDATED_FIELDS = [];
 
+/** Session-only; reset on full page reload (default = most recent first). */
+let tableSort = { key: null, asc: true };
+
+const TRIGGER_SORT_ORDER = [
+  'Incident',
+  'Warning on availability',
+  'Performance degradation',
+];
+
+/** First-click direction per column (true = ascending / A→Z / low→high). */
+const SORT_FIRST_CLICK_ASC = {
+  name: true,
+  description: true,
+  applications: true,
+  trigger: true,
+  recipients: false,
+  scenarios: false,
+};
+
 let els = {};
 
 document.addEventListener('DOMContentLoaded', init);
@@ -289,6 +308,20 @@ function init() {
 }
 
 function bindEvents() {
+  document.querySelectorAll('.data-table-header-sort').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sortKey;
+      if (!key) return;
+      if (tableSort.key === key) {
+        tableSort.asc = !tableSort.asc;
+      } else {
+        tableSort.key = key;
+        tableSort.asc = SORT_FIRST_CLICK_ASC[key] ?? true;
+      }
+      renderTable();
+    });
+  });
+
   document.getElementById('btn-add-alert').addEventListener('click', () => openPanel('create'));
   document.getElementById('panel-close').addEventListener('click', closePanel);
   document.getElementById('btn-cancel').addEventListener('click', closePanel);
@@ -635,12 +668,63 @@ function alertSortKey(row) {
   return row.updatedAt ?? row.id;
 }
 
+function parseTableCountLabel(value) {
+  if (!value || value === 'None') return 0;
+  const match = String(value).match(/(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+function compareAlertsByColumn(a, b, key) {
+  switch (key) {
+    case 'name':
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+    case 'description':
+      return a.description.localeCompare(b.description, undefined, { sensitivity: 'base' });
+    case 'applications':
+      return (a.applications || '').localeCompare(b.applications || '', undefined, {
+        sensitivity: 'base',
+      });
+    case 'trigger': {
+      const rank = (t) => {
+        const i = TRIGGER_SORT_ORDER.indexOf(t);
+        return i === -1 ? TRIGGER_SORT_ORDER.length : i;
+      };
+      return rank(a.trigger) - rank(b.trigger);
+    }
+    case 'recipients':
+      return parseTableCountLabel(a.recipients) - parseTableCountLabel(b.recipients);
+    case 'scenarios':
+      return parseTableCountLabel(a.scenarios) - parseTableCountLabel(b.scenarios);
+    default:
+      return 0;
+  }
+}
+
 function sortAlertsForDisplay() {
-  alerts.sort((a, b) => alertSortKey(b) - alertSortKey(a));
+  if (!tableSort.key) {
+    alerts.sort((a, b) => alertSortKey(b) - alertSortKey(a));
+    return;
+  }
+  const dir = tableSort.asc ? 1 : -1;
+  alerts.sort((a, b) => compareAlertsByColumn(a, b, tableSort.key) * dir);
+}
+
+function syncTableSortHeaders() {
+  document.querySelectorAll('.data-table-header-sort').forEach((btn) => {
+    const key = btn.dataset.sortKey;
+    btn.classList.remove('is-sorted', 'is-sorted-asc', 'is-sorted-desc');
+    if (tableSort.key === key) {
+      btn.classList.add('is-sorted', tableSort.asc ? 'is-sorted-asc' : 'is-sorted-desc');
+      btn.setAttribute('aria-sort', tableSort.asc ? 'ascending' : 'descending');
+    } else {
+      btn.setAttribute('aria-sort', 'none');
+    }
+  });
 }
 
 function renderTable() {
   sortAlertsForDisplay();
+  syncTableSortHeaders();
   els.tableBody.innerHTML = alerts
     .map((row) => {
       const appCell = row.applications
