@@ -234,6 +234,7 @@ let editingId = null;
 let deleteTargetId = null;
 let savedScrollY = 0;
 let selectedRecipients = [];
+const ALERT_VALIDATED_FIELDS = [];
 
 let els = {};
 
@@ -277,8 +278,6 @@ function init() {
     recipientsError: document.getElementById('error-recipients'),
   };
 
-  const ALERT_VALIDATED_FIELDS = [];
-
   renderTable();
   resetRecipientsSelection();
   bindEvents();
@@ -296,9 +295,9 @@ function bindEvents() {
   els.overlay.addEventListener('click', closePanel);
   document.getElementById('btn-save').addEventListener('click', saveAlert);
 
-  els.confirmCancel.addEventListener('click', closeConfirm);
-  els.confirmOverlay.addEventListener('click', closeConfirm);
-  els.confirmOk.addEventListener('click', () => {
+  if (els.confirmCancel) els.confirmCancel.addEventListener('click', closeConfirm);
+  if (els.confirmOverlay) els.confirmOverlay.addEventListener('click', closeConfirm);
+  if (els.confirmOk) els.confirmOk.addEventListener('click', () => {
     if (deleteTargetId == null) return;
     const id = deleteTargetId;
     alerts = alerts.filter((a) => a.id !== id);
@@ -394,6 +393,7 @@ function bindEvents() {
 }
 
 function bindAlertFieldErrorClearing() {
+  ALERT_VALIDATED_FIELDS.length = 0;
   const fields = [
     { input: els.nameInput, error: els.nameError },
     { input: els.timeWaitInput, error: els.timeWaitError },
@@ -402,9 +402,11 @@ function bindAlertFieldErrorClearing() {
     { input: els.recipientsField, error: els.recipientsError },
   ];
   fields.forEach((field) => {
+    if (!field.input) return;
     ALERT_VALIDATED_FIELDS.push(field);
-    field.input.addEventListener('input', () => clearFieldError(field));
-    field.input.addEventListener('change', () => clearFieldError(field));
+    const onClear = () => clearFieldError(field);
+    field.input.addEventListener('input', onClear);
+    field.input.addEventListener('change', onClear);
   });
 }
 
@@ -467,8 +469,8 @@ function validateAlertForm() {
     hasError = true;
   }
 
-  if (els.fieldSendEnd.checked) {
-    const minimumGap = els.fieldMinimumEndGap.value.trim();
+  if (els.fieldSendEnd?.checked) {
+    const minimumGap = els.fieldMinimumEndGap?.value.trim() ?? '';
     if (!isValidHHMM(minimumGap)) {
       setFieldError(
         { input: els.fieldMinimumEndGap, error: els.minimumEndGapError },
@@ -509,7 +511,7 @@ function closeApplicationsMenu() {
 }
 
 function updatePanelBodyScroll() {
-  if (!els.panelBody || !els.panel.classList.contains('open')) return;
+  if (!els.panelBody || !els.panel || !els.panel.classList.contains('open')) return;
   const body = els.panelBody;
   const measure = () => {
     body.classList.remove('can-scroll');
@@ -576,6 +578,7 @@ function syncGlobalApplicationsUI() {
 }
 
 function syncSendEndGapUI() {
+  if (!els.fieldSendEnd || !els.fieldMinimumEndGap) return;
   const enabled = els.fieldSendEnd.checked;
   els.fieldMinimumEndGap.disabled = !enabled;
 }
@@ -746,8 +749,8 @@ function openPanel(mode, id) {
     resetApplicationsSelection();
     resetRecipientsSelection();
     syncGlobalApplicationsUI();
-    els.fieldSendEnd.checked = false;
-    els.fieldMinimumEndGap.value = '00:00';
+    if (els.fieldSendEnd) els.fieldSendEnd.checked = false;
+    if (els.fieldMinimumEndGap) els.fieldMinimumEndGap.value = '00:00';
     syncSendEndGapUI();
     document.querySelectorAll('.day-pill').forEach((p) => p.classList.add('active'));
     updateCharCounter();
@@ -758,8 +761,8 @@ function openPanel(mode, id) {
       document.getElementById('field-description').value = row.description;
       document.getElementById('field-trigger').value = row.trigger || 'Incident';
       document.getElementById('field-time-wait').value = row.timeWait || '00:00';
-      els.fieldSendEnd.checked = Boolean(row.sendEnd);
-      els.fieldMinimumEndGap.value = row.minimumEndGap || '00:00';
+      if (els.fieldSendEnd) els.fieldSendEnd.checked = Boolean(row.sendEnd);
+      if (els.fieldMinimumEndGap) els.fieldMinimumEndGap.value = row.minimumEndGap || '00:00';
       syncSendEndGapUI();
       if (row.applications) {
         els.fieldGlobal.checked = false;
