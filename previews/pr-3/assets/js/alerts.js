@@ -624,7 +624,16 @@ function updateCharCounter() {
   els.charCounter.textContent = `${len} / 250`;
 }
 
+function alertSortKey(row) {
+  return row.updatedAt ?? row.id;
+}
+
+function sortAlertsForDisplay() {
+  alerts.sort((a, b) => alertSortKey(b) - alertSortKey(a));
+}
+
 function renderTable() {
+  sortAlertsForDisplay();
   els.tableBody.innerHTML = alerts
     .map((row) => {
       const appCell = row.applications
@@ -702,9 +711,9 @@ function duplicateAlert(id) {
     ...row,
     id: getNextAlertId(),
     name: row.name.endsWith('...') ? `${row.name.slice(0, -3)} (copy)...` : `${row.name} (copy)`,
+    updatedAt: Date.now(),
   };
-  const index = alerts.findIndex((a) => a.id === id);
-  alerts.splice(index + 1, 0, copy);
+  alerts.unshift(copy);
   persistAlerts();
   renderTable();
 }
@@ -817,16 +826,18 @@ function saveAlert() {
   if (!validateAlertForm()) return;
 
   const data = collectAlertFromForm();
+  const now = Date.now();
 
   if (editingId != null) {
     const row = alerts.find((a) => a.id === editingId);
     if (row) {
-      Object.assign(row, data);
+      Object.assign(row, data, { updatedAt: now });
     }
   } else {
-    alerts.push({
+    alerts.unshift({
       id: getNextAlertId(),
       scenarios: 'None',
+      updatedAt: now,
       ...data,
     });
   }
