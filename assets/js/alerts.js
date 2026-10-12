@@ -267,11 +267,22 @@ function init() {
     confirmMessage: document.getElementById('confirm-message'),
     confirmCancel: document.getElementById('confirm-cancel'),
     confirmOk: document.getElementById('confirm-ok'),
+    nameInput: document.getElementById('field-name'),
+    timeWaitInput: document.getElementById('field-time-wait'),
+    nameError: document.getElementById('error-name'),
+    applicationsError: document.getElementById('error-applications'),
+    timeWaitError: document.getElementById('error-time-wait'),
+    minimumEndGapError: document.getElementById('error-minimum-end-gap'),
+    daysError: document.getElementById('error-days'),
+    recipientsError: document.getElementById('error-recipients'),
   };
+
+  const ALERT_VALIDATED_FIELDS = [];
 
   renderTable();
   resetRecipientsSelection();
   bindEvents();
+  bindAlertFieldErrorClearing();
   initSidebarGroups();
   updateCharCounter();
   syncGlobalApplicationsUI();
@@ -323,6 +334,7 @@ function bindEvents() {
       opt.checked = checked;
     });
     updateApplicationsTriggerLabel();
+    clearFieldError({ input: els.applicationsTrigger, error: els.applicationsError });
   });
 
   els.applicationOptions.forEach((opt) => {
@@ -332,6 +344,7 @@ function bindEvents() {
       els.applicationsSelectAll.checked = allChecked;
       els.applicationsSelectAll.indeterminate = !allChecked && !noneChecked;
       updateApplicationsTriggerLabel();
+      clearFieldError({ input: els.applicationsTrigger, error: els.applicationsError });
     });
   });
 
@@ -374,9 +387,118 @@ function bindEvents() {
   document.querySelectorAll('.day-pill').forEach((pill) => {
     pill.addEventListener('click', () => {
       pill.classList.toggle('active');
+      clearFieldError({ input: pill.closest('.form-group'), error: els.daysError, skipInputClass: true });
       updatePanelBodyScroll();
     });
   });
+}
+
+function bindAlertFieldErrorClearing() {
+  const fields = [
+    { input: els.nameInput, error: els.nameError },
+    { input: els.timeWaitInput, error: els.timeWaitError },
+    { input: els.fieldMinimumEndGap, error: els.minimumEndGapError },
+    { input: els.applicationsTrigger, error: els.applicationsError },
+    { input: els.recipientsField, error: els.recipientsError },
+  ];
+  fields.forEach((field) => {
+    ALERT_VALIDATED_FIELDS.push(field);
+    field.input.addEventListener('input', () => clearFieldError(field));
+    field.input.addEventListener('change', () => clearFieldError(field));
+  });
+}
+
+function clearFieldError({ input, error, skipInputClass }) {
+  if (!skipInputClass && input && input.classList) {
+    input.classList.remove('error');
+  }
+  if (error) error.textContent = '';
+}
+
+function setFieldError({ input, error, skipInputClass }, message) {
+  if (!skipInputClass && input && input.classList) {
+    input.classList.add('error');
+  }
+  if (error) error.textContent = message;
+}
+
+function clearAlertFormErrors() {
+  ALERT_VALIDATED_FIELDS.forEach((field) => clearFieldError(field));
+  clearFieldError({ input: null, error: els.daysError, skipInputClass: true });
+}
+
+function isValidHHMM(value) {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return false;
+  const hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+  return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+}
+
+function hasSelectedApplications() {
+  return [...els.applicationOptions].some((o) => o.checked);
+}
+
+function hasActiveDays() {
+  return document.querySelectorAll('.day-pill.active').length > 0;
+}
+
+function validateAlertForm() {
+  clearAlertFormErrors();
+  let hasError = false;
+
+  const name = els.nameInput.value.trim();
+  if (!name) {
+    setFieldError({ input: els.nameInput, error: els.nameError }, 'Name required');
+    hasError = true;
+  }
+
+  if (!els.fieldGlobal.checked && !hasSelectedApplications()) {
+    setFieldError(
+      { input: els.applicationsTrigger, error: els.applicationsError },
+      'Select at least one application'
+    );
+    hasError = true;
+  }
+
+  const timeWait = els.timeWaitInput.value.trim();
+  if (!isValidHHMM(timeWait)) {
+    setFieldError({ input: els.timeWaitInput, error: els.timeWaitError }, 'Invalid time (use HH:MM)');
+    hasError = true;
+  }
+
+  if (els.fieldSendEnd.checked) {
+    const minimumGap = els.fieldMinimumEndGap.value.trim();
+    if (!isValidHHMM(minimumGap)) {
+      setFieldError(
+        { input: els.fieldMinimumEndGap, error: els.minimumEndGapError },
+        'Invalid time (use HH:MM)'
+      );
+      hasError = true;
+    }
+  }
+
+  if (!hasActiveDays()) {
+    setFieldError({ input: null, error: els.daysError, skipInputClass: true }, 'Select at least one day');
+    hasError = true;
+  }
+
+  if (selectedRecipients.length === 0) {
+    setFieldError({ input: els.recipientsField, error: els.recipientsError }, 'Select at least one recipient');
+    hasError = true;
+  }
+
+  if (hasError) {
+    updatePanelBodyScroll();
+    const firstInvalid = document.querySelector('#alert-form .form-error:not(:empty)');
+    if (firstInvalid) {
+      const group = firstInvalid.closest('.form-group');
+      const focusable = group?.querySelector('input:not([disabled]), button.recipients-field, button.applications-picker-trigger');
+      focusable?.focus();
+    }
+  }
+
+  return !hasError;
 }
 
 function closeApplicationsMenu() {
@@ -433,6 +555,7 @@ function renderRecipientsChips() {
     opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
   });
   updatePanelBodyScroll();
+  clearFieldError({ input: els.recipientsField, error: els.recipientsError });
 }
 
 function resetRecipientsSelection() {
@@ -652,6 +775,7 @@ function openPanel(mode, id) {
       updateCharCounter();
     }
   }
+  clearAlertFormErrors();
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
@@ -685,11 +809,9 @@ function collectAlertFromForm() {
 }
 
 function saveAlert() {
+  if (!validateAlertForm()) return;
+
   const data = collectAlertFromForm();
-  if (!data.name) {
-    document.getElementById('field-name').focus();
-    return;
-  }
 
   if (editingId != null) {
     const row = alerts.find((a) => a.id === editingId);
