@@ -700,13 +700,26 @@ function compareAlertsByColumn(a, b, key) {
   }
 }
 
-function sortAlertsForDisplay() {
+function compareAlertsByRecency(a, b) {
+  const byTime = alertSortKey(b) - alertSortKey(a);
+  if (byTime !== 0) return byTime;
+  return b.id - a.id;
+}
+
+/** Display order only — does not mutate `alerts` (keeps localStorage insertion order stable). */
+function getSortedAlertsForDisplay() {
+  const rows = [...alerts];
   if (!tableSort.key) {
-    alerts.sort((a, b) => alertSortKey(b) - alertSortKey(a));
-    return;
+    rows.sort(compareAlertsByRecency);
+    return rows;
   }
   const dir = tableSort.asc ? 1 : -1;
-  alerts.sort((a, b) => compareAlertsByColumn(a, b, tableSort.key) * dir);
+  rows.sort((a, b) => {
+    const primary = compareAlertsByColumn(a, b, tableSort.key) * dir;
+    if (primary !== 0) return primary;
+    return compareAlertsByRecency(a, b);
+  });
+  return rows;
 }
 
 function syncTableSortHeaders() {
@@ -723,9 +736,9 @@ function syncTableSortHeaders() {
 }
 
 function renderTable() {
-  sortAlertsForDisplay();
   syncTableSortHeaders();
-  els.tableBody.innerHTML = alerts
+  const rows = getSortedAlertsForDisplay();
+  els.tableBody.innerHTML = rows
     .map((row) => {
       const appCell = row.applications
         ? `<span class="app-tag">${escapeHtml(row.applications)}</span>`
