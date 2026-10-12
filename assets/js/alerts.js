@@ -234,6 +234,26 @@ let editingId = null;
 let deleteTargetId = null;
 let savedScrollY = 0;
 let selectedRecipients = [];
+const ALERT_VALIDATED_FIELDS = [];
+
+/** Session-only; reset on full page reload (default = most recent first). */
+let tableSort = { key: null, asc: true };
+
+const TRIGGER_SORT_ORDER = [
+  'Incident',
+  'Warning on availability',
+  'Performance degradation',
+];
+
+/** First-click direction per column (true = ascending / A→Z / low→high). */
+const SORT_FIRST_CLICK_ASC = {
+  name: true,
+  description: true,
+  applications: true,
+  trigger: true,
+  recipients: false,
+  scenarios: false,
+};
 
 let els = {};
 
@@ -249,6 +269,8 @@ function init() {
     description: document.getElementById('field-description'),
     charCounter: document.getElementById('char-counter'),
     fieldGlobal: document.getElementById('field-global'),
+    fieldSendEnd: document.getElementById('field-send-end'),
+    fieldMinimumEndGap: document.getElementById('field-minimum-end-gap'),
     applicationsGlobalWrap: document.getElementById('applications-global-wrap'),
     applicationsPicker: document.getElementById('applications-picker'),
     applicationsTrigger: document.getElementById('applications-picker-trigger'),
@@ -265,26 +287,50 @@ function init() {
     confirmMessage: document.getElementById('confirm-message'),
     confirmCancel: document.getElementById('confirm-cancel'),
     confirmOk: document.getElementById('confirm-ok'),
+    nameInput: document.getElementById('field-name'),
+    timeWaitInput: document.getElementById('field-time-wait'),
+    nameError: document.getElementById('error-name'),
+    applicationsError: document.getElementById('error-applications'),
+    timeWaitError: document.getElementById('error-time-wait'),
+    minimumEndGapError: document.getElementById('error-minimum-end-gap'),
+    daysError: document.getElementById('error-days'),
+    recipientsError: document.getElementById('error-recipients'),
   };
 
   renderTable();
   resetRecipientsSelection();
   bindEvents();
+  bindAlertFieldErrorClearing();
   initSidebarGroups();
   updateCharCounter();
   syncGlobalApplicationsUI();
+  syncSendEndGapUI();
 }
 
 function bindEvents() {
+  document.querySelectorAll('.data-table-header-sort').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sortKey;
+      if (!key) return;
+      if (tableSort.key === key) {
+        tableSort.asc = !tableSort.asc;
+      } else {
+        tableSort.key = key;
+        tableSort.asc = SORT_FIRST_CLICK_ASC[key] ?? true;
+      }
+      renderTable();
+    });
+  });
+
   document.getElementById('btn-add-alert').addEventListener('click', () => openPanel('create'));
   document.getElementById('panel-close').addEventListener('click', closePanel);
   document.getElementById('btn-cancel').addEventListener('click', closePanel);
   els.overlay.addEventListener('click', closePanel);
   document.getElementById('btn-save').addEventListener('click', saveAlert);
 
-  els.confirmCancel.addEventListener('click', closeConfirm);
-  els.confirmOverlay.addEventListener('click', closeConfirm);
-  els.confirmOk.addEventListener('click', () => {
+  if (els.confirmCancel) els.confirmCancel.addEventListener('click', closeConfirm);
+  if (els.confirmOverlay) els.confirmOverlay.addEventListener('click', closeConfirm);
+  if (els.confirmOk) els.confirmOk.addEventListener('click', () => {
     if (deleteTargetId == null) return;
     const id = deleteTargetId;
     alerts = alerts.filter((a) => a.id !== id);
@@ -301,6 +347,13 @@ function bindEvents() {
     updatePanelBodyScroll();
   });
 
+  if (els.fieldSendEnd) {
+    els.fieldSendEnd.addEventListener('change', () => {
+      syncSendEndGapUI();
+      updatePanelBodyScroll();
+    });
+  }
+
   els.applicationsTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
     if (els.fieldGlobal.checked) return;
@@ -315,6 +368,7 @@ function bindEvents() {
       opt.checked = checked;
     });
     updateApplicationsTriggerLabel();
+    clearFieldError({ input: els.applicationsTrigger, error: els.applicationsError });
   });
 
   els.applicationOptions.forEach((opt) => {
@@ -324,6 +378,7 @@ function bindEvents() {
       els.applicationsSelectAll.checked = allChecked;
       els.applicationsSelectAll.indeterminate = !allChecked && !noneChecked;
       updateApplicationsTriggerLabel();
+      clearFieldError({ input: els.applicationsTrigger, error: els.applicationsError });
     });
   });
 
@@ -366,9 +421,128 @@ function bindEvents() {
   document.querySelectorAll('.day-pill').forEach((pill) => {
     pill.addEventListener('click', () => {
       pill.classList.toggle('active');
+      clearFieldError({ input: pill.closest('.form-group'), error: els.daysError, skipInputClass: true });
       updatePanelBodyScroll();
     });
   });
+}
+
+function bindAlertFieldErrorClearing() {
+  ALERT_VALIDATED_FIELDS.length = 0;
+  const fields = [
+    { input: els.nameInput, error: els.nameError },
+    { input: els.timeWaitInput, error: els.timeWaitError },
+    { input: els.fieldMinimumEndGap, error: els.minimumEndGapError },
+    { input: els.applicationsTrigger, error: els.applicationsError },
+    { input: els.recipientsField, error: els.recipientsError },
+  ];
+  fields.forEach((field) => {
+    if (!field.input) return;
+    ALERT_VALIDATED_FIELDS.push(field);
+    const onClear = () => clearFieldError(field);
+    field.input.addEventListener('input', onClear);
+    field.input.addEventListener('change', onClear);
+  });
+}
+
+function clearFieldError({ input, error, skipInputClass }) {
+  if (!skipInputClass && input && input.classList) {
+    input.classList.remove('error');
+  }
+  if (error) error.textContent = '';
+}
+
+function setFieldError({ input, error, skipInputClass }, message) {
+  if (!skipInputClass && input && input.classList) {
+    input.classList.add('error');
+  }
+  if (error) error.textContent = message;
+}
+
+function clearAlertFormErrors() {
+  ALERT_VALIDATED_FIELDS.forEach((field) => clearFieldError(field));
+  clearFieldError({ input: null, error: els.daysError, skipInputClass: true });
+}
+
+function isValidHHMM(value) {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return false;
+  const hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+  return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+}
+
+function hasSelectedApplications() {
+  return [...els.applicationOptions].some((o) => o.checked);
+}
+
+function hasActiveDays() {
+  return document.querySelectorAll('.day-pill.active').length > 0;
+}
+
+function hasRecipientsForSave() {
+  if (selectedRecipients.length > 0) return true;
+  if (editingId == null) return false;
+  const row = alerts.find((a) => a.id === editingId);
+  return Boolean(row?.recipients && !row.recipients.startsWith('0 '));
+}
+
+function validateAlertForm() {
+  clearAlertFormErrors();
+  let hasError = false;
+
+  const name = els.nameInput.value.trim();
+  if (!name) {
+    setFieldError({ input: els.nameInput, error: els.nameError }, 'Name required');
+    hasError = true;
+  }
+
+  if (!els.fieldGlobal.checked && !hasSelectedApplications()) {
+    setFieldError(
+      { input: els.applicationsTrigger, error: els.applicationsError },
+      'Select at least one application'
+    );
+    hasError = true;
+  }
+
+  const timeWait = els.timeWaitInput.value.trim();
+  if (!isValidHHMM(timeWait)) {
+    setFieldError({ input: els.timeWaitInput, error: els.timeWaitError }, 'Invalid time (use HH:MM)');
+    hasError = true;
+  }
+
+  if (els.fieldSendEnd?.checked) {
+    const minimumGap = els.fieldMinimumEndGap?.value.trim() ?? '';
+    if (!isValidHHMM(minimumGap)) {
+      setFieldError(
+        { input: els.fieldMinimumEndGap, error: els.minimumEndGapError },
+        'Invalid time (use HH:MM)'
+      );
+      hasError = true;
+    }
+  }
+
+  if (!hasActiveDays()) {
+    setFieldError({ input: null, error: els.daysError, skipInputClass: true }, 'Select at least one day');
+    hasError = true;
+  }
+
+  if (!hasRecipientsForSave()) {
+    setFieldError({ input: els.recipientsField, error: els.recipientsError }, 'Select at least one recipient');
+    hasError = true;
+  }
+
+  if (hasError) {
+    updatePanelBodyScroll();
+    const firstInvalid = document.querySelector('#alert-form .form-error:not(:empty)');
+    if (firstInvalid) {
+      const group = firstInvalid.closest('.form-group');
+      const focusable = group?.querySelector('input:not([disabled]), button.recipients-field, button.applications-picker-trigger');
+      focusable?.focus();
+    }
+  }
+
+  return !hasError;
 }
 
 function closeApplicationsMenu() {
@@ -379,7 +553,7 @@ function closeApplicationsMenu() {
 }
 
 function updatePanelBodyScroll() {
-  if (!els.panelBody || !els.panel.classList.contains('open')) return;
+  if (!els.panelBody || !els.panel || !els.panel.classList.contains('open')) return;
   const body = els.panelBody;
   const measure = () => {
     body.classList.remove('can-scroll');
@@ -425,6 +599,7 @@ function renderRecipientsChips() {
     opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
   });
   updatePanelBodyScroll();
+  clearFieldError({ input: els.recipientsField, error: els.recipientsError });
 }
 
 function resetRecipientsSelection() {
@@ -442,6 +617,12 @@ function syncGlobalApplicationsUI() {
   } else {
     updateApplicationsTriggerLabel();
   }
+}
+
+function syncSendEndGapUI() {
+  if (!els.fieldSendEnd || !els.fieldMinimumEndGap) return;
+  const enabled = els.fieldSendEnd.checked;
+  els.fieldMinimumEndGap.disabled = !enabled;
 }
 
 function updateApplicationsTriggerLabel() {
@@ -483,8 +664,81 @@ function updateCharCounter() {
   els.charCounter.textContent = `${len} / 250`;
 }
 
+function alertSortKey(row) {
+  return row.updatedAt ?? row.id;
+}
+
+function parseTableCountLabel(value) {
+  if (!value || value === 'None') return 0;
+  const match = String(value).match(/(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+function compareAlertsByColumn(a, b, key) {
+  switch (key) {
+    case 'name':
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+    case 'description':
+      return a.description.localeCompare(b.description, undefined, { sensitivity: 'base' });
+    case 'applications':
+      return (a.applications || '').localeCompare(b.applications || '', undefined, {
+        sensitivity: 'base',
+      });
+    case 'trigger': {
+      const rank = (t) => {
+        const i = TRIGGER_SORT_ORDER.indexOf(t);
+        return i === -1 ? TRIGGER_SORT_ORDER.length : i;
+      };
+      return rank(a.trigger) - rank(b.trigger);
+    }
+    case 'recipients':
+      return parseTableCountLabel(a.recipients) - parseTableCountLabel(b.recipients);
+    case 'scenarios':
+      return parseTableCountLabel(a.scenarios) - parseTableCountLabel(b.scenarios);
+    default:
+      return 0;
+  }
+}
+
+function compareAlertsByRecency(a, b) {
+  const byTime = alertSortKey(b) - alertSortKey(a);
+  if (byTime !== 0) return byTime;
+  return b.id - a.id;
+}
+
+/** Display order only — does not mutate `alerts` (keeps localStorage insertion order stable). */
+function getSortedAlertsForDisplay() {
+  const rows = [...alerts];
+  if (!tableSort.key) {
+    rows.sort(compareAlertsByRecency);
+    return rows;
+  }
+  const dir = tableSort.asc ? 1 : -1;
+  rows.sort((a, b) => {
+    const primary = compareAlertsByColumn(a, b, tableSort.key) * dir;
+    if (primary !== 0) return primary;
+    return compareAlertsByRecency(a, b);
+  });
+  return rows;
+}
+
+function syncTableSortHeaders() {
+  document.querySelectorAll('.data-table-header-sort').forEach((btn) => {
+    const key = btn.dataset.sortKey;
+    btn.classList.remove('is-sorted', 'is-sorted-asc', 'is-sorted-desc');
+    if (tableSort.key === key) {
+      btn.classList.add('is-sorted', tableSort.asc ? 'is-sorted-asc' : 'is-sorted-desc');
+      btn.setAttribute('aria-sort', tableSort.asc ? 'ascending' : 'descending');
+    } else {
+      btn.setAttribute('aria-sort', 'none');
+    }
+  });
+}
+
 function renderTable() {
-  els.tableBody.innerHTML = alerts
+  syncTableSortHeaders();
+  const rows = getSortedAlertsForDisplay();
+  els.tableBody.innerHTML = rows
     .map((row) => {
       const appCell = row.applications
         ? `<span class="app-tag">${escapeHtml(row.applications)}</span>`
@@ -493,7 +747,7 @@ function renderTable() {
     <div class="data-table-row" data-id="${row.id}">
       <div class="data-table-cell">
         <span class="alert-table-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </span>
       </div>
       <div class="data-table-cell" data-tooltip-full="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
@@ -561,9 +815,9 @@ function duplicateAlert(id) {
     ...row,
     id: getNextAlertId(),
     name: row.name.endsWith('...') ? `${row.name.slice(0, -3)} (copy)...` : `${row.name} (copy)`,
+    updatedAt: Date.now(),
   };
-  const index = alerts.findIndex((a) => a.id === id);
-  alerts.splice(index + 1, 0, copy);
+  alerts.unshift(copy);
   persistAlerts();
   renderTable();
 }
@@ -610,6 +864,9 @@ function openPanel(mode, id) {
     resetApplicationsSelection();
     resetRecipientsSelection();
     syncGlobalApplicationsUI();
+    if (els.fieldSendEnd) els.fieldSendEnd.checked = false;
+    if (els.fieldMinimumEndGap) els.fieldMinimumEndGap.value = '00:00';
+    syncSendEndGapUI();
     document.querySelectorAll('.day-pill').forEach((p) => p.classList.add('active'));
     updateCharCounter();
   } else {
@@ -618,6 +875,10 @@ function openPanel(mode, id) {
       document.getElementById('field-name').value = row.name.replace(/\.\.\.$/, '');
       document.getElementById('field-description').value = row.description;
       document.getElementById('field-trigger').value = row.trigger || 'Incident';
+      document.getElementById('field-time-wait').value = row.timeWait || '00:00';
+      if (els.fieldSendEnd) els.fieldSendEnd.checked = Boolean(row.sendEnd);
+      if (els.fieldMinimumEndGap) els.fieldMinimumEndGap.value = row.minimumEndGap || '00:00';
+      syncSendEndGapUI();
       if (row.applications) {
         els.fieldGlobal.checked = false;
         resetApplicationsSelection();
@@ -632,6 +893,7 @@ function openPanel(mode, id) {
       updateCharCounter();
     }
   }
+  clearAlertFormErrors();
   els.overlay.classList.add('open');
   els.panel.classList.add('open');
   lockPageScroll();
@@ -657,26 +919,28 @@ function collectAlertFromForm() {
     description: document.getElementById('field-description').value.trim(),
     applications: getApplicationsValueFromForm(),
     trigger: document.getElementById('field-trigger').value,
+    timeWait: document.getElementById('field-time-wait').value.trim() || '00:00',
+    sendEnd: els.fieldSendEnd.checked,
+    minimumEndGap: els.fieldMinimumEndGap.value.trim() || '00:00',
     recipients: formatRecipientsLabel(selectedRecipients.length),
   };
 }
 
 function saveAlert() {
+  if (!validateAlertForm()) return;
+
   const data = collectAlertFromForm();
-  if (!data.name) {
-    document.getElementById('field-name').focus();
-    return;
-  }
+  const now = Date.now();
 
   if (editingId != null) {
     const row = alerts.find((a) => a.id === editingId);
-    if (row) {
-      Object.assign(row, data);
-    }
+    if (!row) return;
+    Object.assign(row, data, { updatedAt: now });
   } else {
-    alerts.push({
+    alerts.unshift({
       id: getNextAlertId(),
       scenarios: 'None',
+      updatedAt: now,
       ...data,
     });
   }

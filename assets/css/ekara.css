@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=46');
+@import url('tokens.css?v=80');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -417,6 +417,61 @@ select:not(:disabled) {
   border-bottom: 1px solid var(--border-color);
 }
 
+.data-table-header-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--radius-dialog);
+}
+
+.data-table-header-sort:hover {
+  color: var(--text-neutral);
+}
+
+.data-table-header-sort:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.data-table-header-sort-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.data-table-header-sort-icon {
+  display: none;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+}
+
+.data-table-header-sort.is-sorted .data-table-header-sort-icon {
+  display: block;
+}
+
+.data-table-header-sort.is-sorted-asc .data-table-header-sort-icon {
+  transform: rotate(180deg);
+}
+
 .data-table-row:hover .data-table-cell,
 .data-table-row:hover .data-table-actions {
   background: var(--table-row-hover-bg);
@@ -659,15 +714,27 @@ span.form-label {
 
 .form-input.error,
 .form-select.error,
-.form-textarea.error {
+.form-textarea.error,
+.applications-picker-trigger.error,
+.recipients-field.error {
   border-color: var(--danger);
 }
 
 .form-select:disabled,
 .form-input:disabled {
-  background: var(--surface-muted);
-  color: var(--text-secondary);
+  background-color: var(--input-disabled-bg);
+  color: var(--input-disabled-text);
+  -webkit-text-fill-color: var(--input-disabled-text);
+  border-color: var(--input-disabled-border);
+  opacity: 1;
   cursor: not-allowed;
+}
+
+.form-select:disabled {
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
 }
 
 .form-error {
@@ -1149,7 +1216,8 @@ span.form-label {
   width: 100%;
 }
 
-.alert-global-field .toggle {
+.alert-global-field .toggle,
+.alert-send-end-field .toggle {
   margin-top: 4px;
 }
 

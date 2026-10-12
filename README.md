@@ -35,6 +35,25 @@ Workflow **Deploy Pages** pushes each PR to `gh-pages` under `previews/pr-<numbe
 
 Asset cache-bust query params (`ekara.css?v=…`, `webhooks.js?v=…`) are bumped on each deploy-worthy change so the live page loads fresh files.
 
+## Automated browser tests (Playwright)
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+Starts a local static server on port 3456 and runs E2E specs in `tests/e2e/` (`alerts.spec.js`, `webhooks.spec.js`). The same suite runs on **pull requests and pushes to `main`** via the [E2E tests](.github/workflows/e2e.yml) workflow.
+
+### Prototype data in the browser
+
+| `localStorage` key | Screen |
+|--------------------|--------|
+| `ekara-prototype-alert-rules` | Settings → Alert rules |
+| `ekara-prototype-webhooks` | Webhooks |
+
+Remove a key (or clear site data) to reset that screen to its seeded defaults.
+
 ## Structure
 
 ```
