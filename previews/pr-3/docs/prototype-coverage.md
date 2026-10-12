@@ -7,7 +7,7 @@ Only implemented screens are listed.
 
 | Page | Path | JIRA |
 |------|------|------|
-| Webhooks (Integrations) | [/webhooks/](https://mighumb.github.io/ekara-ui-prototype/webhooks/) | [DFY-23383](https://iplabel.atlassian.net/browse/DFY-23383) |
+| Webhooks (Integrations) | [/webhooks/](https://mighumb.github.io/ekara-ui-prototype/webhooks/) | [DFY-23383](https://iplabel.atlassian.net/browse/DFY-23383) — list CRUD, service sections, `localStorage` mock (`ekara-prototype-webhooks`) |
 
 ## Measures
 
@@ -21,7 +21,7 @@ Only implemented screens are listed.
 
 | Page | Path | JIRA |
 |------|------|------|
-| Alert rules | [/settings/alerts/](https://mighumb.github.io/ekara-ui-prototype/settings/alerts/) | [DFY-23972](https://iplabel.atlassian.net/browse/DFY-23972) — minimum gap before end notification (drawer) |
+| Alert rules | [/settings/alerts/](https://mighumb.github.io/ekara-ui-prototype/settings/alerts/) | [DFY-23972](https://iplabel.atlassian.net/browse/DFY-23972) — minimum gap (drawer), sortable table columns (session), `localStorage` mock (`ekara-prototype-alert-rules`) |
 
 ## Ekara Green
 
