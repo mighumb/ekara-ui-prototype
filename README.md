@@ -35,6 +35,16 @@ Workflow **Deploy Pages** pushes each PR to `gh-pages` under `previews/pr-<numbe
 
 Asset cache-bust query params (`ekara.css?v=…`, `webhooks.js?v=…`) are bumped on each deploy-worthy change so the live page loads fresh files.
 
+## Automated browser tests (Playwright)
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+Starts a local static server on port 3456 and runs E2E specs in `tests/e2e/`.
+
 ## Structure
 
 ```
