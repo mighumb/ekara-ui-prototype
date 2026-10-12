@@ -43,7 +43,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Starts a local static server on port 3456 and runs E2E specs in `tests/e2e/`.
+Starts a local static server on port 3456 and runs E2E specs in `tests/e2e/` (`alerts.spec.js`, `webhooks.spec.js`).
 
 ## Structure
 

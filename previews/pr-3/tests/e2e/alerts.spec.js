@@ -115,11 +115,3 @@ test.describe('Settings — Alert rules', () => {
     expect(orderAfter).toEqual(seedIds);
   });
 });
-
-test.describe('Webhooks', () => {
-  test('page loads', async ({ page }) => {
-    await page.goto('/webhooks/index.html');
-    await expect(page.locator('#btn-add-webhook, .btn-primary').first()).toBeVisible();
-    await expect(page.locator('.data-table-header-cell').first()).toBeVisible();
-  });
-});
