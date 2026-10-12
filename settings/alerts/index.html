@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/tokens.css?v=78">
-  <link rel="stylesheet" href="../../assets/css/ekara.css?v=78">
+  <link rel="stylesheet" href="../../assets/css/tokens.css?v=79">
+  <link rel="stylesheet" href="../../assets/css/ekara.css?v=79">
 </head>
 <body>
   <div class="app-layout">
@@ -174,12 +174,42 @@
       <div class="data-table data-table--alerts">
         <div class="data-table-header">
           <div class="data-table-header-cell"></div>
-          <div class="data-table-header-cell">Name</div>
-          <div class="data-table-header-cell">Description</div>
-          <div class="data-table-header-cell">Associated application(s)</div>
-          <div class="data-table-header-cell">Trigger event</div>
-          <div class="data-table-header-cell">Recipients</div>
-          <div class="data-table-header-cell">Associated scenarios</div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="name" aria-sort="none">
+              <span class="data-table-header-sort-label">Name</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="description" aria-sort="none">
+              <span class="data-table-header-sort-label">Description</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="applications" aria-sort="none">
+              <span class="data-table-header-sort-label">Associated application(s)</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="trigger" aria-sort="none">
+              <span class="data-table-header-sort-label">Trigger event</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="recipients" aria-sort="none">
+              <span class="data-table-header-sort-label">Recipients</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="scenarios" aria-sort="none">
+              <span class="data-table-header-sort-label">Associated scenarios</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
           <div class="data-table-header-cell"></div>
         </div>
         <div id="alert-table-body"></div>
@@ -391,6 +421,6 @@
 
   <script src="../../assets/js/bento.js?v=1"></script>
   <script src="../../assets/js/tooltip.js?v=2"></script>
-  <script src="../../assets/js/alerts.js?v=23"></script>
+  <script src="../../assets/js/alerts.js?v=24"></script>
 </body>
 </html>
