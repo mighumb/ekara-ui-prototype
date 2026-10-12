@@ -35,7 +35,9 @@ const EXAMPLE_VALUES = {
 
 const SOURCE_TYPES = ['Static value', 'Scenario tag', 'Alert context field'];
 
-let webhooks = [
+const WEBHOOKS_STORAGE_KEY = 'ekara-prototype-webhooks';
+
+const DEFAULT_WEBHOOKS = [
   {
     id: 1,
     name: '000tags',
@@ -108,7 +110,41 @@ let webhooks = [
   },
 ];
 
-let nextId = 6;
+function cloneDefaultWebhooks() {
+  return DEFAULT_WEBHOOKS.map((row) => ({
+    ...row,
+    headers: row.headers.map((h) => ({ ...h })),
+    mappings: row.mappings.map((m) => ({ ...m })),
+  }));
+}
+
+function loadWebhooks() {
+  try {
+    const raw = localStorage.getItem(WEBHOOKS_STORAGE_KEY);
+    if (!raw) return cloneDefaultWebhooks();
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return cloneDefaultWebhooks();
+    }
+    return parsed;
+  } catch {
+    return cloneDefaultWebhooks();
+  }
+}
+
+function persistWebhooks() {
+  try {
+    localStorage.setItem(WEBHOOKS_STORAGE_KEY, JSON.stringify(webhooks));
+  } catch {
+    /* quota / private mode — in-memory only for this session */
+  }
+}
+
+function getNextWebhookId() {
+  return webhooks.reduce((max, row) => Math.max(max, row.id), 0) + 1;
+}
+
+let webhooks = loadWebhooks();
 let editingId = null;
 let openMenuId = null;
 let draggedMappingRow = null;
@@ -772,9 +808,10 @@ function saveWebhook() {
     const idx = webhooks.findIndex((w) => w.id === editingId);
     if (idx !== -1) webhooks[idx] = { ...webhooks[idx], ...data };
   } else {
-    webhooks.push({ id: nextId++, ...data });
+    webhooks.push({ id: getNextWebhookId(), ...data });
   }
 
+  persistWebhooks();
   renderTable();
   closePanel();
 }
@@ -798,6 +835,7 @@ function confirmDelete(id) {
   els.confirmOk.onclick = () => {
     webhooks = webhooks.filter((w) => w.id !== deleteTargetId);
     deleteTargetId = null;
+    persistWebhooks();
     renderTable();
     closeConfirm();
   };
