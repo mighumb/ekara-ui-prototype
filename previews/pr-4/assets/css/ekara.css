@@ -1665,6 +1665,95 @@ span.form-label {
   cursor: text;
 }
 
+/* Measures — custom inline select (DS listbox; native select kept hidden for value/change) */
+.ekara-inline-select-control {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ekara-inline-select-trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
+  cursor: pointer;
+  text-align: left;
+}
+
+.ekara-inline-select-trigger:focus {
+  outline: none;
+}
+
+.ekara-inline-select-trigger:focus-visible .ekara-inline-select-value {
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-underline-offset: 2px;
+}
+
+.ekara-inline-select-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ekara-inline-select-chevron {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+  pointer-events: none;
+}
+
+.ekara-inline-select-menu {
+  position: absolute;
+  z-index: 55;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--surface-default);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-dropdown);
+}
+
+.ekara-inline-select-option {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ekara-inline-select-option:hover {
+  background: var(--surface-hover-neutral);
+}
+
+.ekara-inline-select-option.is-selected {
+  background: var(--surface-hover-action);
+  color: var(--primary);
+}
+
 .measure-filter-field--trackers {
   flex: 1 1 200px;
   min-width: 180px;
