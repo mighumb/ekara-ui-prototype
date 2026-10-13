@@ -1586,24 +1586,6 @@ span.form-label {
   width: 100%;
 }
 
-/* Equal flex share so the filter row spans the same width as journey cards */
-.rum-journey-filters .measure-filter-field {
-  flex: 1 1 0;
-  min-width: min(132px, 100%);
-  max-width: none;
-}
-
-.rum-journey-filters .measure-filter-field--grow,
-.rum-journey-filters .measure-filter-field--trackers {
-  flex: 1 1 0;
-  max-width: none;
-}
-
-.rum-journey-filters .measure-filter-inline {
-  width: 100%;
-  box-sizing: border-box;
-}
-
 /* Measures filter bar — inline labels inside controls (RUM / RUM trends pattern) */
 .measure-filter-field {
   flex: 0 0 auto;
@@ -1783,6 +1765,19 @@ span.form-label {
   flex: 1 1 200px;
   min-width: 180px;
   max-width: 360px;
+}
+
+/* RUM journey — filter row same width as cards (overrides caps above) */
+.rum-journey-filters .measure-filter-field {
+  flex: 1 1 0%;
+  min-width: min(132px, 100%);
+  max-width: none;
+}
+
+.rum-journey-filters .measure-filter-inline,
+.rum-journey-filters .measure-tracker-picker {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Measures — tracker multi-select (chips in field, RUM trends pattern) */
