@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=91">
-  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=91">
+  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=92">
+  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=92">
 </head>
 <body>
   <div class="app-layout">
@@ -179,7 +179,7 @@
           </div>
         </div>
         <div class="measure-filter-field">
-          <div class="measure-filter-inline">
+          <div class="measure-filter-inline" data-ekara-inline-select>
             <span class="measure-filter-prefix">Metric:</span>
             <select class="measure-filter-select" id="filter-metric" aria-label="Metric">
               <option value="sessions">Sessions</option>
@@ -195,7 +195,7 @@
           </div>
         </div>
         <div class="measure-filter-field">
-          <div class="measure-filter-inline">
+          <div class="measure-filter-inline" data-ekara-inline-select>
             <span class="measure-filter-prefix">Breakdown:</span>
             <select class="measure-filter-select" id="filter-breakdown" aria-label="Breakdown">
               <option value="none">None</option>
@@ -265,6 +265,7 @@
 
   <script src="../../../../assets/js/bento.js?v=2"></script>
   <script src="../../../../assets/js/ekara-date-range-picker.js?v=1"></script>
+  <script src="../../../../assets/js/ekara-inline-select.js?v=1"></script>
   <script src="../../../../assets/js/rum-user-journey.js?v=8"></script>
 </body>
 </html>

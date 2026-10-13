@@ -78,7 +78,9 @@ test.describe('Measures — RUM user journey mapping', () => {
 
   test('breakdown panel when device selected', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
-    await page.selectOption('#filter-breakdown', 'device');
+    const breakdown = page.locator('[data-ekara-inline-select]:has(#filter-breakdown)');
+    await breakdown.locator('.ekara-inline-select-trigger').click();
+    await breakdown.locator('.ekara-inline-select-option', { hasText: 'Device' }).click();
     await expect(page.locator('#breakdown-panel')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('#breakdown-bars .rum-journey-breakdown-row').first()).toBeVisible();
   });
