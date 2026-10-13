@@ -11,9 +11,15 @@ const MOCK_TRACKERS = [
   { id: 'name', label: 'tracker name' },
   { id: 'ccc', label: 'ccc' },
   { id: 'ratio', label: 'TEST RATIO TRACKER' },
+  { id: 'xsx', label: 'xsx' },
+  { id: 'dd', label: 'dd' },
+  { id: 'finale', label: 'finale' },
   { id: 'empty', label: 'Tracker_Empty_' },
   { id: 'error', label: 'Tracker_Error_' },
 ];
+
+/** Same cap as RUM trends. */
+const TRACKER_SELECTION_MAX = 10;
 
 /** Show tracker names in the chip while selection count is at most this value. */
 const TRACKER_CHIP_NAME_LIMIT = 3;
@@ -181,7 +187,8 @@ function buildTrackerPickerMenu() {
     </li>
     <li class="measure-tracker-tree-wrap">
       <ul class="measure-tracker-tree" id="tracker-option-tree">${children}</ul>
-    </li>`;
+    </li>
+    <li class="measure-tracker-limit-hint" id="tracker-limit-hint" role="status">You can select up to ${TRACKER_SELECTION_MAX} trackers.</li>`;
 
   els.trackerSelectAll = document.getElementById('tracker-opt-all');
   els.trackerTree = document.getElementById('tracker-option-tree');
@@ -227,7 +234,9 @@ function buildTrackerPickerMenu() {
 }
 
 function onSelectAllChange(checked) {
-  state.selectedTrackerIds = checked ? MOCK_TRACKERS.map((t) => t.id) : [];
+  state.selectedTrackerIds = checked
+    ? MOCK_TRACKERS.slice(0, TRACKER_SELECTION_MAX).map((t) => t.id)
+    : [];
   syncTrackerCheckboxes();
   renderTrackerChips();
   state.selectedNodeId = null;
@@ -236,8 +245,15 @@ function onSelectAllChange(checked) {
 
 function onTrackerCheckboxChange(id, checked) {
   const set = new Set(state.selectedTrackerIds);
-  if (checked) set.add(id);
-  else set.delete(id);
+  if (checked) {
+    if (!set.has(id) && set.size >= TRACKER_SELECTION_MAX) {
+      syncTrackerCheckboxes();
+      return;
+    }
+    set.add(id);
+  } else {
+    set.delete(id);
+  }
   state.selectedTrackerIds = [...set];
   syncTrackerCheckboxes();
   renderTrackerChips();
@@ -247,8 +263,14 @@ function onTrackerCheckboxChange(id, checked) {
 
 function syncTrackerCheckboxes() {
   if (!els.trackerOptions) return;
-  els.trackerTree?.querySelectorAll('input[type="checkbox"]').forEach((input) => {
-    input.checked = state.selectedTrackerIds.includes(input.value);
+  const atLimit = state.selectedTrackerIds.length >= TRACKER_SELECTION_MAX;
+  els.trackerTree?.querySelectorAll('.measure-tracker-option').forEach((row) => {
+    const input = row.querySelector('input[type="checkbox"]');
+    if (!input) return;
+    const selected = state.selectedTrackerIds.includes(input.value);
+    input.checked = selected;
+    input.disabled = atLimit && !selected;
+    row.classList.toggle('is-disabled', input.disabled);
   });
   updateSelectAllCheckbox();
 }
@@ -257,8 +279,13 @@ function updateSelectAllCheckbox() {
   if (!els.trackerSelectAll) return;
   const n = state.selectedTrackerIds.length;
   const total = MOCK_TRACKERS.length;
-  els.trackerSelectAll.checked = n === total && total > 0;
-  els.trackerSelectAll.indeterminate = n > 0 && n < total;
+  if (total <= TRACKER_SELECTION_MAX) {
+    els.trackerSelectAll.checked = n === total && total > 0;
+    els.trackerSelectAll.indeterminate = n > 0 && n < total;
+  } else {
+    els.trackerSelectAll.checked = n === TRACKER_SELECTION_MAX;
+    els.trackerSelectAll.indeterminate = n > 0 && n < TRACKER_SELECTION_MAX;
+  }
 }
 
 function removeTrackerFromSelection(id) {

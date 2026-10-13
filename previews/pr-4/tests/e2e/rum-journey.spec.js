@@ -49,6 +49,14 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('.tracker-chip--value .tracker-chip-text').first()).toHaveText('4 selected');
   });
 
+  test('tracker selection capped at ten like RUM trends', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    await page.locator('#filter-tracker-trigger').click();
+    await page.locator('#tracker-opt-all').check();
+    await expect(page.locator('.tracker-chip--value .tracker-chip-text').first()).toHaveText('10 selected');
+    await expect(page.locator('#tracker-opt-empty')).toBeDisabled();
+  });
+
   test('tracker placeholder when none selected', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
     await page.locator('#filter-tracker-trigger').click();
