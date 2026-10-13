@@ -1702,7 +1702,7 @@ span.form-label {
   flex: 1 1 auto;
   min-width: 0;
   padding-left: 4px;
-  color: var(--text-secondary);
+  color: var(--text-neutral);
   line-height: 28px;
   white-space: nowrap;
   overflow: hidden;
@@ -1726,41 +1726,39 @@ span.form-label {
 
 .tracker-chip {
   display: inline-flex;
-  align-items: stretch;
+  align-items: center;
+  gap: 2px;
   max-width: 100%;
+  padding: 2px 4px 2px 8px;
   border-radius: var(--radius);
-  overflow: hidden;
   border: 1px solid var(--border-color);
   font-size: 12px;
-  line-height: 22px;
-}
-
-.tracker-chip-prefix {
-  flex-shrink: 0;
-  padding: 0 8px;
+  line-height: 18px;
   color: var(--text-neutral);
   background: var(--surface-hover-neutral);
-  border-right: 1px solid var(--border-color);
 }
 
-.tracker-chip-body {
+.tracker-chip--static {
+  padding-right: 8px;
+  flex-shrink: 0;
+}
+
+.tracker-chip--value {
+  background: var(--color-b100);
+  padding-right: 2px;
+}
+
+.tracker-chip-text {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 4px 0 8px;
-  color: var(--text-neutral);
-  background: var(--color-b100);
-  min-width: 0;
-}
-
-.tracker-chip-value {
+  gap: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 220px;
+  max-width: 200px;
 }
 
-.tracker-chip-clear {
+.tracker-chip-remove {
   flex-shrink: 0;
   border: none;
   background: transparent;
@@ -1771,7 +1769,7 @@ span.form-label {
   cursor: pointer;
 }
 
-.tracker-chip-clear:hover {
+.tracker-chip-remove:hover {
   color: var(--text-neutral);
 }
 
@@ -1811,6 +1809,45 @@ span.form-label {
   font-size: var(--font-size-body);
   color: var(--text-neutral);
   cursor: pointer;
+}
+
+.measure-tracker-option--parent {
+  font-weight: var(--font-weight-semibold);
+}
+
+.measure-tracker-tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.measure-tracker-tree .measure-tracker-option {
+  padding-left: 36px;
+}
+
+.measure-tracker-tree-toggle {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px;
+  transform: rotate(0deg);
+  transition: transform 0.15s;
+}
+
+.measure-tracker-tree-toggle[aria-expanded='false'] {
+  transform: rotate(-90deg);
+}
+
+.measure-tracker-tree.collapsed {
+  display: none;
 }
 
 .measure-tracker-option:hover {
