@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=83">
-  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=83">
+  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=84">
+  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=84">
 </head>
 <body>
   <div class="app-layout">
@@ -161,35 +161,45 @@
 
     <main class="main-content main-content--rum-journey">
       <div class="rum-journey-filters" role="region" aria-label="Journey filters">
-        <div class="form-group">
-          <label class="form-label" for="filter-tracker">Tracker</label>
-          <select class="form-select" id="filter-tracker"></select>
+        <div class="measure-filter-field">
+          <div class="measure-filter-inline">
+            <span class="measure-filter-prefix">Tracker</span>
+            <select class="measure-filter-select" id="filter-tracker" aria-label="Tracker"></select>
+          </div>
         </div>
-        <div class="form-group form-group--grow">
-          <label class="form-label" for="filter-date-range">Date range</label>
-          <input type="text" class="form-input" id="filter-date-range" value="01/09/2026 - 30/09/2026" aria-describedby="date-range-hint">
+        <div class="measure-filter-field measure-filter-field--grow">
+          <div class="measure-filter-inline">
+            <span class="measure-filter-calendar" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </span>
+            <input type="text" class="measure-filter-input" id="filter-date-range" value="01/09/2026 - 30/09/2026" aria-label="Date range">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="filter-metric">Metric</label>
-          <select class="form-select" id="filter-metric">
-            <option value="sessions">Sessions</option>
-            <option value="users">Users</option>
-            <option value="transitions">Transitions</option>
-          </select>
+        <div class="measure-filter-field">
+          <div class="measure-filter-inline">
+            <span class="measure-filter-prefix">Metric:</span>
+            <select class="measure-filter-select" id="filter-metric" aria-label="Metric">
+              <option value="sessions">Sessions</option>
+              <option value="users">Users</option>
+              <option value="transitions">Transitions</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="filter-dimension">Dimension</label>
-          <select class="form-select" id="filter-dimension" disabled aria-disabled="true">
-            <option value="page-group" selected>Page group</option>
-          </select>
+        <div class="measure-filter-field measure-filter-field--dimension">
+          <div class="measure-filter-inline measure-filter-inline--static" aria-label="Dimension">
+            <span class="measure-filter-prefix">Dimension:</span>
+            <span class="measure-filter-value" id="filter-dimension">Page group</span>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="filter-breakdown">Breakdown</label>
-          <select class="form-select" id="filter-breakdown">
-            <option value="none">None</option>
-            <option value="device">Device</option>
-            <option value="browser">Browser</option>
-          </select>
+        <div class="measure-filter-field">
+          <div class="measure-filter-inline">
+            <span class="measure-filter-prefix">Breakdown:</span>
+            <select class="measure-filter-select" id="filter-breakdown" aria-label="Breakdown">
+              <option value="none">None</option>
+              <option value="device">Device</option>
+              <option value="browser">Browser</option>
+            </select>
+          </div>
         </div>
       </div>
 

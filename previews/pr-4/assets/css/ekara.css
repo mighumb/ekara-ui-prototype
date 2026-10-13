@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=83');
+@import url('tokens.css?v=84');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -1558,19 +1558,89 @@ span.form-label {
 .rum-journey-filters {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 16px 20px;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
-.rum-journey-filters .form-group {
-  margin: 0;
-  min-width: 140px;
+/* Measures filter bar — inline labels inside controls (RUM / RUM trends pattern) */
+.measure-filter-field {
+  flex: 0 0 auto;
+  min-width: 132px;
 }
 
-.rum-journey-filters .form-group--grow {
+.measure-filter-field--grow {
+  flex: 1 1 240px;
+  max-width: 400px;
+}
+
+.measure-filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--radius);
+}
+
+.measure-filter-inline--static {
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+.measure-filter-prefix {
+  flex-shrink: 0;
+  font-size: var(--font-size-body);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.measure-filter-value {
   flex: 1;
-  min-width: 200px;
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
+  white-space: nowrap;
+}
+
+.measure-filter-calendar {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.measure-filter-select,
+.measure-filter-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 8px 20px 8px 0;
+  font-size: var(--font-size-body);
+  font-family: inherit;
+  color: var(--text-neutral);
+  outline: none;
+}
+
+.measure-filter-select {
+  cursor: pointer;
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 12px 12px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.measure-filter-select:disabled {
+  color: var(--input-disabled-text);
+  cursor: not-allowed;
+}
+
+.measure-filter-input {
+  padding-right: 4px;
+  cursor: text;
 }
 
 .rum-journey-page-title {
