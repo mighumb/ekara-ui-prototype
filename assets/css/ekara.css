@@ -1445,6 +1445,8 @@ span.form-label {
   pointer-events: none;
 }
 
+/* Ekara chip — shared removable tag (Settings recipients, Measures trackers, …) */
+.ekara-chip,
 .recipient-chip {
   display: inline-flex;
   align-items: center;
@@ -1452,19 +1454,26 @@ span.form-label {
   max-width: 100%;
   padding: 2px 4px 2px 8px;
   border-radius: var(--radius);
-  font-size: 12px;
+  font-size: var(--font-size-12);
   line-height: 18px;
   color: var(--text-neutral);
   background: var(--surface-hover-neutral);
   border: 1px solid var(--border-color);
 }
 
+.ekara-chip--prefix {
+  padding-right: 8px;
+  flex-shrink: 0;
+}
+
+.ekara-chip-label,
 .recipient-chip-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.ekara-chip-remove,
 .recipient-chip-remove {
   display: inline-flex;
   align-items: center;
@@ -1472,6 +1481,8 @@ span.form-label {
   width: 18px;
   height: 18px;
   padding: 0;
+  border: none;
+  background: transparent;
   font-size: 14px;
   line-height: 1;
   color: var(--text-muted);
@@ -1479,6 +1490,7 @@ span.form-label {
   cursor: pointer;
 }
 
+.ekara-chip-remove:hover,
 .recipient-chip-remove:hover {
   color: var(--text-neutral);
   background: var(--surface-hover-action);
@@ -1666,7 +1678,7 @@ span.form-label {
   padding: 4px 28px 4px 8px;
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
-  background: var(--card-bg);
+  background: var(--surface-default);
   color: var(--text-neutral);
   font-size: var(--font-size-body);
   font-family: inherit;
@@ -1681,7 +1693,7 @@ span.form-label {
   border-color: var(--input-focus-border);
 }
 
-.measure-tracker-field:has(.tracker-chip) .measure-tracker-placeholder {
+.measure-tracker-field:has(.ekara-chip) .measure-tracker-placeholder {
   display: none;
 }
 
@@ -1724,53 +1736,11 @@ span.form-label {
   pointer-events: none;
 }
 
-.tracker-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  max-width: 100%;
-  padding: 2px 4px 2px 8px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border-color);
-  font-size: 12px;
-  line-height: 18px;
-  color: var(--text-neutral);
-  background: var(--surface-hover-neutral);
-}
-
-.tracker-chip--static {
-  padding-right: 8px;
-  flex-shrink: 0;
-}
-
-.tracker-chip--value {
-  background: var(--color-b100);
-  padding-right: 2px;
-}
-
-.tracker-chip-text {
+.measure-tracker-chips .ekara-chip-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   max-width: 200px;
-}
-
-.tracker-chip-remove {
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  padding: 0 4px;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.tracker-chip-remove:hover {
-  color: var(--text-neutral);
 }
 
 .measure-tracker-menu {
@@ -1785,10 +1755,10 @@ span.form-label {
   margin: 0;
   padding: 4px 0;
   list-style: none;
-  background: var(--card-bg);
-  border: 1px solid var(--input-border-color);
+  background: var(--surface-default);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-dropdown, 0 4px 12px rgba(0, 0, 0, 0.12));
+  box-shadow: var(--shadow-dropdown);
 }
 
 .measure-tracker-menu.open {
