@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/tokens.css?v=80">
-  <link rel="stylesheet" href="../assets/css/ekara.css?v=80">
+  <link rel="stylesheet" href="../assets/css/tokens.css?v=90">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=90">
 </head>
 <body>
   <div class="app-layout">
@@ -123,7 +123,7 @@
         <!-- Integrations group -->
         <div class="sidebar-item">
           <div class="sidebar-group-toggle">
-            <span style="display:flex;align-items:center;gap:10px;">
+            <span class="sidebar-group-label">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
               Integrations
             </span>
@@ -141,7 +141,7 @@
         <!-- Usage group -->
         <div class="sidebar-item">
           <div class="sidebar-group-toggle">
-            <span style="display:flex;align-items:center;gap:10px;">
+            <span class="sidebar-group-label">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
               Usage
             </span>
@@ -278,7 +278,7 @@
             <span></span>
           </div>
           <div id="headers-container"></div>
-          <button type="button" class="btn btn-outline" id="btn-add-header" style="margin-top:4px;">
+          <button type="button" class="btn btn-outline btn--block-start-sm" id="btn-add-header">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add a header
           </button>
@@ -298,7 +298,7 @@
               <span></span>
             </div>
             <div id="mappings-container"></div>
-            <button type="button" class="btn btn-outline" id="btn-add-mapping" style="margin-top:4px;">
+            <button type="button" class="btn btn-outline btn--block-start-sm" id="btn-add-mapping">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Add a mapping
             </button>
@@ -324,7 +324,7 @@
   </div>
 
   <!-- Confirm delete dialog -->
-  <div class="modal-overlay" id="confirm-overlay" style="z-index:450;"></div>
+  <div class="modal-overlay modal-overlay--confirm" id="confirm-overlay"></div>
   <div class="confirm-dialog" id="confirm-dialog">
     <div class="confirm-dialog-title">Delete webhook</div>
     <div class="confirm-dialog-message" id="confirm-message"></div>
