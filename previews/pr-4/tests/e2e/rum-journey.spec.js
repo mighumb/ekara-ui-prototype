@@ -71,9 +71,8 @@ test.describe('Measures — RUM user journey mapping', () => {
     await page.goto(JOURNEY_PATH);
     await page.locator('#filter-tracker-trigger').click();
     await page.locator('#tracker-opt-agent').uncheck();
-    await expect(page.locator('#filter-tracker-placeholder')).toBeVisible();
-    await expect(page.locator('#filter-tracker-placeholder')).toHaveText('Trackers');
-    await expect(page.locator('.measure-tracker-chips .ekara-chip:not(.ekara-chip--prefix)')).toHaveCount(0);
+    await expect(page.locator('#filter-tracker-trigger .measure-filter-prefix')).toHaveText('Trackers:');
+    await expect(page.locator('.measure-tracker-chips .ekara-chip')).toHaveCount(0);
   });
 
   test('breakdown panel when device selected', async ({ page }) => {

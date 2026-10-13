@@ -1791,13 +1791,13 @@ span.form-label {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   width: 100%;
   min-height: 36px;
-  padding: 4px 28px 4px 8px;
+  padding: 0 28px 0 12px;
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
-  background: var(--surface-default);
+  background: var(--card-bg);
   color: var(--text-neutral);
   font-size: var(--font-size-body);
   font-family: inherit;
@@ -1812,10 +1812,6 @@ span.form-label {
   border-color: var(--input-focus-border);
 }
 
-.measure-tracker-field:has(.ekara-chip) .measure-tracker-placeholder {
-  display: none;
-}
-
 .measure-tracker-chips {
   display: flex;
   flex-wrap: wrap;
@@ -1827,18 +1823,6 @@ span.form-label {
 
 .measure-tracker-chips:empty {
   display: none;
-}
-
-.measure-tracker-placeholder {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding-left: 4px;
-  color: var(--text-neutral);
-  line-height: 28px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  pointer-events: none;
 }
 
 .measure-tracker-chevron {
