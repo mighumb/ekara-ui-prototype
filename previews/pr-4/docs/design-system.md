@@ -69,7 +69,7 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 **RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`.
 
-**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). **Trackers** use `.measure-tracker-picker` with **`.ekara-chip`** (same tokens as Settings recipients); placeholder `Trackers` when empty; dropdown row `Trackers (N)` with select-all (max **10**); × removes one tracker or clears all.
+**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). **Trackers** use `.measure-tracker-picker` with **`.measure-filter-prefix`** (`Trackers:`) plus **`.ekara-chip`** for selections (same tokens as Settings recipients); empty selection shows prefix only; dropdown row `Trackers (N)` with select-all (max **10**); × removes one tracker or clears all.
 
 ## Typography (Ekara DS)
 
