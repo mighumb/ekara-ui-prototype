@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=87">
-  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=87">
+  <link rel="stylesheet" href="../../../../assets/css/tokens.css?v=88">
+  <link rel="stylesheet" href="../../../../assets/css/ekara.css?v=88">
 </head>
 <body>
   <div class="app-layout">
@@ -174,11 +174,8 @@
           </div>
         </div>
         <div class="measure-filter-field measure-filter-field--grow">
-          <div class="measure-filter-inline">
-            <span class="measure-filter-calendar" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </span>
-            <input type="text" class="measure-filter-input" id="filter-date-range" value="01/09/2026 - 30/09/2026" aria-label="Date range">
+          <div class="ekara-date-range-picker" data-ekara-date-range id="filter-date-range-picker" aria-label="Date range">
+            <input type="hidden" id="filter-date-range" value="01/09/2026 - 30/09/2026" data-ekara-date-range-value>
           </div>
         </div>
         <div class="measure-filter-field">
@@ -267,6 +264,7 @@
   </div>
 
   <script src="../../../../assets/js/bento.js?v=2"></script>
-  <script src="../../../../assets/js/rum-user-journey.js?v=6"></script>
+  <script src="../../../../assets/js/ekara-date-range-picker.js?v=1"></script>
+  <script src="../../../../assets/js/rum-user-journey.js?v=7"></script>
 </body>
 </html>

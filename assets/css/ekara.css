@@ -1895,6 +1895,185 @@ span.form-label {
   background: var(--color-v500);
 }
 
+/* Ekara date range picker (shared Measures / RUM) */
+.ekara-date-range-picker {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.ekara-date-range-trigger {
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ekara-date-range-trigger .ekara-date-range-display {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 8px 4px 8px 0;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.ekara-date-range-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 640px;
+  max-width: min(720px, calc(100vw - 48px));
+  background: var(--card-bg);
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-dropdown);
+}
+
+.ekara-date-range-body {
+  display: flex;
+  align-items: stretch;
+  min-height: 320px;
+}
+
+.ekara-date-range-presets {
+  flex: 0 0 140px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  border-right: 1px solid var(--border-color);
+}
+
+.ekara-date-range-preset {
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 8px 16px;
+  font-size: var(--font-size-body);
+  font-family: inherit;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.ekara-date-range-preset:hover {
+  background: var(--surface-hover-neutral);
+}
+
+.ekara-date-range-calendars {
+  flex: 1 1 auto;
+  padding: 12px 16px 8px;
+  min-width: 0;
+}
+
+.ekara-date-range-calendars-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ekara-date-range-months {
+  flex: 1;
+  text-align: center;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-neutral);
+}
+
+.ekara-date-range-nav {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px;
+}
+
+.ekara-date-range-nav--prev {
+  background-image: var(--select-chevron-svg);
+  transform: rotate(90deg);
+}
+
+.ekara-date-range-nav--next {
+  background-image: var(--select-chevron-svg);
+  transform: rotate(-90deg);
+}
+
+.ekara-date-range-grids {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ekara-date-range-month-title {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-neutral);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.ekara-date-range-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+  font-size: var(--font-size-12);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.ekara-date-range-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.ekara-date-range-day {
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-12);
+  font-family: inherit;
+  color: var(--text-neutral);
+  line-height: 28px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  padding: 0;
+}
+
+.ekara-date-range-day.is-outside {
+  color: var(--text-muted);
+}
+
+.ekara-date-range-day.is-in-range {
+  background: var(--color-b100);
+  color: var(--text-neutral);
+}
+
+.ekara-date-range-day.is-start,
+.ekara-date-range-day.is-end {
+  background: var(--primary);
+  color: var(--text-on-primary);
+}
+
+.ekara-date-range-day:hover:not(.is-start):not(.is-end) {
+  background: var(--surface-hover-neutral);
+}
+
+.ekara-date-range-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+}
+
 .rum-journey-page-title {
   font-size: var(--page-title-font-size);
   font-weight: var(--font-weight-semibold);
