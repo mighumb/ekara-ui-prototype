@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=82');
+@import url('tokens.css?v=83');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -1571,11 +1571,6 @@ span.form-label {
 .rum-journey-filters .form-group--grow {
   flex: 1;
   min-width: 200px;
-}
-
-.rum-journey-step-type {
-  font-size: var(--font-size-body);
-  color: var(--text-neutral);
 }
 
 .rum-journey-page-title {
