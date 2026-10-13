@@ -1666,8 +1666,11 @@ span.form-label {
 }
 
 /* Measures — custom inline select (DS listbox; native select kept hidden for value/change) */
-.ekara-inline-select-control {
+.measure-filter-inline[data-ekara-inline-select] {
   position: relative;
+}
+
+.ekara-inline-select-control {
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -1722,6 +1725,8 @@ span.form-label {
   z-index: 55;
   top: calc(100% + 4px);
   left: 0;
+  right: 0;
+  width: auto;
   min-width: 100%;
   margin: 0;
   padding: 4px 0;
@@ -1730,6 +1735,7 @@ span.form-label {
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   box-shadow: var(--shadow-dropdown);
+  box-sizing: border-box;
 }
 
 .ekara-inline-select-option {

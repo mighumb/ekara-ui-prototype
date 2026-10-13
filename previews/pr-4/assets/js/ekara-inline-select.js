@@ -96,8 +96,9 @@
     select.setAttribute('tabindex', '-1');
     select.setAttribute('aria-hidden', 'true');
 
-    control.append(trigger, menu);
+    control.append(trigger);
     select.insertAdjacentElement('beforebegin', control);
+    root.appendChild(menu);
 
     select.addEventListener('change', syncUI);
     syncUI();
