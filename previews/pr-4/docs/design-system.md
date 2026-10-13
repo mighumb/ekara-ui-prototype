@@ -55,6 +55,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Date range | `.ekara-date-range-picker` + `ekara-date-range-picker.js` | Display format **`DD/MM/YYYY - DD/MM/YYYY`** (same on every page); presets + dual month grid; range `--color-b100`, endpoints `--primary` / `--text-on-primary`; include script after `ekara.css` |
 | Link | `a` | `--link-color` |
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
+| Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` (alias `.recipient-chip*`) | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |
 
 **Tooltip** — include `tooltip.js` on every page that needs it. Do not use native `title`. For table cells with ellipsis, set `data-tooltip-full="…"` and call `EkaraTooltip.syncTruncated(tableBody)` after render (sets `data-tooltip` only when text overflows). Static controls can use `data-tooltip` directly.
@@ -67,7 +68,7 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 **RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`.
 
-**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). **Trackers** use `.measure-tracker-picker`: placeholder `Trackers` when empty; dropdown row `Trackers (N)` with select-all (capped at **10** trackers, same as RUM trends); chips per tracker (or `N selected` when &gt;3); × removes one tracker or clears all.
+**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). **Trackers** use `.measure-tracker-picker` with **`.ekara-chip`** (same tokens as Settings recipients); placeholder `Trackers` when empty; dropdown row `Trackers (N)` with select-all (max **10**); × removes one tracker or clears all.
 
 ## Typography (Ekara DS)
 

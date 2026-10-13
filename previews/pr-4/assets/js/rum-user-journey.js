@@ -305,28 +305,28 @@ function renderTrackerChips() {
     return;
   }
 
-  const parts = ['<span class="tracker-chip tracker-chip--static"><span class="tracker-chip-text">Trackers</span></span>'];
+  const parts = ['<span class="ekara-chip ekara-chip--prefix"><span class="ekara-chip-label">Trackers</span></span>'];
 
   if (ids.length > TRACKER_CHIP_NAME_LIMIT) {
     parts.push(`
-      <span class="tracker-chip tracker-chip--value">
-        <span class="tracker-chip-text">${ids.length} selected</span>
-        <button type="button" class="tracker-chip-remove" data-action="clear-all" aria-label="Clear all trackers">×</button>
+      <span class="ekara-chip">
+        <span class="ekara-chip-label">${ids.length} selected</span>
+        <button type="button" class="ekara-chip-remove" data-action="clear-all" aria-label="Clear all trackers">×</button>
       </span>`);
   } else {
     ids.forEach((id) => {
       const t = trackerById(id);
       parts.push(`
-      <span class="tracker-chip tracker-chip--value">
-        <span class="tracker-chip-text">${escapeHtml(t?.label || id)}${trackerOptionDotHtml(t)}</span>
-        <button type="button" class="tracker-chip-remove" data-tracker-id="${escapeAttr(id)}" aria-label="Remove ${escapeHtml(t?.label || id)}">×</button>
+      <span class="ekara-chip">
+        <span class="ekara-chip-label">${escapeHtml(t?.label || id)}${trackerOptionDotHtml(t)}</span>
+        <button type="button" class="ekara-chip-remove" data-tracker-id="${escapeAttr(id)}" aria-label="Remove ${escapeHtml(t?.label || id)}">×</button>
       </span>`);
     });
   }
 
   els.trackerChips.innerHTML = parts.join('');
 
-  els.trackerChips.querySelectorAll('.tracker-chip-remove').forEach((btn) => {
+  els.trackerChips.querySelectorAll('.ekara-chip-remove').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (btn.dataset.action === 'clear-all') {
@@ -354,7 +354,7 @@ function initDateRangePicker() {
 function bindTrackerPicker() {
   if (!els.trackerTrigger || !els.trackerMenu) return;
   els.trackerTrigger.addEventListener('click', (e) => {
-    if (e.target.closest('.tracker-chip-remove')) return;
+    if (e.target.closest('.ekara-chip-remove')) return;
     els.trackerMenu.classList.toggle('hidden');
     const isOpen = !els.trackerMenu.classList.contains('hidden');
     els.trackerTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
