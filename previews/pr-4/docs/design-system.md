@@ -52,6 +52,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
 | Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` (same tokens for input and select) |
+| Date range | `.ekara-date-range-picker` + `ekara-date-range-picker.js` | Display format **`DD/MM/YYYY - DD/MM/YYYY`** (same on every page); presets + dual month grid; range `--color-b100`, endpoints `--primary` / `--text-on-primary`; include script after `ekara.css` |
 | Link | `a` | `--link-color` |
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |

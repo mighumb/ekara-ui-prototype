@@ -49,6 +49,16 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('.tracker-chip--value .tracker-chip-text').first()).toHaveText('4 selected');
   });
 
+  test('date range picker opens and applies preset', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    await page.locator('.ekara-date-range-trigger').click();
+    await expect(page.locator('.ekara-date-range-panel')).toBeVisible();
+    await page.locator('[data-preset="this-month"]').click();
+    await page.locator('.ekara-date-range-apply').click();
+    await expect(page.locator('.ekara-date-range-panel')).toBeHidden();
+    await expect(page.locator('#filter-date-range')).toHaveValue(/\d{2}\/\d{2}\/\d{4} - \d{2}\/\d{2}\/\d{4}/);
+  });
+
   test('tracker selection capped at ten like RUM trends', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
     await page.locator('#filter-tracker-trigger').click();

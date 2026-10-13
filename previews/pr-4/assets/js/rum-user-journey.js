@@ -151,6 +151,7 @@ function init() {
   buildTrackerPickerMenu();
   renderTrackerChips();
   bindTrackerPicker();
+  initDateRangePicker();
   bindFilters();
   if (els.retry) els.retry.addEventListener('click', () => loadJourneyData());
   initSidebarGroups();
@@ -340,6 +341,14 @@ function renderTrackerChips() {
       if (trackerId) removeTrackerFromSelection(trackerId);
     });
   });
+}
+
+function initDateRangePicker() {
+  const root = document.getElementById('filter-date-range-picker');
+  if (root && window.EkaraDateRangePicker) {
+    window.EkaraDateRangePicker.init(root);
+  }
+  els.dateRange = document.getElementById('filter-date-range');
 }
 
 function bindTrackerPicker() {
