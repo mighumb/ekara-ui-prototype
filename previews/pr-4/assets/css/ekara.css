@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=80');
+@import url('tokens.css?v=82');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -1560,11 +1560,7 @@ span.form-label {
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 16px 20px;
-  padding: 16px 20px;
   margin-bottom: 20px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
 }
 
 .rum-journey-filters .form-group {
