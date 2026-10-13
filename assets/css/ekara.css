@@ -2002,6 +2002,7 @@ span.form-label {
 
 .ekara-date-range-body {
   --ekara-date-range-body-inset: 12px;
+  --ekara-date-range-presets-width: 140px;
   display: flex;
   align-items: stretch;
   min-height: 320px;
@@ -2013,14 +2014,14 @@ span.form-label {
   position: absolute;
   top: var(--ekara-date-range-body-inset);
   bottom: var(--ekara-date-range-body-inset);
-  left: 140px;
+  left: var(--ekara-date-range-presets-width);
   width: 1px;
   background: var(--border-color);
   pointer-events: none;
 }
 
 .ekara-date-range-presets {
-  flex: 0 0 140px;
+  flex: 0 0 var(--ekara-date-range-presets-width);
   display: flex;
   flex-direction: column;
   padding: var(--ekara-date-range-body-inset) 0;
