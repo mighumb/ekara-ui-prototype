@@ -2001,17 +2001,29 @@ span.form-label {
 }
 
 .ekara-date-range-body {
+  --ekara-date-range-body-inset: 12px;
   display: flex;
   align-items: stretch;
   min-height: 320px;
+  position: relative;
+}
+
+.ekara-date-range-body::after {
+  content: '';
+  position: absolute;
+  top: var(--ekara-date-range-body-inset);
+  bottom: var(--ekara-date-range-body-inset);
+  left: 140px;
+  width: 1px;
+  background: var(--border-color);
+  pointer-events: none;
 }
 
 .ekara-date-range-presets {
   flex: 0 0 140px;
   display: flex;
   flex-direction: column;
-  padding: 12px 0;
-  border-right: 1px solid var(--border-color);
+  padding: var(--ekara-date-range-body-inset) 0;
 }
 
 .ekara-date-range-preset {
@@ -2031,7 +2043,7 @@ span.form-label {
 
 .ekara-date-range-calendars {
   flex: 1 1 auto;
-  padding: 12px 16px 8px;
+  padding: var(--ekara-date-range-body-inset) 16px 8px;
   min-width: 0;
 }
 
