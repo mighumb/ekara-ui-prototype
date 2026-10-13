@@ -4,10 +4,19 @@
  */
 
 const MOCK_TRACKERS = [
-  { id: 'agent', label: 'Tracker_Agent_', color: 'var(--color-v500)' },
-  { id: 'empty', label: 'Tracker_Empty_', color: 'var(--color-n400)' },
-  { id: 'error', label: 'Tracker_Error_', color: 'var(--color-r600)' },
+  { id: '1111', label: '1111' },
+  { id: '54', label: '54' },
+  { id: 'agent', label: 'Tracker_Agent_', color: true },
+  { id: 'kaya', label: 'tracker kaya 1' },
+  { id: 'name', label: 'tracker name' },
+  { id: 'ccc', label: 'ccc' },
+  { id: 'ratio', label: 'TEST RATIO TRACKER' },
+  { id: 'empty', label: 'Tracker_Empty_' },
+  { id: 'error', label: 'Tracker_Error_' },
 ];
+
+/** Show tracker names in the chip while selection count is at most this value. */
+const TRACKER_CHIP_NAME_LIMIT = 3;
 
 const METRIC_LABELS = {
   sessions: 'Sessions',
@@ -92,7 +101,7 @@ const MOCK_GRAPH = {
 let state = {
   metric: 'sessions',
   breakdown: 'none',
-  trackerId: 'agent',
+  selectedTrackerIds: ['agent'],
   selectedNodeId: null,
   loading: false,
   error: null,
@@ -104,7 +113,11 @@ document.addEventListener('DOMContentLoaded', init);
 
 function init() {
   els = {
-    tracker: document.getElementById('filter-tracker'),
+    trackerTrigger: document.getElementById('filter-tracker-trigger'),
+    trackerChips: document.getElementById('filter-tracker-chips'),
+    trackerPlaceholder: document.getElementById('filter-tracker-placeholder'),
+    trackerMenu: document.getElementById('filter-tracker-menu'),
+    trackerOptions: document.getElementById('filter-tracker-options'),
     dateRange: document.getElementById('filter-date-range'),
     metric: document.getElementById('filter-metric'),
     breakdown: document.getElementById('filter-breakdown'),
@@ -127,25 +140,136 @@ function init() {
     breakdownBars: document.getElementById('breakdown-bars'),
   };
 
-  populateTrackerSelect();
+  buildTrackerPickerMenu();
+  renderTrackerChips();
+  bindTrackerPicker();
   bindFilters();
   if (els.retry) els.retry.addEventListener('click', () => loadJourneyData());
   initSidebarGroups();
   loadJourneyData();
 }
 
-function populateTrackerSelect() {
-  if (!els.tracker) return;
-  els.tracker.innerHTML = MOCK_TRACKERS
-    .map((t) => `<option value="${t.id}">${escapeHtml(t.label)}</option>`)
+function trackerById(id) {
+  return MOCK_TRACKERS.find((t) => t.id === id);
+}
+
+function buildTrackerPickerMenu() {
+  if (!els.trackerOptions) return;
+  els.trackerOptions.innerHTML = MOCK_TRACKERS
+    .map((t) => {
+      const dot = t.color
+        ? '<span class="measure-tracker-option-dot" aria-hidden="true"></span>'
+        : '';
+      return `
+    <li class="measure-tracker-option" data-tracker-id="${escapeAttr(t.id)}">
+      <input type="checkbox" id="tracker-opt-${escapeAttr(t.id)}" value="${escapeAttr(t.id)}" />
+      <span class="measure-tracker-option-label">${escapeHtml(t.label)}${dot}</span>
+    </li>`;
+    })
     .join('');
+
+  els.trackerOptions.querySelectorAll('.measure-tracker-option').forEach((row) => {
+    const id = row.dataset.trackerId;
+    const input = row.querySelector('input[type="checkbox"]');
+    if (!input) return;
+    input.checked = state.selectedTrackerIds.includes(id);
+    input.addEventListener('change', (e) => {
+      e.stopPropagation();
+      onTrackerCheckboxChange(id, input.checked);
+    });
+    row.addEventListener('click', (e) => {
+      if (e.target === input) return;
+      input.checked = !input.checked;
+      onTrackerCheckboxChange(id, input.checked);
+    });
+  });
+}
+
+function onTrackerCheckboxChange(id, checked) {
+  const set = new Set(state.selectedTrackerIds);
+  if (checked) set.add(id);
+  else set.delete(id);
+  if (set.size === 0) {
+    set.add('agent');
+    syncTrackerCheckboxes();
+  } else {
+    state.selectedTrackerIds = [...set];
+  }
+  renderTrackerChips();
+  state.selectedNodeId = null;
+  loadJourneyData();
+}
+
+function syncTrackerCheckboxes() {
+  if (!els.trackerOptions) return;
+  els.trackerOptions.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+    input.checked = state.selectedTrackerIds.includes(input.value);
+  });
+}
+
+function trackerChipValueText() {
+  const ids = state.selectedTrackerIds;
+  if (!ids.length) return '';
+  if (ids.length > TRACKER_CHIP_NAME_LIMIT) {
+    return `${ids.length} selected`;
+  }
+  return ids.map((id) => trackerById(id)?.label || id).join('  ');
+}
+
+function renderTrackerChips() {
+  if (!els.trackerChips) return;
+  const ids = state.selectedTrackerIds;
+  if (!ids.length) {
+    els.trackerChips.innerHTML = '';
+    return;
+  }
+  const value = trackerChipValueText();
+  els.trackerChips.innerHTML = `
+    <span class="tracker-chip">
+      <span class="tracker-chip-prefix">Trackers</span>
+      <span class="tracker-chip-body">
+        <span class="tracker-chip-value">${escapeHtml(value)}</span>
+        <button type="button" class="tracker-chip-clear" aria-label="Clear tracker selection">×</button>
+      </span>
+    </span>`;
+  const clearBtn = els.trackerChips.querySelector('.tracker-chip-clear');
+  clearBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.selectedTrackerIds = ['agent'];
+    syncTrackerCheckboxes();
+    renderTrackerChips();
+    state.selectedNodeId = null;
+    loadJourneyData();
+  });
+}
+
+function bindTrackerPicker() {
+  if (!els.trackerTrigger || !els.trackerMenu) return;
+  els.trackerTrigger.addEventListener('click', (e) => {
+    if (e.target.closest('.tracker-chip-clear')) return;
+    els.trackerMenu.classList.toggle('hidden');
+    const isOpen = !els.trackerMenu.classList.contains('hidden');
+    els.trackerTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    els.trackerMenu.classList.toggle('open', isOpen);
+  });
+  document.addEventListener('click', (e) => {
+    if (!els.trackerTrigger.contains(e.target) && !els.trackerMenu.contains(e.target)) {
+      closeTrackerMenu();
+    }
+  });
+}
+
+function closeTrackerMenu() {
+  if (!els.trackerMenu || !els.trackerTrigger) return;
+  els.trackerMenu.classList.add('hidden');
+  els.trackerMenu.classList.remove('open');
+  els.trackerTrigger.setAttribute('aria-expanded', 'false');
 }
 
 function bindFilters() {
-  [els.tracker, els.metric, els.breakdown].forEach((el) => {
+  [els.metric, els.breakdown].forEach((el) => {
     if (!el) return;
     el.addEventListener('change', () => {
-      state.trackerId = els.tracker.value;
       state.metric = els.metric.value;
       state.breakdown = els.breakdown.value;
       state.selectedNodeId = null;
@@ -170,13 +294,13 @@ function loadJourneyData() {
   state.loading = false;
   const mode = demoMode();
 
-  if (mode === 'error' || state.trackerId === 'error') {
+  if (mode === 'error' || state.selectedTrackerIds.includes('error')) {
     state.error = 'Unable to load journey data. Please try again.';
     updateViewState();
     return;
   }
 
-  if (mode === 'empty' || state.trackerId === 'empty') {
+  if (mode === 'empty' || isEmptyTrackerSelection()) {
     updateViewState();
     return;
   }
@@ -200,16 +324,29 @@ function formatMetricValue(n) {
   return String(n);
 }
 
+function isEmptyTrackerSelection() {
+  const ids = state.selectedTrackerIds;
+  return ids.length > 0 && ids.every((id) => id === 'empty');
+}
+
+function trackerScopeSummary() {
+  const ids = state.selectedTrackerIds;
+  if (!ids.length) return 'Trackers';
+  if (ids.length > TRACKER_CHIP_NAME_LIMIT) {
+    return `${ids.length} trackers`;
+  }
+  return ids.map((id) => trackerById(id)?.label || id).join(', ');
+}
+
 function updateScopeLabel() {
-  const tracker = MOCK_TRACKERS.find((t) => t.id === state.trackerId);
   const range = els.dateRange?.value || '';
   if (els.scopeLabel) {
-    els.scopeLabel.textContent = `${tracker?.label || 'Tracker'} — ${range}`;
+    els.scopeLabel.textContent = `${trackerScopeSummary()} — ${range}`;
   }
 }
 
 function updateViewState() {
-  const isEmpty = !state.loading && !state.error && (demoMode() === 'empty' || state.trackerId === 'empty');
+  const isEmpty = !state.loading && !state.error && (demoMode() === 'empty' || isEmptyTrackerSelection());
   const showContent = !state.loading && !state.error && !isEmpty;
 
   els.loading?.classList.toggle('hidden', !state.loading);
