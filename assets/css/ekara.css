@@ -1580,9 +1580,28 @@ span.form-label {
 .rum-journey-filters {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   gap: 12px;
   margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Equal flex share so the filter row spans the same width as journey cards */
+.rum-journey-filters .measure-filter-field {
+  flex: 1 1 0;
+  min-width: min(132px, 100%);
+  max-width: none;
+}
+
+.rum-journey-filters .measure-filter-field--grow,
+.rum-journey-filters .measure-filter-field--trackers {
+  flex: 1 1 0;
+  max-width: none;
+}
+
+.rum-journey-filters .measure-filter-inline {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Measures filter bar — inline labels inside controls (RUM / RUM trends pattern) */
