@@ -118,6 +118,8 @@ function init() {
     trackerPlaceholder: document.getElementById('filter-tracker-placeholder'),
     trackerMenu: document.getElementById('filter-tracker-menu'),
     trackerOptions: document.getElementById('filter-tracker-options'),
+    trackerSelectAll: null,
+    trackerTree: null,
     dateRange: document.getElementById('filter-date-range'),
     metric: document.getElementById('filter-metric'),
     breakdown: document.getElementById('filter-breakdown'),
@@ -153,13 +155,16 @@ function trackerById(id) {
   return MOCK_TRACKERS.find((t) => t.id === id);
 }
 
+function trackerOptionDotHtml(tracker) {
+  return tracker?.color ? '<span class="measure-tracker-option-dot" aria-hidden="true"></span>' : '';
+}
+
 function buildTrackerPickerMenu() {
   if (!els.trackerOptions) return;
-  els.trackerOptions.innerHTML = MOCK_TRACKERS
+  const total = MOCK_TRACKERS.length;
+  const children = MOCK_TRACKERS
     .map((t) => {
-      const dot = t.color
-        ? '<span class="measure-tracker-option-dot" aria-hidden="true"></span>'
-        : '';
+      const dot = trackerOptionDotHtml(t);
       return `
     <li class="measure-tracker-option" data-tracker-id="${escapeAttr(t.id)}">
       <input type="checkbox" id="tracker-opt-${escapeAttr(t.id)}" value="${escapeAttr(t.id)}" />
@@ -168,11 +173,45 @@ function buildTrackerPickerMenu() {
     })
     .join('');
 
-  els.trackerOptions.querySelectorAll('.measure-tracker-option').forEach((row) => {
+  els.trackerOptions.innerHTML = `
+    <li class="measure-tracker-option measure-tracker-option--parent">
+      <button type="button" class="measure-tracker-tree-toggle" id="tracker-tree-toggle" aria-expanded="true" aria-label="Toggle tracker list"></button>
+      <input type="checkbox" id="tracker-opt-all" aria-label="Select all trackers" />
+      <span class="measure-tracker-option-label">Trackers (${total})</span>
+    </li>
+    <li class="measure-tracker-tree-wrap">
+      <ul class="measure-tracker-tree" id="tracker-option-tree">${children}</ul>
+    </li>`;
+
+  els.trackerSelectAll = document.getElementById('tracker-opt-all');
+  els.trackerTree = document.getElementById('tracker-option-tree');
+
+  const parentRow = els.trackerOptions.querySelector('.measure-tracker-option--parent');
+  const treeToggle = document.getElementById('tracker-tree-toggle');
+  treeToggle?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const expanded = treeToggle.getAttribute('aria-expanded') !== 'false';
+    const next = !expanded;
+    treeToggle.setAttribute('aria-expanded', next ? 'true' : 'false');
+    els.trackerTree?.classList.toggle('collapsed', !next);
+  });
+
+  parentRow?.addEventListener('click', (e) => {
+    if (e.target === els.trackerSelectAll || e.target === treeToggle) return;
+    if (!els.trackerSelectAll) return;
+    els.trackerSelectAll.checked = !els.trackerSelectAll.checked;
+    onSelectAllChange(els.trackerSelectAll.checked);
+  });
+
+  els.trackerSelectAll?.addEventListener('change', (e) => {
+    e.stopPropagation();
+    onSelectAllChange(els.trackerSelectAll.checked);
+  });
+
+  els.trackerTree?.querySelectorAll('.measure-tracker-option').forEach((row) => {
     const id = row.dataset.trackerId;
     const input = row.querySelector('input[type="checkbox"]');
     if (!input) return;
-    input.checked = state.selectedTrackerIds.includes(id);
     input.addEventListener('change', (e) => {
       e.stopPropagation();
       onTrackerCheckboxChange(id, input.checked);
@@ -183,18 +222,24 @@ function buildTrackerPickerMenu() {
       onTrackerCheckboxChange(id, input.checked);
     });
   });
+
+  syncTrackerCheckboxes();
+}
+
+function onSelectAllChange(checked) {
+  state.selectedTrackerIds = checked ? MOCK_TRACKERS.map((t) => t.id) : [];
+  syncTrackerCheckboxes();
+  renderTrackerChips();
+  state.selectedNodeId = null;
+  loadJourneyData();
 }
 
 function onTrackerCheckboxChange(id, checked) {
   const set = new Set(state.selectedTrackerIds);
   if (checked) set.add(id);
   else set.delete(id);
-  if (set.size === 0) {
-    set.add('agent');
-    syncTrackerCheckboxes();
-  } else {
-    state.selectedTrackerIds = [...set];
-  }
+  state.selectedTrackerIds = [...set];
+  syncTrackerCheckboxes();
   renderTrackerChips();
   state.selectedNodeId = null;
   loadJourneyData();
@@ -202,18 +247,26 @@ function onTrackerCheckboxChange(id, checked) {
 
 function syncTrackerCheckboxes() {
   if (!els.trackerOptions) return;
-  els.trackerOptions.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+  els.trackerTree?.querySelectorAll('input[type="checkbox"]').forEach((input) => {
     input.checked = state.selectedTrackerIds.includes(input.value);
   });
+  updateSelectAllCheckbox();
 }
 
-function trackerChipValueText() {
-  const ids = state.selectedTrackerIds;
-  if (!ids.length) return '';
-  if (ids.length > TRACKER_CHIP_NAME_LIMIT) {
-    return `${ids.length} selected`;
-  }
-  return ids.map((id) => trackerById(id)?.label || id).join('  ');
+function updateSelectAllCheckbox() {
+  if (!els.trackerSelectAll) return;
+  const n = state.selectedTrackerIds.length;
+  const total = MOCK_TRACKERS.length;
+  els.trackerSelectAll.checked = n === total && total > 0;
+  els.trackerSelectAll.indeterminate = n > 0 && n < total;
+}
+
+function removeTrackerFromSelection(id) {
+  state.selectedTrackerIds = state.selectedTrackerIds.filter((x) => x !== id);
+  syncTrackerCheckboxes();
+  renderTrackerChips();
+  state.selectedNodeId = null;
+  loadJourneyData();
 }
 
 function renderTrackerChips() {
@@ -223,30 +276,49 @@ function renderTrackerChips() {
     els.trackerChips.innerHTML = '';
     return;
   }
-  const value = trackerChipValueText();
-  els.trackerChips.innerHTML = `
-    <span class="tracker-chip">
-      <span class="tracker-chip-prefix">Trackers</span>
-      <span class="tracker-chip-body">
-        <span class="tracker-chip-value">${escapeHtml(value)}</span>
-        <button type="button" class="tracker-chip-clear" aria-label="Clear tracker selection">×</button>
-      </span>
-    </span>`;
-  const clearBtn = els.trackerChips.querySelector('.tracker-chip-clear');
-  clearBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    state.selectedTrackerIds = ['agent'];
-    syncTrackerCheckboxes();
-    renderTrackerChips();
-    state.selectedNodeId = null;
-    loadJourneyData();
+
+  const parts = ['<span class="tracker-chip tracker-chip--static"><span class="tracker-chip-text">Trackers</span></span>'];
+
+  if (ids.length > TRACKER_CHIP_NAME_LIMIT) {
+    parts.push(`
+      <span class="tracker-chip tracker-chip--value">
+        <span class="tracker-chip-text">${ids.length} selected</span>
+        <button type="button" class="tracker-chip-remove" data-action="clear-all" aria-label="Clear all trackers">×</button>
+      </span>`);
+  } else {
+    ids.forEach((id) => {
+      const t = trackerById(id);
+      parts.push(`
+      <span class="tracker-chip tracker-chip--value">
+        <span class="tracker-chip-text">${escapeHtml(t?.label || id)}${trackerOptionDotHtml(t)}</span>
+        <button type="button" class="tracker-chip-remove" data-tracker-id="${escapeAttr(id)}" aria-label="Remove ${escapeHtml(t?.label || id)}">×</button>
+      </span>`);
+    });
+  }
+
+  els.trackerChips.innerHTML = parts.join('');
+
+  els.trackerChips.querySelectorAll('.tracker-chip-remove').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (btn.dataset.action === 'clear-all') {
+        state.selectedTrackerIds = [];
+        syncTrackerCheckboxes();
+        renderTrackerChips();
+        state.selectedNodeId = null;
+        loadJourneyData();
+        return;
+      }
+      const trackerId = btn.dataset.trackerId;
+      if (trackerId) removeTrackerFromSelection(trackerId);
+    });
   });
 }
 
 function bindTrackerPicker() {
   if (!els.trackerTrigger || !els.trackerMenu) return;
   els.trackerTrigger.addEventListener('click', (e) => {
-    if (e.target.closest('.tracker-chip-clear')) return;
+    if (e.target.closest('.tracker-chip-remove')) return;
     els.trackerMenu.classList.toggle('hidden');
     const isOpen = !els.trackerMenu.classList.contains('hidden');
     els.trackerTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -300,7 +372,7 @@ function loadJourneyData() {
     return;
   }
 
-  if (mode === 'empty' || isEmptyTrackerSelection()) {
+  if (mode === 'empty' || isEmptyTrackerSelection() || state.selectedTrackerIds.length === 0) {
     updateViewState();
     return;
   }
@@ -346,7 +418,10 @@ function updateScopeLabel() {
 }
 
 function updateViewState() {
-  const isEmpty = !state.loading && !state.error && (demoMode() === 'empty' || isEmptyTrackerSelection());
+  const isEmpty =
+    !state.loading &&
+    !state.error &&
+    (demoMode() === 'empty' || isEmptyTrackerSelection() || state.selectedTrackerIds.length === 0);
   const showContent = !state.loading && !state.error && !isEmpty;
 
   els.loading?.classList.toggle('hidden', !state.loading);

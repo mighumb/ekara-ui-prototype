@@ -46,7 +46,16 @@ test.describe('Measures — RUM user journey mapping', () => {
     await page.locator('#tracker-opt-1111').check();
     await page.locator('#tracker-opt-54').check();
     await page.locator('#tracker-opt-kaya').check();
-    await expect(page.locator('.tracker-chip-value')).toHaveText('4 selected');
+    await expect(page.locator('.tracker-chip--value .tracker-chip-text').first()).toHaveText('4 selected');
+  });
+
+  test('tracker placeholder when none selected', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    await page.locator('#filter-tracker-trigger').click();
+    await page.locator('#tracker-opt-agent').uncheck();
+    await expect(page.locator('#filter-tracker-placeholder')).toBeVisible();
+    await expect(page.locator('#filter-tracker-placeholder')).toHaveText('Trackers');
+    await expect(page.locator('.tracker-chip--value')).toHaveCount(0);
   });
 
   test('breakdown panel when device selected', async ({ page }) => {
