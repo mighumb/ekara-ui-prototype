@@ -9,8 +9,8 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('.topbar-breadcrumb')).toContainText('RUM user journey mapping');
     await expect(page.locator('#page-title')).toHaveText('RUM user journey mapping');
     await expect(page.locator('.sidebar-subitem-link.active')).toHaveText('RUM user journey mapping');
-    await expect(page.locator('#filter-dimension')).toHaveValue('page-group');
-    await expect(page.locator('#filter-dimension')).toBeDisabled();
+    await expect(page.locator('#filter-dimension')).toHaveText('Page group');
+    await expect(page.locator('.rum-journey-filters .form-label')).toHaveCount(0);
     await expect(page.locator('#path-graph .rum-journey-node').first()).toBeVisible({ timeout: 5000 });
     await expect(page.locator('#top5-list li')).toHaveCount(5);
   });

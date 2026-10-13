@@ -66,6 +66,8 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 **RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`.
 
+**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends).
+
 ## Typography (Ekara DS)
 
 - **Family:** Open Sans — `--font-family`
