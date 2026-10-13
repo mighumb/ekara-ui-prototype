@@ -121,7 +121,6 @@ function init() {
   els = {
     trackerTrigger: document.getElementById('filter-tracker-trigger'),
     trackerChips: document.getElementById('filter-tracker-chips'),
-    trackerPlaceholder: document.getElementById('filter-tracker-placeholder'),
     trackerMenu: document.getElementById('filter-tracker-menu'),
     trackerOptions: document.getElementById('filter-tracker-options'),
     trackerSelectAll: null,
@@ -305,7 +304,7 @@ function renderTrackerChips() {
     return;
   }
 
-  const parts = ['<span class="ekara-chip ekara-chip--prefix"><span class="ekara-chip-label">Trackers</span></span>'];
+  const parts = [];
 
   if (ids.length > TRACKER_CHIP_NAME_LIMIT) {
     parts.push(`
