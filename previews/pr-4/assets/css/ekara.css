@@ -82,7 +82,7 @@ select:not(:disabled) {
 
 .topbar-breadcrumb {
   color: var(--topbar-text);
-  font-size: 13px;
+  font-size: var(--topbar-font-size);
 }
 
 .topbar-breadcrumb span {
@@ -98,7 +98,7 @@ select:not(:disabled) {
 
 .topbar-account {
   color: var(--topbar-text);
-  font-size: 13px;
+  font-size: var(--topbar-font-size);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -190,7 +190,7 @@ select:not(:disabled) {
 .bento-menu-icon {
   width: 28px;
   height: 28px;
-  color: var(--color-n400);
+  color: var(--text-secondary);
 }
 
 .bento-menu-item.active .bento-menu-icon {
@@ -257,6 +257,12 @@ select:not(:disabled) {
   width: 100%;
 }
 
+.sidebar-group-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .sidebar-chevron {
   width: 12px;
   height: 12px;
@@ -316,7 +322,7 @@ select:not(:disabled) {
   gap: 6px;
   padding: 8px 16px;
   border-radius: var(--radius);
-  font-size: 13px;
+  font-size: var(--button-font-size);
   font-weight: var(--font-weight-medium);
   transition: background 0.15s, border-color 0.15s;
 }
@@ -527,7 +533,7 @@ select:not(:disabled) {
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  font-size: 13px;
+  font-size: var(--font-size-body);
   color: var(--text-neutral);
   cursor: pointer;
   white-space: nowrap;
@@ -564,6 +570,10 @@ select:not(:disabled) {
   background: var(--overlay);
   z-index: 300;
   display: none;
+}
+
+.modal-overlay--confirm {
+  z-index: var(--overlay-z-index-confirm);
 }
 
 .modal-overlay.open {
@@ -709,7 +719,7 @@ span.form-label {
   resize: none;
   min-height: 80px;
   font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 
 .form-input.error,
@@ -739,7 +749,7 @@ span.form-label {
 
 .form-error {
   color: var(--danger);
-  font-size: 12px;
+  font-size: var(--font-size-12);
   margin-top: 4px;
 }
 
@@ -777,7 +787,7 @@ span.form-label {
   min-width: 0;
   margin: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: var(--font-size-12);
   color: var(--text-secondary);
   line-height: 1.45;
 }
@@ -939,7 +949,7 @@ span.form-label {
 
 /* Alert context dropdown styling */
 .alert-field-select {
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 
 .alert-field-select option {
@@ -957,7 +967,7 @@ span.form-label {
 
 .payload-preview-content {
   font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 12px;
+  font-size: var(--font-size-12);
   color: var(--text-neutral);
   white-space: pre-wrap;
   word-break: break-all;
@@ -968,7 +978,7 @@ span.form-label {
   color: var(--text-muted);
   font-style: italic;
   font-family: var(--font-family);
-  font-size: 13px;
+  font-size: var(--font-size-body);
 }
 
 /* JSON editor mode toggle */
@@ -984,7 +994,7 @@ span.form-label {
 
 .mode-toggle-btn {
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: var(--font-size-12);
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary);
   background: var(--surface-default);
@@ -1051,13 +1061,13 @@ span.form-label {
 }
 
 .confirm-dialog-title {
-  font-size: 16px;
+  font-size: var(--font-size-16);
   font-weight: var(--font-weight-semibold);
   margin-bottom: 8px;
 }
 
 .confirm-dialog-message {
-  font-size: 14px;
+  font-size: var(--font-size-body);
   color: var(--text-secondary);
   margin-bottom: 20px;
 }
@@ -1094,7 +1104,7 @@ span.form-label {
   color: var(--sidebar-text-active);
   font-size: var(--sidebar-font-size);
   font-weight: var(--font-weight-semibold);
-  border-bottom: 1px solid var(--color-n700);
+  border-bottom: 1px solid var(--sidebar-divider-on-dark);
 }
 
 .sidebar-workspace svg {
@@ -1152,10 +1162,10 @@ span.form-label {
   display: inline-block;
   padding: 2px 8px;
   border-radius: var(--radius);
-  font-size: 12px;
+  font-size: var(--font-size-12);
   background: var(--surface-hover-action);
   color: var(--primary);
-  border: 1px solid var(--color-b100);
+  border: 1px solid var(--app-tag-border-color);
 }
 
 /* Alert drawer */
@@ -1174,7 +1184,7 @@ span.form-label {
   position: absolute;
   right: 10px;
   bottom: 8px;
-  font-size: 12px;
+  font-size: var(--font-size-12);
   color: var(--text-muted);
   pointer-events: none;
 }
@@ -1307,7 +1317,7 @@ span.form-label {
   border: 1px solid var(--input-border-color);
   background: var(--surface-default);
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-size-12);
   font-weight: var(--font-weight-semibold);
   display: flex;
   align-items: center;
@@ -1483,7 +1493,7 @@ span.form-label {
   padding: 0;
   border: none;
   background: transparent;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   line-height: 1;
   color: var(--text-muted);
   border-radius: var(--radius);
@@ -1822,7 +1832,7 @@ span.form-label {
 
 .measure-tracker-limit-hint {
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: var(--font-size-12);
   color: var(--text-secondary);
   border-top: 1px solid var(--border-color);
   list-style: none;
@@ -1862,7 +1872,7 @@ span.form-label {
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
-  background: var(--color-v500);
+  background: var(--tracker-marker-bg);
 }
 
 /* Ekara date range picker (shared Measures / RUM) */
@@ -2021,7 +2031,7 @@ span.form-label {
 }
 
 .ekara-date-range-day.is-in-range {
-  background: var(--color-b100);
+  background: var(--date-range-selection-bg);
   color: var(--text-neutral);
 }
 
@@ -2089,6 +2099,46 @@ span.form-label {
 
 .rum-journey-state--error {
   color: var(--text-neutral);
+}
+
+.rum-journey-state .btn {
+  margin-top: 16px;
+}
+
+/* Prototype landing (index.html) */
+.landing-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.landing {
+  text-align: center;
+  padding: 40px;
+}
+
+.landing h1 {
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-neutral);
+  margin-bottom: 8px;
+}
+
+.landing p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn--block-start-sm {
+  margin-top: 4px;
 }
 
 .rum-journey-spinner {

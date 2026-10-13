@@ -249,4 +249,13 @@
   --sidebar-footer-font-size: var(--font-size-12);
   --page-title-font-size: var(--font-size-20);
   --panel-title-font-size: var(--font-size-18);
+  --topbar-font-size: var(--font-size-14);
+  --button-font-size: var(--font-size-14);
+
+  /* ── Component semantics (palette aliases — use in ekara.css, not in pages) ── */
+  --date-range-selection-bg: var(--color-b100);
+  --app-tag-border-color: var(--color-b100);
+  --tracker-marker-bg: var(--color-v500);
+  --sidebar-divider-on-dark: var(--color-n700);
+  --overlay-z-index-confirm: 450;
 }

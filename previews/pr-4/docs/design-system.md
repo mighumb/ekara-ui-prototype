@@ -116,7 +116,11 @@ Visibility is driven by the **Service** dropdown (`updateServiceSections` in `we
 <link rel="stylesheet" href="../assets/css/ekara.css?v=…">
 ```
 
-Bump `?v=` on **both** files after deploy (tokens + ekara) so the browser does not serve a stale `tokens.css` via cache.
+Bump `?v=` on **both** files after deploy (tokens + ekara) so the browser does not serve a stale `tokens.css` via cache. Keep the same `?v=` on every HTML page when you change shared CSS.
+
+**Sidebar group rows** — wrap icon + label in `.sidebar-group-label` (no inline flex styles).
+
+**Typography** — use `--font-size-*` / semantic sizes only in `ekara.css` (no raw `13px`). Palette steps (`--color-b100`, etc.) belong in `tokens.css` as semantic aliases (e.g. `--date-range-selection-bg`), not directly in component rules.
 
 ## Maintenance (agent)
 
