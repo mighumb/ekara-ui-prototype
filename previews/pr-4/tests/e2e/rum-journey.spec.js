@@ -19,7 +19,8 @@ test.describe('Measures — RUM user journey mapping', () => {
 
   test('flow line tooltip on hover', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
-    await page.waitForSelector('.rum-journey-path-link-hit');
+    await page.waitForSelector('.rum-journey-path-link-hit', { state: 'attached' });
+    await page.waitForSelector('#path-graph .rum-journey-node', { state: 'visible', timeout: 5000 });
     const box = await page.locator('.rum-journey-path-link-hit').first().boundingBox();
     if (!box) throw new Error('Expected flow hit area');
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
