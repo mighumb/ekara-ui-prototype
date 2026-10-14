@@ -38,6 +38,12 @@ const BREAKDOWN_LABELS = {
 
 /** @typedef {{ id: string, name: string, sessions: number, users: number, transitions: number }} PageGroupNode */
 
+/**
+ * Mock journey graph — one coherent story for the prototype:
+ * - `links` = volume on one step transition (shown on Path exploration curves).
+ * - `topPaths` = full end-to-end journeys (Top 5 list); sums should align with link flows at Product.
+ * - Node `sessions` at step 3 Product = sum of incoming links; outgoing links sum to the same.
+ */
 const MOCK_GRAPH = {
   steps: [
     [
@@ -53,7 +59,7 @@ const MOCK_GRAPH = {
     ],
     [
       { id: 'cart', name: 'Cart', sessions: 1240, users: 1050, transitions: 1240 },
-      { id: 'exit', name: 'Exit', sessions: 890, users: 720, transitions: 890 },
+      { id: 'exit', name: 'Exit', sessions: 1560, users: 1260, transitions: 1560 },
     ],
   ],
   links: [
@@ -63,14 +69,14 @@ const MOCK_GRAPH = {
     { from: 'catalog', to: 'product', sessions: 2200, users: 1800, transitions: 2200 },
     { from: 'search', to: 'product', sessions: 600, users: 500, transitions: 600 },
     { from: 'product', to: 'cart', sessions: 1240, users: 1050, transitions: 1240 },
-    { from: 'product', to: 'exit', sessions: 890, users: 720, transitions: 890 },
+    { from: 'product', to: 'exit', sessions: 1560, users: 1260, transitions: 1560 },
   ],
   topPaths: [
     { steps: ['Home', 'Catalog', 'Product', 'Cart'], sessions: 1240, users: 1050, transitions: 1240 },
     { steps: ['Home', 'Search', 'Product', 'Exit'], sessions: 890, users: 720, transitions: 890 },
     { steps: ['Home', 'Catalog', 'Product', 'Exit'], sessions: 640, users: 520, transitions: 640 },
     { steps: ['Search', 'Search', 'Product', 'Cart'], sessions: 410, users: 340, transitions: 410 },
-    { steps: ['Home', 'Catalog', 'Product', 'Cart'], sessions: 380, users: 310, transitions: 380 },
+    { steps: ['Home', 'Search', 'Product', 'Cart'], sessions: 380, users: 310, transitions: 380 },
   ],
   breakdown: {
     device: [
@@ -84,23 +90,6 @@ const MOCK_GRAPH = {
       { label: 'Firefox', sessions: 700, users: 560, transitions: 1600 },
       { label: 'Edge', sessions: 400, users: 320, transitions: 900 },
     ],
-  },
-  focus: {
-    product: {
-      before: [
-        { label: 'Catalog → Product', sessions: 2200, users: 1800, transitions: 2200 },
-        { label: 'Search → Product', sessions: 600, users: 500, transitions: 600 },
-      ],
-      after: [
-        { label: 'Product → Cart', sessions: 1240, users: 1050, transitions: 1240 },
-        { label: 'Product → Exit', sessions: 890, users: 720, transitions: 890 },
-      ],
-      through: [
-        'Home → Catalog → Product → Cart',
-        'Home → Search → Product → Exit',
-        'Home → Catalog → Product → Exit',
-      ],
-    },
   },
 };
 
@@ -614,9 +603,10 @@ function findNodeById(nodeId) {
 }
 
 function getFocusForNode(nodeId) {
-  if (MOCK_GRAPH.focus[nodeId]) return MOCK_GRAPH.focus[nodeId];
   const node = findNodeById(nodeId);
   if (!node) return null;
+
+  const metric = state.metric;
 
   const before = MOCK_GRAPH.links
     .filter((l) => l.to === nodeId)
@@ -634,9 +624,16 @@ function getFocusForNode(nodeId) {
       users: l.users,
       transitions: l.transitions,
     }));
-  const through = MOCK_GRAPH.topPaths
+  const through = [...MOCK_GRAPH.topPaths]
     .filter((p) => p.steps.includes(node.name))
-    .map((p) => p.steps.join(' → '));
+    .sort((a, b) => b[metric] - a[metric])
+    .slice(0, 5)
+    .map((p) => ({
+      label: p.steps.join(' → '),
+      sessions: p.sessions,
+      users: p.users,
+      transitions: p.transitions,
+    }));
 
   return { before, after, through };
 }
@@ -668,7 +665,12 @@ function renderFocusPanel() {
   if (els.focusAfter) els.focusAfter.innerHTML = renderRows(focus.after);
   if (els.focusThrough) {
     els.focusThrough.innerHTML = focus.through.length
-      ? focus.through.map((path) => `<li>${escapeHtml(path)}</li>`).join('')
+      ? focus.through
+          .map(
+            (row) =>
+              `<li><span class="rum-journey-focus-label">${escapeHtml(row.label)}</span><span class="rum-journey-focus-value">${escapeHtml(formatMetricWithUnit(row[metric]))}</span></li>`
+          )
+          .join('')
       : '<li class="rum-journey-focus-empty">No paths</li>';
   }
 }
