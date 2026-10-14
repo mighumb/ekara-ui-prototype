@@ -575,7 +575,7 @@ function drawPathLinks() {
 
       const d = `M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`;
       return `<g class="rum-journey-path-link-group">
-        <path class="rum-journey-path-link-hit" d="${d}" data-tooltip="${escapeAttr(tooltip)}" aria-label="${escapeAttr(tooltip)}"></path>
+        <path class="rum-journey-path-link-hit" d="${d}" data-tooltip="${escapeAttr(tooltip)}" data-tooltip-at="pointer" aria-label="${escapeAttr(tooltip)}"></path>
         <path class="${classes}" d="${d}" stroke-width="${width.toFixed(2)}" pointer-events="none"></path>
       </g>`;
     })

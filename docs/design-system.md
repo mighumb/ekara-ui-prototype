@@ -59,7 +59,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` (alias `.recipient-chip*`) | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |
 
-**Tooltip** — include `tooltip.js` on every page that needs it. Do not use native `title`. For table cells with ellipsis, set `data-tooltip-full="…"` and call `EkaraTooltip.syncTruncated(tableBody)` after render (sets `data-tooltip` only when text overflows). Static controls can use `data-tooltip` directly.
+**Tooltip** — include `tooltip.js` on every page that needs it. Do not use native `title`. Default placement: below host, centered (flip above if needed). For large or irregular hit targets (e.g. journey flow curves), set `data-tooltip-at="pointer"` to anchor above the cursor. For table cells with ellipsis, set `data-tooltip-full="…"` and call `EkaraTooltip.syncTruncated(tableBody)` after render (sets `data-tooltip` only when text overflows). Static controls can use `data-tooltip` directly.
 
 **Module switcher (bento)** — `.bento-menu-wrap` in the topbar (far right). Toggle via `#btn-bento`; menu `.bento-menu` lists the six modules. Icons at rest: `--color-n400`; active module uses `.bento-menu-item.active` (`--surface-hover-action`, label + icon `--primary`). Hover on items: `--surface-hover-neutral`.
 
