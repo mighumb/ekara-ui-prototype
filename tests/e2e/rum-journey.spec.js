@@ -17,6 +17,16 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('#top5-list .rum-journey-top5-value').first()).toContainText('sessions');
   });
 
+  test('flow line tooltip on hover', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    await page.waitForSelector('.rum-journey-path-link-hit');
+    const box = await page.locator('.rum-journey-path-link-hit').first().boundingBox();
+    if (!box) throw new Error('Expected flow hit area');
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(page.locator('.ekara-tooltip.is-visible')).toBeVisible({ timeout: 1500 });
+    await expect(page.locator('.ekara-tooltip')).toContainText(/sessions|users|transitions/);
+  });
+
   test('empty state when tracker has no paths', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
     await page.locator('#filter-tracker-trigger').click();
