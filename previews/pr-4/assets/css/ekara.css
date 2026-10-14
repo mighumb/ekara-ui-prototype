@@ -2268,9 +2268,7 @@ span.form-label {
 .rum-journey-path-graph {
   position: relative;
   overflow: auto;
-  padding: 20px 16px;
-  background: var(--rum-journey-canvas-bg);
-  border-radius: var(--radius);
+  padding: 4px 0 8px;
 }
 
 .rum-journey-path-links {
