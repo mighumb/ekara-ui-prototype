@@ -2421,8 +2421,17 @@ span.form-label {
   margin-top: 12px;
 }
 
+.rum-journey-focus-through .rum-journey-focus-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
 .rum-journey-focus-through .rum-journey-focus-list li {
   display: block;
+  padding: 0;
+  border-bottom: none;
   color: var(--text-secondary);
 }
 
