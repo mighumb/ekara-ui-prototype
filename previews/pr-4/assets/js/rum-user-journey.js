@@ -566,8 +566,7 @@ function drawPathLinks() {
       const flow = linkMetricValue(link);
       const width = 1.5 + (flow / maxFlow) * 5.5;
       const inFlow =
-        !selected ||
-        (isNodeInSelectedFlow(link.from, selected) && isNodeInSelectedFlow(link.to, selected));
+        !selected || link.from === selected || link.to === selected;
       const classes = [
         'rum-journey-path-link',
         inFlow && selected ? 'is-highlighted' : '',
@@ -588,21 +587,9 @@ function drawPathLinks() {
   svg.innerHTML = paths;
 }
 
+/** Highlight only the selected node; others dim (same for every page group). */
 function isNodeInSelectedFlow(nodeId, selectedId) {
-  const focus = MOCK_GRAPH.focus[selectedId];
-  if (!focus) return nodeId === selectedId;
-  const related = new Set([selectedId]);
-  MOCK_GRAPH.links.forEach((link) => {
-    if (link.to === selectedId) related.add(link.from);
-    if (link.from === selectedId) related.add(link.to);
-  });
-  focus.through.forEach((path) => {
-    path.split(' → ').forEach((name) => {
-      const n = findNodeIdByName(name.trim());
-      if (n) related.add(n);
-    });
-  });
-  return related.has(nodeId);
+  return nodeId === selectedId;
 }
 
 function findNodeIdByName(name) {

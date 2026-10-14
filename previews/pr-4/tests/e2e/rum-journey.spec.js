@@ -40,6 +40,13 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('#focus-through li').first()).toBeVisible();
   });
 
+  test('selecting Product dims other page group cards like Home', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    await page.locator('.rum-journey-node', { hasText: 'Product' }).click();
+    await expect(page.locator('.rum-journey-node.is-selected')).toHaveCount(1);
+    await expect(page.locator('.rum-journey-node.is-dimmed')).toHaveCount(6);
+  });
+
   test('tracker chip shows count when more than three selected', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
     await page.locator('#filter-tracker-trigger').click();
