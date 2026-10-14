@@ -2179,7 +2179,7 @@ span.form-label {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .rum-journey-card {
@@ -2509,6 +2509,12 @@ span.form-label {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-height: 0;
+}
+
+.rum-journey-card--top5 {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .rum-journey-breakdown-row {
