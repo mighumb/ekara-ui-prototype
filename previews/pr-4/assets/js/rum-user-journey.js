@@ -518,9 +518,9 @@ function renderPathGraph() {
           </button>`;
         })
         .join('');
-      const stepLabel = colIndex === 0 ? 'Start' : `+${colIndex}`;
+      const stepLabel = `Step ${colIndex + 1}`;
       return `
-        <div class="rum-journey-step" aria-label="Step ${colIndex + 1}">
+        <div class="rum-journey-step" aria-label="${escapeHtml(stepLabel)}">
           <div class="rum-journey-step-label">${escapeHtml(stepLabel)}</div>
           <div class="rum-journey-step-nodes">${nodes}</div>
         </div>`;
