@@ -2484,14 +2484,15 @@ span.form-label {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .rum-journey-top5-item {
   display: grid;
   grid-template-columns: 20px 1fr auto;
   gap: 8px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-color);
   font-size: var(--font-size-12);
 }
 
