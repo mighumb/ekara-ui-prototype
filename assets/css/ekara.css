@@ -2193,6 +2193,13 @@ span.form-label {
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-semibold);
   color: var(--text-neutral);
+  margin-bottom: 8px;
+}
+
+.rum-journey-card-desc {
+  font-size: var(--font-size-12);
+  line-height: 1.45;
+  color: var(--text-secondary);
   margin-bottom: 16px;
 }
 
@@ -2402,6 +2409,13 @@ span.form-label {
   margin-bottom: 12px;
 }
 
+.rum-journey-focus-hint {
+  font-size: var(--font-size-12);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  margin: 0 0 8px;
+}
+
 .rum-journey-focus-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2436,10 +2450,16 @@ span.form-label {
 }
 
 .rum-journey-focus-through .rum-journey-focus-list li {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
   padding: 0;
   border-bottom: none;
   color: var(--text-secondary);
+}
+
+.rum-journey-focus-through .rum-journey-focus-label {
+  color: var(--text-neutral);
 }
 
 .rum-journey-top5-list {

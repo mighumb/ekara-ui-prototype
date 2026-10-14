@@ -40,7 +40,7 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('#node-focus-panel')).toBeVisible();
     await expect(page.locator('#focus-selected-title')).toHaveText('Product');
     await expect(page.locator('#focus-before .rum-journey-focus-value').first()).toContainText('sessions');
-    await expect(page.locator('#focus-through li').first()).toBeVisible();
+    await expect(page.locator('#focus-through .rum-journey-focus-value').first()).toContainText('sessions');
   });
 
   test('selecting Product dims other page group cards like Home', async ({ page }) => {
