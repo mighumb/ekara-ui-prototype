@@ -2433,6 +2433,11 @@ span.form-label {
   text-decoration: none;
 }
 
+.sidebar-subitem-link:hover,
+.sidebar-subitem-link:focus-visible {
+  text-decoration: none;
+}
+
 .sidebar-subitem-link.active {
   background: var(--sidebar-active-bg);
   color: var(--sidebar-text-active);
