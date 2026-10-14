@@ -97,6 +97,18 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('.measure-tracker-chips .ekara-chip')).toHaveCount(0);
   });
 
+  test('adding trackers aggregates journey volumes', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    const productNode = page.locator('.rum-journey-node', { hasText: 'Product' });
+    await expect(productNode).toBeVisible({ timeout: 5000 });
+    const agentOnly = await productNode.locator('.rum-journey-node-value').textContent();
+    await page.locator('#filter-tracker-trigger').click();
+    await page.locator('#tracker-opt-kaya').check();
+    await expect(productNode.locator('.rum-journey-node-value')).not.toHaveText(agentOnly || '', { timeout: 5000 });
+    await productNode.click();
+    await expect(page.locator('#focus-through li')).toHaveCount(5);
+  });
+
   test('breakdown panel when device selected', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
     const breakdown = page.locator('[data-ekara-inline-select]:has(#filter-breakdown)');

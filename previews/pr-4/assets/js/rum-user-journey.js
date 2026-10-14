@@ -38,60 +38,296 @@ const BREAKDOWN_LABELS = {
 
 /** @typedef {{ id: string, name: string, sessions: number, users: number, transitions: number }} PageGroupNode */
 
-/**
- * Mock journey graph — one coherent story for the prototype:
- * - `links` = volume on one step transition (shown on Path exploration curves).
- * - `topPaths` = full end-to-end journeys (Top 5 list); sums should align with link flows at Product.
- * - Node `sessions` at step 3 Product = sum of incoming links; outgoing links sum to the same.
- */
-const MOCK_GRAPH = {
-  steps: [
-    [
-      { id: 'home', name: 'Home', sessions: 5200, users: 4100, transitions: 0 },
-      { id: 'search-entry', name: 'Search', sessions: 1800, users: 1500, transitions: 0 },
-    ],
-    [
-      { id: 'catalog', name: 'Catalog', sessions: 3100, users: 2600, transitions: 3100 },
-      { id: 'search', name: 'Search', sessions: 1200, users: 980, transitions: 1200 },
-    ],
-    [
-      { id: 'product', name: 'Product', sessions: 2800, users: 2300, transitions: 2800 },
-    ],
-    [
-      { id: 'cart', name: 'Cart', sessions: 1240, users: 1050, transitions: 1240 },
-      { id: 'exit', name: 'Exit', sessions: 1560, users: 1260, transitions: 1560 },
-    ],
+/** Fixed page-group columns (dimension is always Page group). */
+const JOURNEY_STEP_DEFS = [
+  [
+    { id: 'home', name: 'Home' },
+    { id: 'search-entry', name: 'Search' },
   ],
-  links: [
-    { from: 'home', to: 'catalog', sessions: 2400, users: 2000, transitions: 2400 },
-    { from: 'home', to: 'search', sessions: 900, users: 750, transitions: 900 },
-    { from: 'search-entry', to: 'search', sessions: 1100, users: 900, transitions: 1100 },
-    { from: 'catalog', to: 'product', sessions: 2200, users: 1800, transitions: 2200 },
-    { from: 'search', to: 'product', sessions: 600, users: 500, transitions: 600 },
-    { from: 'product', to: 'cart', sessions: 1240, users: 1050, transitions: 1240 },
-    { from: 'product', to: 'exit', sessions: 1560, users: 1260, transitions: 1560 },
+  [
+    { id: 'catalog', name: 'Catalog' },
+    { id: 'search', name: 'Search' },
   ],
-  topPaths: [
-    { steps: ['Home', 'Catalog', 'Product', 'Cart'], sessions: 1240, users: 1050, transitions: 1240 },
-    { steps: ['Home', 'Search', 'Product', 'Exit'], sessions: 890, users: 720, transitions: 890 },
-    { steps: ['Home', 'Catalog', 'Product', 'Exit'], sessions: 640, users: 520, transitions: 640 },
-    { steps: ['Search', 'Search', 'Product', 'Cart'], sessions: 410, users: 340, transitions: 410 },
-    { steps: ['Home', 'Search', 'Product', 'Cart'], sessions: 380, users: 310, transitions: 380 },
+  [{ id: 'product', name: 'Product' }],
+  [
+    { id: 'cart', name: 'Cart' },
+    { id: 'exit', name: 'Exit' },
   ],
-  breakdown: {
-    device: [
-      { label: 'Computer', sessions: 4200, users: 3400, transitions: 9800 },
-      { label: 'Mobile', sessions: 2800, users: 2200, transitions: 6400 },
-      { label: 'Tablet', sessions: 600, users: 480, transitions: 1400 },
+];
+
+const JOURNEY_BASELINE_DAYS = 30;
+
+/** Per-tracker contributions (mock API slices). Summed when several trackers are selected. */
+const MOCK_TRACKER_JOURNEY = {
+  agent: {
+    links: [
+      { from: 'home', to: 'catalog', sessions: 2400, users: 2000, transitions: 2400 },
+      { from: 'home', to: 'search', sessions: 900, users: 750, transitions: 900 },
+      { from: 'search-entry', to: 'search', sessions: 1100, users: 900, transitions: 1100 },
+      { from: 'catalog', to: 'product', sessions: 2200, users: 1800, transitions: 2200 },
+      { from: 'search', to: 'product', sessions: 600, users: 500, transitions: 600 },
+      { from: 'product', to: 'cart', sessions: 1240, users: 1050, transitions: 1240 },
+      { from: 'product', to: 'exit', sessions: 1560, users: 1260, transitions: 1560 },
     ],
-    browser: [
-      { label: 'Chrome', sessions: 5100, users: 4000, transitions: 11800 },
-      { label: 'Safari', sessions: 1400, users: 1100, transitions: 3200 },
-      { label: 'Firefox', sessions: 700, users: 560, transitions: 1600 },
-      { label: 'Edge', sessions: 400, users: 320, transitions: 900 },
+    paths: [
+      { steps: ['Home', 'Catalog', 'Product', 'Cart'], sessions: 1240, users: 1050, transitions: 1240 },
+      { steps: ['Home', 'Search', 'Product', 'Exit'], sessions: 890, users: 720, transitions: 890 },
+      { steps: ['Home', 'Catalog', 'Product', 'Exit'], sessions: 640, users: 520, transitions: 640 },
+      { steps: ['Search', 'Search', 'Product', 'Cart'], sessions: 410, users: 340, transitions: 410 },
+      { steps: ['Home', 'Search', 'Product', 'Cart'], sessions: 380, users: 310, transitions: 380 },
+      { steps: ['Search', 'Search', 'Product', 'Exit'], sessions: 295, users: 240, transitions: 295 },
     ],
+    breakdown: {
+      device: [
+        { label: 'Computer', sessions: 4200, users: 3400, transitions: 9800 },
+        { label: 'Mobile', sessions: 2800, users: 2200, transitions: 6400 },
+        { label: 'Tablet', sessions: 600, users: 480, transitions: 1400 },
+      ],
+      browser: [
+        { label: 'Chrome', sessions: 5100, users: 4000, transitions: 11800 },
+        { label: 'Safari', sessions: 1400, users: 1100, transitions: 3200 },
+        { label: 'Firefox', sessions: 700, users: 560, transitions: 1600 },
+        { label: 'Edge', sessions: 400, users: 320, transitions: 900 },
+      ],
+    },
+  },
+  kaya: {
+    links: [
+      { from: 'home', to: 'search', sessions: 420, users: 340, transitions: 420 },
+      { from: 'search-entry', to: 'search', sessions: 620, users: 500, transitions: 620 },
+      { from: 'search', to: 'product', sessions: 520, users: 420, transitions: 520 },
+      { from: 'product', to: 'cart', sessions: 210, users: 170, transitions: 210 },
+      { from: 'product', to: 'exit', sessions: 310, users: 250, transitions: 310 },
+    ],
+    paths: [
+      { steps: ['Home', 'Search', 'Product', 'Cart'], sessions: 210, users: 170, transitions: 210 },
+      { steps: ['Search', 'Search', 'Product', 'Cart'], sessions: 260, users: 210, transitions: 260 },
+      { steps: ['Home', 'Search', 'Product', 'Exit'], sessions: 190, users: 155, transitions: 190 },
+      { steps: ['Search', 'Search', 'Product', 'Exit'], sessions: 340, users: 275, transitions: 340 },
+    ],
+    breakdown: {
+      device: [
+        { label: 'Computer', sessions: 520, users: 420, transitions: 1200 },
+        { label: 'Mobile', sessions: 980, users: 790, transitions: 2280 },
+        { label: 'Tablet', sessions: 180, users: 145, transitions: 420 },
+      ],
+      browser: [
+        { label: 'Chrome', sessions: 1100, users: 890, transitions: 2550 },
+        { label: 'Safari', sessions: 420, users: 340, transitions: 980 },
+        { label: 'Firefox', sessions: 120, users: 95, transitions: 280 },
+        { label: 'Edge', sessions: 40, users: 30, transitions: 90 },
+      ],
+    },
+  },
+  '1111': {
+    links: [
+      { from: 'home', to: 'catalog', sessions: 680, users: 560, transitions: 680 },
+      { from: 'catalog', to: 'product', sessions: 590, users: 480, transitions: 590 },
+      { from: 'product', to: 'cart', sessions: 320, users: 260, transitions: 320 },
+      { from: 'product', to: 'exit', sessions: 270, users: 220, transitions: 270 },
+    ],
+    paths: [
+      { steps: ['Home', 'Catalog', 'Product', 'Cart'], sessions: 320, users: 260, transitions: 320 },
+      { steps: ['Home', 'Catalog', 'Product', 'Exit'], sessions: 270, users: 220, transitions: 270 },
+    ],
+    breakdown: {
+      device: [
+        { label: 'Computer', sessions: 780, users: 630, transitions: 1800 },
+        { label: 'Mobile', sessions: 420, users: 340, transitions: 970 },
+        { label: 'Tablet', sessions: 90, users: 72, transitions: 210 },
+      ],
+      browser: [
+        { label: 'Chrome', sessions: 920, users: 740, transitions: 2120 },
+        { label: 'Safari', sessions: 210, users: 170, transitions: 480 },
+        { label: 'Firefox', sessions: 110, users: 90, transitions: 250 },
+        { label: 'Edge', sessions: 50, users: 42, transitions: 130 },
+      ],
+    },
+  },
+  '54': {
+    links: [
+      { from: 'home', to: 'catalog', sessions: 180, users: 145, transitions: 180 },
+      { from: 'catalog', to: 'product', sessions: 150, users: 120, transitions: 150 },
+      { from: 'product', to: 'exit', sessions: 150, users: 120, transitions: 150 },
+    ],
+    paths: [{ steps: ['Home', 'Catalog', 'Product', 'Exit'], sessions: 150, users: 120, transitions: 150 }],
+    breakdown: {
+      device: [
+        { label: 'Computer', sessions: 200, users: 160, transitions: 460 },
+        { label: 'Mobile', sessions: 120, users: 95, transitions: 280 },
+        { label: 'Tablet', sessions: 30, users: 24, transitions: 70 },
+      ],
+      browser: [
+        { label: 'Chrome', sessions: 240, users: 190, transitions: 550 },
+        { label: 'Safari', sessions: 60, users: 48, transitions: 140 },
+        { label: 'Firefox', sessions: 30, users: 24, transitions: 70 },
+        { label: 'Edge', sessions: 20, users: 17, transitions: 50 },
+      ],
+    },
   },
 };
+
+/** @type {{ steps: PageGroupNode[][], links: object[], allPaths: object[], topPaths: object[], breakdown: object } | null} */
+let activeGraph = null;
+
+function roundMetric(n) {
+  return Math.max(0, Math.round(n));
+}
+
+function scaleMetrics(record, factor) {
+  return {
+    ...record,
+    sessions: roundMetric(record.sessions * factor),
+    users: roundMetric(record.users * factor),
+    transitions: roundMetric(record.transitions * factor),
+  };
+}
+
+function scaleContribution(contrib, factor) {
+  return {
+    links: contrib.links.map((l) => scaleMetrics(l, factor)),
+    paths: contrib.paths.map((p) => scaleMetrics(p, factor)),
+    breakdown: {
+      device: contrib.breakdown.device.map((r) => scaleMetrics(r, factor)),
+      browser: contrib.breakdown.browser.map((r) => scaleMetrics(r, factor)),
+    },
+  };
+}
+
+function trackerContribution(trackerId) {
+  const base = MOCK_TRACKER_JOURNEY[trackerId];
+  if (base) return base;
+  return scaleContribution(MOCK_TRACKER_JOURNEY.agent, 0.07);
+}
+
+function parseDateRangeDays(value) {
+  const raw = String(value || '').trim();
+  const m = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})\s*-\s*(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return JOURNEY_BASELINE_DAYS;
+  const start = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  const end = new Date(Number(m[6]), Number(m[5]) - 1, Number(m[4]));
+  const ms = end.getTime() - start.getTime();
+  if (!Number.isFinite(ms) || ms < 0) return JOURNEY_BASELINE_DAYS;
+  return Math.max(1, Math.round(ms / 86400000) + 1);
+}
+
+function dateRangeScale(value) {
+  return parseDateRangeDays(value) / JOURNEY_BASELINE_DAYS;
+}
+
+function mergeMetricMaps(target, rows, factor) {
+  rows.forEach((row) => {
+    const scaled = scaleMetrics(row, factor);
+    const prev = target.get(row.label) || { label: row.label, sessions: 0, users: 0, transitions: 0 };
+    target.set(row.label, {
+      label: row.label,
+      sessions: prev.sessions + scaled.sessions,
+      users: prev.users + scaled.users,
+      transitions: prev.transitions + scaled.transitions,
+    });
+  });
+}
+
+function mergeLinks(map, links, factor) {
+  links.forEach((link) => {
+    const key = `${link.from}|${link.to}`;
+    const scaled = scaleMetrics(link, factor);
+    const prev = map.get(key) || { from: link.from, to: link.to, sessions: 0, users: 0, transitions: 0 };
+    map.set(key, {
+      from: link.from,
+      to: link.to,
+      sessions: prev.sessions + scaled.sessions,
+      users: prev.users + scaled.users,
+      transitions: prev.transitions + scaled.transitions,
+    });
+  });
+}
+
+function mergePaths(map, paths, factor) {
+  paths.forEach((path) => {
+    const key = path.steps.join('\u2192');
+    const scaled = scaleMetrics(path, factor);
+    const prev = map.get(key) || { steps: [...path.steps], sessions: 0, users: 0, transitions: 0 };
+    map.set(key, {
+      steps: prev.steps,
+      sessions: prev.sessions + scaled.sessions,
+      users: prev.users + scaled.users,
+      transitions: prev.transitions + scaled.transitions,
+    });
+  });
+}
+
+function deriveStepNodes(links) {
+  const incoming = new Map();
+  const outgoing = new Map();
+  links.forEach((link) => {
+    const inc = incoming.get(link.to) || { sessions: 0, users: 0, transitions: 0 };
+    incoming.set(link.to, {
+      sessions: inc.sessions + link.sessions,
+      users: inc.users + link.users,
+      transitions: inc.transitions + link.transitions,
+    });
+    const out = outgoing.get(link.from) || { sessions: 0, users: 0, transitions: 0 };
+    outgoing.set(link.from, {
+      sessions: out.sessions + link.sessions,
+      users: out.users + link.users,
+      transitions: out.transitions + link.transitions,
+    });
+  });
+
+  return JOURNEY_STEP_DEFS.map((column, colIndex) =>
+    column.map((node) => {
+      const vol = colIndex === 0 ? outgoing.get(node.id) : incoming.get(node.id);
+      const sessions = vol?.sessions ?? 0;
+      const users = vol?.users ?? 0;
+      const transitions = colIndex === 0 ? 0 : vol?.transitions ?? 0;
+      return { ...node, sessions, users, transitions };
+    })
+  );
+}
+
+function sortPathsByMetric(paths, metric) {
+  return [...paths].sort((a, b) => (b[metric] ?? 0) - (a[metric] ?? 0));
+}
+
+function buildActiveGraph() {
+  const trackerIds = state.selectedTrackerIds.filter((id) => id !== 'empty' && id !== 'error');
+  if (!trackerIds.length) return null;
+
+  const periodScale = dateRangeScale(els.dateRange?.value);
+  const linkMap = new Map();
+  const pathMap = new Map();
+  const deviceMap = new Map();
+  const browserMap = new Map();
+
+  trackerIds.forEach((id) => {
+    const contrib = trackerContribution(id);
+    mergeLinks(linkMap, contrib.links, periodScale);
+    mergePaths(pathMap, contrib.paths, periodScale);
+    mergeMetricMaps(deviceMap, contrib.breakdown.device, periodScale);
+    mergeMetricMaps(browserMap, contrib.breakdown.browser, periodScale);
+  });
+
+  const links = [...linkMap.values()].filter((l) => l.sessions > 0 || l.users > 0);
+  if (!links.length) return null;
+
+  const steps = deriveStepNodes(links);
+  const allPaths = sortPathsByMetric([...pathMap.values()], state.metric).filter((p) => p.sessions > 0);
+  if (!allPaths.length) return null;
+
+  const topPaths = allPaths.slice(0, 5);
+
+  return {
+    steps,
+    links,
+    allPaths,
+    topPaths,
+    breakdown: {
+      device: [...deviceMap.values()],
+      browser: [...browserMap.values()],
+    },
+  };
+}
 
 let state = {
   metric: 'sessions',
@@ -100,6 +336,7 @@ let state = {
   selectedNodeId: null,
   loading: false,
   error: null,
+  graphEmpty: false,
 };
 
 let els = {};
@@ -453,7 +690,10 @@ function updateViewState() {
   const isEmpty =
     !state.loading &&
     !state.error &&
-    (demoMode() === 'empty' || isEmptyTrackerSelection() || state.selectedTrackerIds.length === 0);
+    (demoMode() === 'empty' ||
+      isEmptyTrackerSelection() ||
+      state.selectedTrackerIds.length === 0 ||
+      state.graphEmpty);
   const showContent = !state.loading && !state.error && !isEmpty;
 
   els.loading?.classList.toggle('hidden', !state.loading);
@@ -465,6 +705,10 @@ function updateViewState() {
 }
 
 function renderJourney() {
+  activeGraph = buildActiveGraph();
+  state.graphEmpty = !activeGraph;
+  if (state.graphEmpty) return;
+
   renderPathGraph();
   renderTop5();
   renderBreakdown();
@@ -481,7 +725,7 @@ function linkMetricValue(link) {
 function renderPathGraph() {
   if (!els.pathGraph) return;
   const selected = state.selectedNodeId;
-  const columnsHtml = MOCK_GRAPH.steps
+  const columnsHtml = activeGraph.steps
     .map((column, colIndex) => {
       const columnMax = Math.max(...column.map((node) => metricValue(node)), 1);
       const nodes = column
@@ -526,11 +770,11 @@ function drawPathLinks() {
   const svg = canvas?.querySelector('.rum-journey-path-links');
   if (!canvas || !svg) return;
 
-  const maxFlow = Math.max(...MOCK_GRAPH.links.map((link) => linkMetricValue(link)), 1);
+  const maxFlow = Math.max(...activeGraph.links.map((link) => linkMetricValue(link)), 1);
   const selected = state.selectedNodeId;
   const canvasRect = canvas.getBoundingClientRect();
 
-  const paths = MOCK_GRAPH.links
+  const paths = activeGraph.links
     .map((link) => {
       const fromEl = canvas.querySelector(`[data-node-id="${link.from}"]`);
       const toEl = canvas.querySelector(`[data-node-id="${link.to}"]`);
@@ -582,7 +826,7 @@ function isNodeInSelectedFlow(nodeId, selectedId) {
 }
 
 function findNodeIdByName(name) {
-  for (const col of MOCK_GRAPH.steps) {
+  for (const col of JOURNEY_STEP_DEFS) {
     const found = col.find((n) => n.name === name);
     if (found) return found.id;
   }
@@ -590,7 +834,8 @@ function findNodeIdByName(name) {
 }
 
 function findNodeById(nodeId) {
-  for (const col of MOCK_GRAPH.steps) {
+  const steps = activeGraph?.steps || JOURNEY_STEP_DEFS;
+  for (const col of steps) {
     const found = col.find((n) => n.id === nodeId);
     if (found) return found;
   }
@@ -603,7 +848,7 @@ function getFocusForNode(nodeId) {
 
   const metric = state.metric;
 
-  const before = MOCK_GRAPH.links
+  const before = activeGraph.links
     .filter((l) => l.to === nodeId)
     .map((l) => ({
       label: `${findNodeById(l.from)?.name || l.from} → ${node.name}`,
@@ -611,7 +856,7 @@ function getFocusForNode(nodeId) {
       users: l.users,
       transitions: l.transitions,
     }));
-  const after = MOCK_GRAPH.links
+  const after = activeGraph.links
     .filter((l) => l.from === nodeId)
     .map((l) => ({
       label: `${node.name} → ${findNodeById(l.to)?.name || l.to}`,
@@ -619,7 +864,7 @@ function getFocusForNode(nodeId) {
       users: l.users,
       transitions: l.transitions,
     }));
-  const through = [...MOCK_GRAPH.topPaths]
+  const through = activeGraph.allPaths
     .filter((p) => p.steps.includes(node.name))
     .sort((a, b) => b[metric] - a[metric])
     .slice(0, 5)
@@ -673,7 +918,7 @@ function renderFocusPanel() {
 function renderTop5() {
   if (!els.top5List) return;
   const metric = state.metric;
-  const paths = [...MOCK_GRAPH.topPaths].sort((a, b) => b[metric] - a[metric]).slice(0, 5);
+  const paths = activeGraph.topPaths;
   els.top5List.innerHTML = paths
     .map(
       (path, i) => `
@@ -696,7 +941,7 @@ function renderBreakdown() {
   const title = key === 'device' ? 'Distribution by device' : 'Distribution by browser';
   if (els.breakdownTitle) els.breakdownTitle.textContent = title;
 
-  const rows = MOCK_GRAPH.breakdown[key];
+  const rows = activeGraph.breakdown[key];
   const total = rows.reduce((sum, r) => sum + metricValue(r), 0) || 1;
   if (els.breakdownBars) {
     els.breakdownBars.innerHTML = rows
