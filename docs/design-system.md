@@ -67,7 +67,7 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 **Module sidebar footer** — same line on every screen with a sidebar: `v3.43.0 © 2026 ip-label` (class `sidebar-footer`). Bump all pages when the product version changes.
 
-**RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`.
+**RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`. **Path exploration** (GA Path exploration–like handoff): canvas `.rum-journey-path-graph`, columns `Start` / `+N`, nodes `.rum-journey-node` with volume bar `.rum-journey-node-flow-fill`, curved flows in SVG `.rum-journey-path-links` (stroke width ∝ metric, highlight on node focus).
 
 **Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). Focus and open state: `--input-focus-border` on `.measure-filter-inline` (`:focus`, `:focus-within`, or child `[aria-expanded="true"]`) and on `.measure-tracker-field` (same rules). **Trackers** use `.measure-tracker-picker` with **`.measure-filter-prefix`** (`Trackers:`) plus **`.ekara-chip`** for selections (same tokens as Settings recipients); empty selection shows prefix only; dropdown row `Trackers (N)` with select-all (max **10**); × removes one tracker or clears all.
 

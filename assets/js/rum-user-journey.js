@@ -154,7 +154,10 @@ function init() {
   bindFilters();
   if (els.retry) els.retry.addEventListener('click', () => loadJourneyData());
   initSidebarGroups();
-  window.addEventListener('resize', syncPathCardMinHeight);
+  window.addEventListener('resize', () => {
+    drawPathLinks();
+    syncPathCardMinHeight();
+  });
   loadJourneyData();
 }
 
@@ -486,36 +489,47 @@ function renderJourney() {
   renderBreakdown();
   renderFocusPanel();
   requestAnimationFrame(() => {
+    drawPathLinks();
     syncPathCardMinHeight();
   });
+}
+
+function linkMetricValue(link) {
+  return link[state.metric] ?? 0;
 }
 
 function renderPathGraph() {
   if (!els.pathGraph) return;
   const selected = state.selectedNodeId;
-  const html = MOCK_GRAPH.steps
+  const columnsHtml = MOCK_GRAPH.steps
     .map((column, colIndex) => {
+      const columnMax = Math.max(...column.map((node) => metricValue(node)), 1);
       const nodes = column
         .map((node) => {
           const isSelected = selected === node.id;
           const isDimmed = selected && !isNodeInSelectedFlow(node.id, selected);
+          const flowPct = Math.round((metricValue(node) / columnMax) * 100);
           return `
           <button type="button" class="rum-journey-node${isSelected ? ' is-selected' : ''}${isDimmed ? ' is-dimmed' : ''}"
             data-node-id="${escapeAttr(node.id)}" aria-pressed="${isSelected}">
             <span class="rum-journey-node-name">${escapeHtml(node.name)}</span>
             <span class="rum-journey-node-value">${formatMetricValue(metricValue(node))} ${escapeHtml(METRIC_LABELS[state.metric].toLowerCase())}</span>
+            <span class="rum-journey-node-flow" aria-hidden="true"><span class="rum-journey-node-flow-fill" style="--rum-journey-node-flow-pct: ${flowPct}"></span></span>
           </button>`;
         })
         .join('');
+      const stepLabel = colIndex === 0 ? 'Start' : `+${colIndex}`;
       return `
         <div class="rum-journey-step" aria-label="Step ${colIndex + 1}">
-          <div class="rum-journey-step-label form-label">Step ${colIndex + 1}</div>
+          <div class="rum-journey-step-label">${escapeHtml(stepLabel)}</div>
           <div class="rum-journey-step-nodes">${nodes}</div>
         </div>`;
     })
-    .join('<div class="rum-journey-step-connector" aria-hidden="true"></div>');
+    .join('');
 
-  els.pathGraph.innerHTML = html;
+  els.pathGraph.innerHTML = `
+    <svg class="rum-journey-path-links" aria-hidden="true"></svg>
+    <div class="rum-journey-path-columns">${columnsHtml}</div>`;
 
   els.pathGraph.querySelectorAll('.rum-journey-node').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -524,6 +538,54 @@ function renderPathGraph() {
       renderJourney();
     });
   });
+}
+
+/** GA-like curved links between page group nodes (volumes → stroke width). */
+function drawPathLinks() {
+  const canvas = els.pathGraph;
+  const svg = canvas?.querySelector('.rum-journey-path-links');
+  if (!canvas || !svg) return;
+
+  const maxFlow = Math.max(...MOCK_GRAPH.links.map((link) => linkMetricValue(link)), 1);
+  const selected = state.selectedNodeId;
+  const canvasRect = canvas.getBoundingClientRect();
+
+  const paths = MOCK_GRAPH.links
+    .map((link) => {
+      const fromEl = canvas.querySelector(`[data-node-id="${link.from}"]`);
+      const toEl = canvas.querySelector(`[data-node-id="${link.to}"]`);
+      if (!fromEl || !toEl) return '';
+
+      const fromRect = fromEl.getBoundingClientRect();
+      const toRect = toEl.getBoundingClientRect();
+      const x1 = fromRect.right - canvasRect.left + canvas.scrollLeft;
+      const y1 = fromRect.top + fromRect.height / 2 - canvasRect.top + canvas.scrollTop;
+      const x2 = toRect.left - canvasRect.left + canvas.scrollLeft;
+      const y2 = toRect.top + toRect.height / 2 - canvasRect.top + canvas.scrollTop;
+      const cx = (x1 + x2) / 2;
+      const flow = linkMetricValue(link);
+      const width = 1.5 + (flow / maxFlow) * 5.5;
+      const inFlow =
+        !selected ||
+        (isNodeInSelectedFlow(link.from, selected) && isNodeInSelectedFlow(link.to, selected));
+      const classes = [
+        'rum-journey-path-link',
+        inFlow && selected ? 'is-highlighted' : '',
+        !inFlow ? 'is-dimmed' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      return `<path class="${classes}" d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" stroke-width="${width.toFixed(2)}"></path>`;
+    })
+    .join('');
+
+  const width = Math.max(canvas.scrollWidth, canvas.clientWidth);
+  const height = Math.max(canvas.scrollHeight, canvas.clientHeight);
+  svg.setAttribute('width', String(width));
+  svg.setAttribute('height', String(height));
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  svg.innerHTML = paths;
 }
 
 function isNodeInSelectedFlow(nodeId, selectedId) {
