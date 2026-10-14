@@ -2284,8 +2284,16 @@ span.form-label {
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  pointer-events: auto;
   overflow: visible;
+}
+
+.rum-journey-path-link-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14px;
+  pointer-events: stroke;
+  cursor: default;
 }
 
 .rum-journey-path-link {

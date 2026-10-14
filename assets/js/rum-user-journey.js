@@ -561,6 +561,10 @@ function drawPathLinks() {
       const width = 1.5 + (flow / maxFlow) * 5.5;
       const inFlow =
         !selected || link.from === selected || link.to === selected;
+      const fromName = findNodeById(link.from)?.name || link.from;
+      const toName = findNodeById(link.to)?.name || link.to;
+      const tooltip = `${fromName} → ${toName}: ${formatMetricWithUnit(flow)}`;
+
       const classes = [
         'rum-journey-path-link',
         inFlow && selected ? 'is-highlighted' : '',
@@ -569,7 +573,11 @@ function drawPathLinks() {
         .filter(Boolean)
         .join(' ');
 
-      return `<path class="${classes}" d="M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}" stroke-width="${width.toFixed(2)}"></path>`;
+      const d = `M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`;
+      return `<g class="rum-journey-path-link-group">
+        <path class="rum-journey-path-link-hit" d="${d}" data-tooltip="${escapeAttr(tooltip)}" aria-label="${escapeAttr(tooltip)}"></path>
+        <path class="${classes}" d="${d}" stroke-width="${width.toFixed(2)}" pointer-events="none"></path>
+      </g>`;
     })
     .join('');
 
@@ -579,6 +587,7 @@ function drawPathLinks() {
   svg.setAttribute('height', String(height));
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   svg.innerHTML = paths;
+  if (window.EkaraTooltip) window.EkaraTooltip.refresh(svg);
 }
 
 /** Highlight only the selected node; others dim (same for every page group). */

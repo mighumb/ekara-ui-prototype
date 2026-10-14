@@ -12,6 +12,7 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('#filter-dimension')).toHaveText('Page group');
     await expect(page.locator('.rum-journey-filters .form-label')).toHaveCount(0);
     await expect(page.locator('#path-graph .rum-journey-node').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('.rum-journey-path-link-hit').first()).toHaveAttribute('data-tooltip', /sessions/);
     await expect(page.locator('#top5-list li')).toHaveCount(5);
     await expect(page.locator('#top5-list .rum-journey-top5-value').first()).toContainText('sessions');
   });
