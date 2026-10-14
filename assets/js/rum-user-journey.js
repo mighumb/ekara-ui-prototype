@@ -290,10 +290,23 @@ function sortPathsByMetric(paths, metric) {
   return [...paths].sort((a, b) => (b[metric] ?? 0) - (a[metric] ?? 0));
 }
 
+function hasAnyVolume(record) {
+  return (record.sessions ?? 0) > 0 || (record.users ?? 0) > 0 || (record.transitions ?? 0) > 0;
+}
+
+/** Keep filter state aligned with the DOM before every rebuild (inline selects, etc.). */
+function syncFilterStateFromDom() {
+  if (els.metric) state.metric = els.metric.value;
+  if (els.breakdown) state.breakdown = els.breakdown.value;
+}
+
 function buildActiveGraph() {
+  syncFilterStateFromDom();
+
   const trackerIds = state.selectedTrackerIds.filter((id) => id !== 'empty' && id !== 'error');
   if (!trackerIds.length) return null;
 
+  const metric = state.metric;
   const periodScale = dateRangeScale(els.dateRange?.value);
   const linkMap = new Map();
   const pathMap = new Map();
@@ -308,11 +321,11 @@ function buildActiveGraph() {
     mergeMetricMaps(browserMap, contrib.breakdown.browser, periodScale);
   });
 
-  const links = [...linkMap.values()].filter((l) => l.sessions > 0 || l.users > 0);
+  const links = [...linkMap.values()].filter((l) => hasAnyVolume(l));
   if (!links.length) return null;
 
   const steps = deriveStepNodes(links);
-  const allPaths = sortPathsByMetric([...pathMap.values()], state.metric).filter((p) => p.sessions > 0);
+  const allPaths = sortPathsByMetric([...pathMap.values()], metric).filter((p) => (p[metric] ?? 0) > 0);
   if (!allPaths.length) return null;
 
   const topPaths = allPaths.slice(0, 5);
@@ -607,8 +620,7 @@ function bindFilters() {
   [els.metric, els.breakdown].forEach((el) => {
     if (!el) return;
     el.addEventListener('change', () => {
-      state.metric = els.metric.value;
-      state.breakdown = els.breakdown.value;
+      syncFilterStateFromDom();
       state.selectedNodeId = null;
       loadJourneyData();
     });
@@ -627,8 +639,10 @@ function demoMode() {
 }
 
 function loadJourneyData() {
+  syncFilterStateFromDom();
   state.error = null;
   state.loading = false;
+  state.graphEmpty = false;
   const mode = demoMode();
 
   if (mode === 'error' || state.selectedTrackerIds.includes('error')) {
@@ -918,7 +932,7 @@ function renderFocusPanel() {
 function renderTop5() {
   if (!els.top5List) return;
   const metric = state.metric;
-  const paths = activeGraph.topPaths;
+  const paths = sortPathsByMetric(activeGraph.allPaths, metric).slice(0, 5);
   els.top5List.innerHTML = paths
     .map(
       (path, i) => `

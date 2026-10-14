@@ -109,6 +109,30 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('#focus-through li')).toHaveCount(5);
   });
 
+  test('metric filter updates units and recomputes top paths', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    await expect(page.locator('#top5-list .rum-journey-top5-value').first()).toContainText('sessions', {
+      timeout: 5000,
+    });
+    const metric = page.locator('[data-ekara-inline-select]:has(#filter-metric)');
+    await metric.locator('.ekara-inline-select-trigger').click();
+    await metric.locator('.ekara-inline-select-option', { hasText: 'Users' }).click();
+    await expect(page.locator('#top5-list .rum-journey-top5-value').first()).toContainText('users', { timeout: 5000 });
+    await expect(page.locator('.rum-journey-path-link-hit').first()).toHaveAttribute('data-tooltip', /users/);
+    await expect(page.locator('#node-focus-panel')).toBeHidden();
+  });
+
+  test('date range scales journey volumes', async ({ page }) => {
+    await page.goto(JOURNEY_PATH);
+    const productNode = page.locator('.rum-journey-node', { hasText: 'Product' });
+    await expect(productNode).toBeVisible({ timeout: 5000 });
+    const fullPeriod = await productNode.locator('.rum-journey-node-value').textContent();
+    await page.locator('.ekara-date-range-trigger').click();
+    await page.locator('.ekara-date-range-preset[data-preset="today"]').click();
+    await page.locator('.ekara-date-range-apply').click();
+    await expect(productNode.locator('.rum-journey-node-value')).not.toHaveText(fullPeriod || '', { timeout: 5000 });
+  });
+
   test('breakdown panel when device selected', async ({ page }) => {
     await page.goto(JOURNEY_PATH);
     const breakdown = page.locator('[data-ekara-inline-select]:has(#filter-breakdown)');
