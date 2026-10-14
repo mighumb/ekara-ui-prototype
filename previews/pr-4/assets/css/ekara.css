@@ -2301,7 +2301,13 @@ span.form-label {
   fill: none;
   stroke: var(--rum-journey-flow-stroke);
   stroke-linecap: round;
-  transition: stroke 0.15s, opacity 0.15s;
+  transition: stroke 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+}
+
+.rum-journey-path-link-group:hover .rum-journey-path-link {
+  stroke: var(--primary);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 40%, transparent));
 }
 
 .rum-journey-path-link.is-highlighted {
