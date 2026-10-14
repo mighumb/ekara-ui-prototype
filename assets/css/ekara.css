@@ -1613,6 +1613,14 @@ span.form-label {
   cursor: default;
 }
 
+/* Focus / open — border on field shell (same as .measure-tracker-field) */
+.measure-filter-inline:not(.measure-filter-inline--static):focus,
+.measure-filter-inline:not(.measure-filter-inline--static):focus-within,
+.measure-filter-inline:not(.measure-filter-inline--static):has([aria-expanded='true']) {
+  outline: none;
+  border-color: var(--input-focus-border);
+}
+
 .measure-filter-prefix {
   flex-shrink: 0;
   font-size: var(--font-size-body);
@@ -1693,12 +1701,6 @@ span.form-label {
 
 .ekara-inline-select-trigger:focus {
   outline: none;
-}
-
-.ekara-inline-select-trigger:focus-visible .ekara-inline-select-value {
-  text-decoration: underline;
-  text-decoration-color: var(--primary);
-  text-underline-offset: 2px;
 }
 
 .ekara-inline-select-value {
@@ -1807,7 +1809,8 @@ span.form-label {
   box-sizing: border-box;
 }
 
-.measure-tracker-field:focus {
+.measure-tracker-field:focus,
+.measure-tracker-field:has([aria-expanded='true']) {
   outline: none;
   border-color: var(--input-focus-border);
 }
