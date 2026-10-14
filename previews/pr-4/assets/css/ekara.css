@@ -2395,6 +2395,13 @@ span.form-label {
   border-top: 1px solid var(--border-color);
 }
 
+.rum-journey-focus-selected {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-neutral);
+  margin-bottom: 12px;
+}
+
 .rum-journey-focus-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
