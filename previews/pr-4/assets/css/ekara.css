@@ -2266,50 +2266,101 @@ span.form-label {
 }
 
 .rum-journey-path-graph {
+  position: relative;
+  overflow: auto;
+  padding: 20px 16px;
+  background: var(--rum-journey-canvas-bg);
+  border-radius: var(--radius);
+}
+
+.rum-journey-path-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.rum-journey-path-link {
+  fill: none;
+  stroke: var(--rum-journey-flow-stroke);
+  stroke-linecap: round;
+  transition: stroke 0.15s, opacity 0.15s;
+}
+
+.rum-journey-path-link.is-highlighted {
+  stroke: var(--primary);
+}
+
+.rum-journey-path-link.is-dimmed {
+  opacity: 0.22;
+}
+
+.rum-journey-path-columns {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: stretch;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 8px;
+  gap: 56px;
+  min-width: min-content;
 }
 
 .rum-journey-step {
-  flex: 1;
-  min-width: 120px;
+  flex: 0 0 152px;
+  display: flex;
+  flex-direction: column;
+  min-width: 152px;
 }
 
 .rum-journey-step-label {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-align: center;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
 }
 
 .rum-journey-step-nodes {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.rum-journey-step-connector {
-  flex: 0 0 24px;
-  align-self: center;
-  height: 2px;
-  background: var(--border-color);
-  margin-top: 28px;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
 }
 
 .rum-journey-node {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  align-items: stretch;
+  gap: 6px;
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--input-border-color);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  background: var(--surface-default);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-dropdown);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+  transition: border-color 0.15s, background 0.15s, opacity 0.15s, box-shadow 0.15s;
+}
+
+.rum-journey-node-flow {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-muted);
+  overflow: hidden;
+}
+
+.rum-journey-node-flow-fill {
+  display: block;
+  width: calc(var(--rum-journey-node-flow-pct, 0) * 1%);
+  height: 100%;
+  border-radius: 2px;
+  background: var(--primary);
 }
 
 .rum-journey-node:hover {
