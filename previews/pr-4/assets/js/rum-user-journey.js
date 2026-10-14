@@ -154,7 +154,20 @@ function init() {
   bindFilters();
   if (els.retry) els.retry.addEventListener('click', () => loadJourneyData());
   initSidebarGroups();
+  window.addEventListener('resize', syncPathCardMinHeight);
   loadJourneyData();
+}
+
+/** Path exploration card is at least as tall as Top 5; grows with more journey content only. */
+function syncPathCardMinHeight() {
+  const pathCard = document.querySelector('.rum-journey-card--path');
+  const top5Card = document.querySelector('.rum-journey-card--top5');
+  if (!pathCard || !top5Card) return;
+  pathCard.style.minHeight = '';
+  const top5Height = top5Card.offsetHeight;
+  if (pathCard.offsetHeight < top5Height) {
+    pathCard.style.minHeight = `${top5Height}px`;
+  }
 }
 
 function trackerById(id) {
@@ -472,6 +485,9 @@ function renderJourney() {
   renderTop5();
   renderBreakdown();
   renderFocusPanel();
+  requestAnimationFrame(() => {
+    syncPathCardMinHeight();
+  });
 }
 
 function renderPathGraph() {

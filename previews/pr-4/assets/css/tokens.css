@@ -251,7 +251,6 @@
   --panel-title-font-size: var(--font-size-18);
   --topbar-font-size: var(--font-size-14);
   --button-font-size: var(--font-size-14);
-  --rum-journey-path-graph-min-height: 240px;
 
   /* ── Component semantics (palette aliases — use in ekara.css, not in pages) ── */
   --date-range-selection-bg: var(--color-b100);
