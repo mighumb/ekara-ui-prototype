@@ -2179,7 +2179,7 @@ span.form-label {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
   gap: 20px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .rum-journey-card {
@@ -2194,17 +2194,6 @@ span.form-label {
   font-weight: var(--font-weight-semibold);
   color: var(--text-neutral);
   margin-bottom: 16px;
-}
-
-.rum-journey-card--path {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-.rum-journey-card--path .rum-journey-path-graph {
-  flex: 1 1 auto;
-  min-height: var(--rum-journey-path-graph-min-height);
 }
 
 .rum-journey-state {
