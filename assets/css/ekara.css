@@ -2303,15 +2303,18 @@ span.form-label {
   z-index: 1;
   display: flex;
   align-items: stretch;
-  gap: 56px;
-  min-width: min-content;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rum-journey-step {
-  flex: 0 0 152px;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  min-width: 152px;
+  min-width: 112px;
+  max-width: 220px;
 }
 
 .rum-journey-step-label {
