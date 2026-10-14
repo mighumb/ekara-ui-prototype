@@ -13,6 +13,7 @@ test.describe('Measures — RUM user journey mapping', () => {
     await expect(page.locator('.rum-journey-filters .form-label')).toHaveCount(0);
     await expect(page.locator('#path-graph .rum-journey-node').first()).toBeVisible({ timeout: 5000 });
     await expect(page.locator('#top5-list li')).toHaveCount(5);
+    await expect(page.locator('#top5-list .rum-journey-top5-value').first()).toContainText('sessions');
   });
 
   test('empty state when tracker has no paths', async ({ page }) => {
@@ -37,6 +38,8 @@ test.describe('Measures — RUM user journey mapping', () => {
     await page.goto(JOURNEY_PATH);
     await page.locator('.rum-journey-node', { hasText: 'Product' }).click();
     await expect(page.locator('#node-focus-panel')).toBeVisible();
+    await expect(page.locator('#focus-selected-title')).toHaveText('Product');
+    await expect(page.locator('#focus-before .rum-journey-focus-value').first()).toContainText('sessions');
     await expect(page.locator('#focus-through li').first()).toBeVisible();
   });
 

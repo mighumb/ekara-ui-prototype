@@ -141,6 +141,7 @@ function init() {
     focusBefore: document.getElementById('focus-before'),
     focusAfter: document.getElementById('focus-after'),
     focusThrough: document.getElementById('focus-through'),
+    focusSelectedTitle: document.getElementById('focus-selected-title'),
     top5List: document.getElementById('top5-list'),
     breakdownPanel: document.getElementById('breakdown-panel'),
     breakdownTitle: document.getElementById('breakdown-title'),
@@ -447,6 +448,10 @@ function formatMetricValue(n) {
   return String(n);
 }
 
+function formatMetricWithUnit(n) {
+  return `${formatMetricValue(n)} ${METRIC_LABELS[state.metric].toLowerCase()}`;
+}
+
 function isEmptyTrackerSelection() {
   const ids = state.selectedTrackerIds;
   return ids.length > 0 && ids.every((id) => id === 'empty');
@@ -513,7 +518,7 @@ function renderPathGraph() {
           <button type="button" class="rum-journey-node${isSelected ? ' is-selected' : ''}${isDimmed ? ' is-dimmed' : ''}"
             data-node-id="${escapeAttr(node.id)}" aria-pressed="${isSelected}">
             <span class="rum-journey-node-name">${escapeHtml(node.name)}</span>
-            <span class="rum-journey-node-value">${formatMetricValue(metricValue(node))} ${escapeHtml(METRIC_LABELS[state.metric].toLowerCase())}</span>
+            <span class="rum-journey-node-value">${escapeHtml(formatMetricWithUnit(metricValue(node)))}</span>
             <span class="rum-journey-node-flow" aria-hidden="true"><span class="rum-journey-node-flow-fill" style="--rum-journey-node-flow-pct: ${flowPct}"></span></span>
           </button>`;
         })
@@ -643,13 +648,18 @@ function renderFocusPanel() {
 
   if (!focus) return;
 
+  const selectedNode = findNodeById(state.selectedNodeId);
+  if (els.focusSelectedTitle) {
+    els.focusSelectedTitle.textContent = selectedNode?.name || '';
+  }
+
   const metric = state.metric;
   const renderRows = (rows) =>
     rows.length
       ? rows
           .map(
             (row) =>
-              `<li><span class="rum-journey-focus-label">${escapeHtml(row.label)}</span><span class="rum-journey-focus-value">${formatMetricValue(row[metric])}</span></li>`
+              `<li><span class="rum-journey-focus-label">${escapeHtml(row.label)}</span><span class="rum-journey-focus-value">${escapeHtml(formatMetricWithUnit(row[metric]))}</span></li>`
           )
           .join('')
       : '<li class="rum-journey-focus-empty">No data</li>';
@@ -673,7 +683,7 @@ function renderTop5() {
     <li class="rum-journey-top5-item">
       <span class="rum-journey-top5-rank">${i + 1}.</span>
       <span class="rum-journey-top5-path">${escapeHtml(path.steps.join(' → '))}</span>
-      <span class="rum-journey-top5-value">${formatMetricValue(path[metric])}</span>
+      <span class="rum-journey-top5-value">${escapeHtml(formatMetricWithUnit(path[metric]))}</span>
     </li>`
     )
     .join('');
