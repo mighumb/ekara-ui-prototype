@@ -140,12 +140,47 @@ function defaultMetricsForTracker(trackerId) {
 
 function createMetricBlock(metricId, values) {
   blockIdSeq += 1;
-  return {
+  const block = {
     blockId: `b-${blockIdSeq}`,
     metricId,
     satisfaction: { ...values.satisfaction },
     performance: { ...values.performance },
   };
+  initLayoutSnapshot(block);
+  return block;
+}
+
+/** Last valid positions for bar + markers (frozen while threshold order is invalid). */
+function initLayoutSnapshot(block) {
+  ensureSatisfactionShape(block.satisfaction);
+  block._layoutSat = {
+    satisfied: block.satisfaction.satisfied,
+    tolerating: block.satisfaction.tolerating,
+    unacceptable: block.satisfaction.unacceptable,
+  };
+  block._layoutPerf = {
+    average: block.performance.average,
+    slow: block.performance.slow,
+  };
+}
+
+function syncLayoutSnapshot(block) {
+  ensureSatisfactionShape(block.satisfaction);
+  const satValues = ['satisfied', 'tolerating', 'unacceptable'].map((f) => block.satisfaction[f]);
+  if (validateThresholdChain(satValues).valid) {
+    block._layoutSat = {
+      satisfied: block.satisfaction.satisfied,
+      tolerating: block.satisfaction.tolerating,
+      unacceptable: block.satisfaction.unacceptable,
+    };
+  }
+  const perfValues = ['average', 'slow'].map((f) => block.performance[f]);
+  if (validateThresholdChain(perfValues).valid) {
+    block._layoutPerf = {
+      average: block.performance.average,
+      slow: block.performance.slow,
+    };
+  }
 }
 
 function cloneMetricBlock(block) {
@@ -600,8 +635,10 @@ function formatThresholdDisplay(n) {
 
 function updateThresholdBars(blockEl, block) {
   ensureSatisfactionShape(block.satisfaction);
-  const sat = block.satisfaction;
-  const perf = block.performance;
+  if (!block._layoutSat || !block._layoutPerf) initLayoutSnapshot(block);
+  syncLayoutSnapshot(block);
+  const sat = block._layoutSat;
+  const perf = block._layoutPerf;
 
   const satScale = Math.max(sat.unacceptable * 1.25, 5);
   const perfScale = Math.max(perf.slow * 1.15, 8);
