@@ -20,8 +20,8 @@ const METRIC_CATALOG = [
 ];
 
 const DEFAULT_THRESHOLD_VALUES = {
-  satisfaction: { satisfied: 1, tolerating: 3 },
-  performance: { fast: 1, average: 3, slow: 4 },
+  satisfaction: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+  performance: { fast: 1, average: 3.8, slow: 7.3 },
 };
 
 const DEFAULT_TRACKERS = [
@@ -339,28 +339,8 @@ function buildMetricBlockElement(block, index) {
         </select>
       </div>
     </div>
-    <div class="rum-threshold-section">
-      <h3 class="rum-threshold-section-title">Satisfaction thresholds</h3>
-      ${thresholdRow('satisfied', 'Satisfied', block.satisfaction.satisfied, 'rum-threshold-row-label--satisfied')}
-      ${thresholdRow('tolerating', 'Tolerating', block.satisfaction.tolerating, 'rum-threshold-row-label--tolerating')}
-      <div class="rum-threshold-bar rum-threshold-bar--satisfaction" aria-hidden="true">
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--good" data-seg="sat-good"></span>
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--mid" data-seg="sat-mid"></span>
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--poor" data-seg="sat-poor"></span>
-      </div>
-    </div>
-    <div class="rum-threshold-section">
-      <h3 class="rum-threshold-section-title">Performance thresholds</h3>
-      ${thresholdRow('fast', 'Fast', block.performance.fast, 'rum-threshold-row-label--fast')}
-      ${thresholdRow('average', 'Average', block.performance.average, 'rum-threshold-row-label--average')}
-      ${thresholdRow('slow', 'Slow', block.performance.slow, 'rum-threshold-row-label--slow')}
-      <div class="rum-threshold-bar rum-threshold-bar--performance" aria-hidden="true">
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--good" data-seg="perf-good"></span>
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--mid" data-seg="perf-mid"></span>
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--warn" data-seg="perf-warn"></span>
-        <span class="rum-threshold-bar-seg rum-threshold-bar-seg--poor" data-seg="perf-poor"></span>
-      </div>
-    </div>
+    ${buildSatisfactionThresholdSection(block)}
+    ${buildPerformanceThresholdSection(block)}
     ${index < draftMetrics.length - 1 ? '<hr class="section-divider rum-threshold-block-divider">' : ''}
   `;
 
@@ -372,20 +352,19 @@ function buildMetricBlockElement(block, index) {
     refreshAllMetricSelects();
   });
 
-  wrap.querySelectorAll('.rum-threshold-input').forEach((input) => {
-    input.addEventListener('input', () => {
-      const b = draftMetrics.find((m) => m.blockId === block.blockId);
-      if (!b) return;
-      const val = parseThresholdNumber(input.value);
-      const field = input.dataset.field;
-      const group = input.dataset.group;
-      if (group === 'satisfaction' && field in b.satisfaction) {
-        b.satisfaction[field] = val;
+  wrap.querySelectorAll('.rum-threshold-marker-input').forEach((input) => {
+    input.addEventListener('input', () => syncThresholdFromMarkerInput(wrap, block.blockId, input));
+    input.addEventListener('blur', () => {
+      syncThresholdFromMarkerInput(wrap, block.blockId, input);
+      const metric = draftMetrics.find((m) => m.blockId === block.blockId);
+      normalizeThresholdOrder(metric);
+      if (metric) {
+        const field = input.dataset.field;
+        const group = input.dataset.group;
+        const bucket = group === 'satisfaction' ? metric.satisfaction : metric.performance;
+        if (field in bucket) input.value = formatThresholdDisplay(bucket[field]);
+        updateThresholdBars(wrap, metric);
       }
-      if (group === 'performance' && field in b.performance) {
-        b.performance[field] = val;
-      }
-      updateThresholdBars(wrap, b);
     });
   });
 
@@ -395,15 +374,97 @@ function buildMetricBlockElement(block, index) {
   return wrap;
 }
 
-function thresholdRow(field, label, value, labelClass) {
-  const group = ['satisfied', 'tolerating'].includes(field) ? 'satisfaction' : 'performance';
+function ensureSatisfactionShape(sat) {
+  if (sat.unacceptable == null) {
+    sat.unacceptable = Math.max(Number(sat.tolerating) + 1, 4);
+  }
+}
+
+function buildSatisfactionThresholdSection(block) {
+  ensureSatisfactionShape(block.satisfaction);
+  const sat = block.satisfaction;
   return `
-    <div class="rum-threshold-row">
-      <span class="rum-threshold-row-label ${labelClass}">${label}</span>
-      <span class="rum-threshold-row-op" aria-hidden="true">&le;</span>
-      <input type="text" class="form-input rum-threshold-input" inputmode="decimal" data-group="${group}" data-field="${field}" value="${escapeAttr(formatThresholdValue(value))}">
-      <span class="rum-threshold-unit">s</span>
+    <div class="rum-threshold-section">
+      <h3 class="rum-threshold-section-title">Satisfaction thresholds</h3>
+      <div class="rum-threshold-visual" data-visual="satisfaction">
+        <div class="rum-threshold-markers">
+          ${thresholdMarker('satisfaction', 'satisfied', sat.satisfied, 'Satisfied threshold')}
+          ${thresholdMarker('satisfaction', 'tolerating', sat.tolerating, 'Tolerating threshold')}
+          ${thresholdMarker('satisfaction', 'unacceptable', sat.unacceptable, 'Unacceptable threshold')}
+        </div>
+        <div class="rum-threshold-bar rum-threshold-bar--satisfaction" aria-hidden="true">
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--teal" data-seg="sat-1"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--yellow" data-seg="sat-2"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--orange" data-seg="sat-3"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--red" data-seg="sat-4"></span>
+        </div>
+      </div>
     </div>`;
+}
+
+function buildPerformanceThresholdSection(block) {
+  const perf = block.performance;
+  return `
+    <div class="rum-threshold-section">
+      <h3 class="rum-threshold-section-title">Performance thresholds</h3>
+      <div class="rum-threshold-visual" data-visual="performance">
+        <div class="rum-threshold-markers">
+          ${thresholdMarker('performance', 'average', perf.average, 'Average threshold')}
+          ${thresholdMarker('performance', 'slow', perf.slow, 'Slow threshold')}
+        </div>
+        <div class="rum-threshold-bar rum-threshold-bar--performance" aria-hidden="true">
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--teal" data-seg="perf-1"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--orange" data-seg="perf-2"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--red" data-seg="perf-3"></span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function thresholdMarker(group, field, value, ariaLabel) {
+  return `
+    <div class="rum-threshold-marker" data-marker-field="${field}">
+      <label class="rum-threshold-marker-label">
+        <input
+          type="text"
+          class="rum-threshold-marker-input"
+          inputmode="decimal"
+          data-group="${group}"
+          data-field="${field}"
+          value="${escapeAttr(formatThresholdDisplay(value))}"
+          aria-label="${escapeAttr(ariaLabel)}"
+        >
+        <span class="rum-threshold-marker-unit" aria-hidden="true"> s</span>
+      </label>
+      <span class="rum-threshold-marker-caret" aria-hidden="true"></span>
+    </div>`;
+}
+
+function syncThresholdFromMarkerInput(blockEl, blockId, input) {
+  const b = draftMetrics.find((m) => m.blockId === blockId);
+  if (!b) return;
+  const val = parseThresholdNumber(input.value);
+  const field = input.dataset.field;
+  const group = input.dataset.group;
+  if (group === 'satisfaction') {
+    ensureSatisfactionShape(b.satisfaction);
+    if (field in b.satisfaction) b.satisfaction[field] = val;
+  }
+  if (group === 'performance' && field in b.performance) {
+    b.performance[field] = val;
+  }
+  updateThresholdBars(blockEl, b);
+}
+
+function normalizeThresholdOrder(block) {
+  if (!block) return;
+  ensureSatisfactionShape(block.satisfaction);
+  const sat = block.satisfaction;
+  if (sat.tolerating <= sat.satisfied) sat.tolerating = sat.satisfied + 0.5;
+  if (sat.unacceptable <= sat.tolerating) sat.unacceptable = sat.tolerating + 0.5;
+  const perf = block.performance;
+  if (perf.average <= perf.fast) perf.average = perf.fast + 0.5;
+  if (perf.slow <= perf.average) perf.slow = perf.average + 0.5;
 }
 
 function optionsHtmlForBlock(blockId, selectedId) {
@@ -450,30 +511,50 @@ function parseThresholdNumber(raw) {
   return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 
-function formatThresholdValue(n) {
+function formatThresholdDisplay(n) {
   const num = Number(n);
   if (!Number.isFinite(num)) return '0';
-  return String(num);
+  const fixed = Math.round(num * 10) / 10;
+  const str = fixed % 1 === 0 ? String(fixed) : fixed.toFixed(1);
+  return str.replace('.', ',');
 }
 
 function updateThresholdBars(blockEl, block) {
+  ensureSatisfactionShape(block.satisfaction);
   const sat = block.satisfaction;
   const perf = block.performance;
-  const satTotal = Math.max(sat.satisfied + sat.tolerating, 0.001);
-  setBarSegment(blockEl, 'sat-good', sat.satisfied / satTotal);
-  setBarSegment(blockEl, 'sat-mid', Math.max(sat.tolerating - sat.satisfied, 0) / satTotal);
-  setBarSegment(blockEl, 'sat-poor', 0.35);
 
-  const perfMax = Math.max(perf.slow, 0.001);
-  setBarSegment(blockEl, 'perf-good', perf.fast / perfMax);
-  setBarSegment(blockEl, 'perf-mid', Math.max(perf.average - perf.fast, 0) / perfMax);
-  setBarSegment(blockEl, 'perf-warn', Math.max(perf.slow - perf.average, 0) / perfMax);
-  setBarSegment(blockEl, 'perf-poor', 0.15);
+  const satScale = Math.max(sat.unacceptable * 1.25, 5);
+  const perfScale = Math.max(perf.slow * 1.15, 8);
+
+  setBarSegment(blockEl, 'sat-1', sat.satisfied);
+  setBarSegment(blockEl, 'sat-2', Math.max(sat.tolerating - sat.satisfied, 0.15));
+  setBarSegment(blockEl, 'sat-3', Math.max(sat.unacceptable - sat.tolerating, 0.15));
+  setBarSegment(blockEl, 'sat-4', Math.max(satScale - sat.unacceptable, 0.15));
+
+  setBarSegment(blockEl, 'perf-1', perf.average);
+  setBarSegment(blockEl, 'perf-2', Math.max(perf.slow - perf.average, 0.15));
+  setBarSegment(blockEl, 'perf-3', Math.max(perfScale - perf.slow, 0.15));
+
+  positionMarker(blockEl, 'satisfaction', 'satisfied', sat.satisfied / satScale);
+  positionMarker(blockEl, 'satisfaction', 'tolerating', sat.tolerating / satScale);
+  positionMarker(blockEl, 'satisfaction', 'unacceptable', sat.unacceptable / satScale);
+  positionMarker(blockEl, 'performance', 'average', perf.average / perfScale);
+  positionMarker(blockEl, 'performance', 'slow', perf.slow / perfScale);
 }
 
-function setBarSegment(blockEl, segKey, ratio) {
+function setBarSegment(blockEl, segKey, weight) {
   const seg = blockEl.querySelector(`[data-seg="${segKey}"]`);
-  if (seg) seg.style.flex = `${Math.max(ratio, 0.05)} 1 0`;
+  if (seg) seg.style.flex = `${Math.max(weight, 0.1)} 1 0`;
+}
+
+function positionMarker(blockEl, visual, field, ratio) {
+  const marker = blockEl.querySelector(
+    `[data-visual="${visual}"] .rum-threshold-marker[data-marker-field="${field}"]`,
+  );
+  if (!marker) return;
+  const pct = Math.min(Math.max(ratio * 100, 6), 94);
+  marker.style.left = `${pct}%`;
 }
 
 function updatePanelBodyScroll() {
