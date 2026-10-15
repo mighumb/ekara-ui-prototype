@@ -2760,19 +2760,27 @@ span.form-label {
 }
 
 .rum-threshold-markers {
-  position: relative;
-  height: 34px;
-  margin-bottom: 2px;
+  display: grid;
+  gap: 12px;
+  margin-bottom: 6px;
+  align-items: end;
+}
+
+.rum-threshold-markers--count-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rum-threshold-markers--count-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .rum-threshold-marker {
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-self: center;
   min-width: 0;
+  max-width: 100%;
 }
 
 .rum-threshold-marker-label {
