@@ -775,11 +775,34 @@ span.form-label {
   width: 100%;
 }
 
-.form-row-service .form-select {
+.form-row-service .form-select-wrap {
+  grid-column: 1;
   width: 100%;
   min-width: 0;
   margin: 0;
-  grid-column: 1;
+}
+
+/* Form fields — DS inline select (same listbox as Measures filters) */
+.form-select-wrap[data-ekara-inline-select] {
+  position: relative;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--radius);
+  background: var(--surface-default);
+  transition: border-color 0.15s;
+}
+
+.form-select-wrap[data-ekara-inline-select]:focus-within {
+  border-color: var(--input-focus-border);
+}
+
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger {
+  padding: 8px 12px;
+  min-height: 38px;
+  box-sizing: border-box;
+}
+
+.form-select-wrap[data-ekara-inline-select] select.form-select.hidden {
+  display: none;
 }
 
 .service-help {

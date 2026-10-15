@@ -15,6 +15,12 @@ async function openCreatePanel(page) {
   await expect(page.locator('#panel-title')).toHaveText('New webhook');
 }
 
+async function selectWebhookService(page, label) {
+  const wrap = page.locator('[data-ekara-inline-select]:has(#field-service)');
+  await wrap.locator('.ekara-inline-select-trigger').click();
+  await wrap.locator('.ekara-inline-select-option', { hasText: label }).click();
+}
+
 test.describe('Webhooks', () => {
   test('page loads with seeded table rows', async ({ page }) => {
     await openWebhooks(page);
@@ -50,16 +56,16 @@ test.describe('Webhooks', () => {
     await expect(pagerduty).toHaveClass(/hidden/);
     await expect(preview).toHaveClass(/hidden/);
 
-    await page.selectOption('#field-service', 'PagerDuty');
+    await selectWebhookService(page, 'PagerDuty');
     await expect(pagerduty).not.toHaveClass(/hidden/);
     await expect(mapping).toHaveClass(/hidden/);
 
-    await page.selectOption('#field-service', 'Custom');
+    await selectWebhookService(page, 'Custom');
     await expect(mapping).not.toHaveClass(/hidden/);
     await expect(preview).not.toHaveClass(/hidden/);
     await expect(pagerduty).toHaveClass(/hidden/);
 
-    await page.selectOption('#field-service', 'Generic');
+    await selectWebhookService(page, 'Generic');
     await expect(mapping).toHaveClass(/hidden/);
     await expect(pagerduty).toHaveClass(/hidden/);
   });
@@ -86,7 +92,7 @@ test.describe('Webhooks', () => {
   test('Custom mapping updates payload preview', async ({ page }) => {
     await openWebhooks(page);
     await openCreatePanel(page);
-    await page.selectOption('#field-service', 'Custom');
+    await selectWebhookService(page, 'Custom');
     await page.locator('#btn-add-mapping').click();
 
     await page.locator('.mapping-target').fill('alertMessage');
@@ -102,7 +108,7 @@ test.describe('Webhooks', () => {
     await openCreatePanel(page);
     await page.locator('#field-name').fill('Custom incomplete');
     await page.locator('#field-url').fill('https://example.com/hook');
-    await page.selectOption('#field-service', 'Custom');
+    await selectWebhookService(page, 'Custom');
     await page.locator('#btn-add-mapping').click();
 
     await page.locator('#save-btn').click();
