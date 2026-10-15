@@ -5,6 +5,8 @@
   /* Layout */
   --sidebar-width: 220px;
   --modal-width: 680px;
+  --slide-panel-width: var(--modal-width);
+  --slide-panel-width-narrow: 28rem;
   --radius: 3px;
   --radius-dialog: 4px;
 
@@ -156,7 +158,8 @@
   /* ── Semantic: text ── */
   --text-neutral: var(--color-n900);
   --text-secondary: var(--color-n400);
-  --text-muted: var(--color-n30);
+  /* De-emphasized body copy on light surfaces (WCAG AA on --surface-default) */
+  --text-muted: var(--color-n500);
   --text-placeholder: var(--color-n100);
   --text-on-primary: var(--color-n0);
   --text-on-dark: var(--color-n0);
