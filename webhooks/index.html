@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/tokens.css?v=90">
-  <link rel="stylesheet" href="../assets/css/ekara.css?v=110">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=113">
 </head>
 <body>
   <div class="app-layout">
@@ -202,16 +202,18 @@
 
         <!-- Service -->
         <div class="form-group">
-          <label class="form-label" for="field-service">Service</label>
+          <label class="form-label" id="field-service-label">Service</label>
           <div class="form-row-service">
-            <select class="form-select" id="field-service">
-              <option value="Generic">Generic</option>
-              <option value="Teams">Teams</option>
-              <option value="PagerDuty">PagerDuty</option>
-              <option value="WeCom">WeCom</option>
-              <option value="ilert">ilert</option>
-              <option value="Custom">Custom</option>
-            </select>
+            <div class="form-select-wrap" data-ekara-inline-select>
+              <select class="form-select" id="field-service" aria-labelledby="field-service-label">
+                <option value="Generic">Generic</option>
+                <option value="Teams">Teams</option>
+                <option value="PagerDuty">PagerDuty</option>
+                <option value="WeCom">WeCom</option>
+                <option value="ilert">ilert</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </div>
             <div class="service-help" id="service-help"></div>
           </div>
         </div>
@@ -336,6 +338,7 @@
 
   <script src="../assets/js/bento.js?v=2"></script>
   <script src="../assets/js/tooltip.js?v=3"></script>
-  <script src="../assets/js/webhooks.js?v=29"></script>
+  <script src="../assets/js/ekara-inline-select.js?v=2"></script>
+  <script src="../assets/js/webhooks.js?v=30"></script>
 </body>
 </html>
