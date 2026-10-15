@@ -29,7 +29,7 @@ Workflow **Deploy Pages** pushes each PR to `gh-pages` under `previews/pr-<numbe
 
 1. **One-time (repo admin):** **Settings** → **Pages** → **Build and deployment** → **Deploy from a branch** → branch **`gh-pages`**, folder **`/` (root)**.  
    (While Pages still points at `main`, preview URLs under `gh-pages` are not served.)
-2. Open the PR → wait for green **Deploy Pages** → use the **deep link** to the screen under test (the folder root is only a hub), e.g.  
+2. Open the PR → wait for green **Deploy Pages** → use the preview URL in the bot comment (only screens touched in that PR). Example for a Trackers PR:  
    `https://mighumb.github.io/ekara-ui-prototype/previews/pr-6/settings/rum/trackers/`
 3. After merge to `main`, the workflow updates the site root on `gh-pages` (preview folders are kept).
 

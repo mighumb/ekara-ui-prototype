@@ -54,21 +54,57 @@ jobs:
             const base = 'https://mighumb.github.io/ekara-ui-prototype';
             const url = `${base}/previews/pr-${prNumber}/`;
             const marker = '<!-- ekara-pages-preview -->';
+
+            const { data: prFiles } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const changed = prFiles.map((f) => f.filename);
+
+            const screens = [
+              {
+                label: 'RUM Trackers (Settings)',
+                path: 'settings/rum/trackers/',
+                match: (f) =>
+                  f.startsWith('settings/rum/trackers/') || f === 'assets/js/rum-trackers.js',
+              },
+              {
+                label: 'Alert rules (Settings)',
+                path: 'settings/alerts/',
+                match: (f) =>
+                  f.startsWith('settings/alerts/') || f === 'assets/js/alerts.js',
+              },
+              {
+                label: 'Webhooks (Management)',
+                path: 'webhooks/',
+                match: (f) => f.startsWith('webhooks/') || f === 'assets/js/webhooks.js',
+              },
+              {
+                label: 'RUM user journey mapping (Measures)',
+                path: 'measures/explore/rum/user-journey-mapping/',
+                match: (f) =>
+                  f.startsWith('measures/explore/rum/user-journey-mapping/') ||
+                  f === 'assets/js/rum-user-journey.js',
+              },
+            ];
+
+            const previewLinks = screens.filter((s) => changed.some(s.match));
+            const linkLines =
+              previewLinks.length > 0
+                ? previewLinks.map((s) => `- [${s.label}](${url}${s.path})`)
+                : [`- [Prototype hub](${url})`];
+
             const body = [
               marker,
               `### Ekara UI prototype — preview PR #${prNumber}`,
               '',
               'Prerequisite: publish GitHub Pages from the `gh-pages` branch (see README).',
               '',
-              `Hub (all screens): ${url}`,
-              '',
-              '**This PR (Settings / RUM):**',
-              `- [RUM Trackers — thresholds drawer](${url}settings/rum/trackers/)`,
-              `- [Alert rules — sidebar nav](${url}settings/alerts/)`,
-              '',
-              '**Other screens:**',
-              `- [Webhooks (Management)](${url}webhooks/)`,
-              `- [RUM user journey mapping (Measures)](${url}measures/explore/rum/user-journey-mapping/)`,
+              previewLinks.length === 1
+                ? `**Preview this PR:** ${url}${previewLinks[0].path}`
+                : '**Preview (screens changed in this PR):**',
+              ...linkLines,
               '',
               '_Updated on each push to this branch._',
             ].join('\n');
