@@ -725,6 +725,7 @@ span.form-label {
 .form-input.error,
 .form-select.error,
 .form-textarea.error,
+.ekara-picker-field.error,
 .applications-picker-trigger.error,
 .recipients-field.error {
   border-color: var(--danger);
@@ -1293,8 +1294,7 @@ span.form-label {
   min-width: 0;
 }
 
-.applications-control-slot .form-select,
-.applications-control-slot .applications-picker-trigger {
+.applications-control-slot .ekara-picker-field {
   height: 38px;
   min-height: 38px;
   box-sizing: border-box;
@@ -1307,8 +1307,18 @@ span.form-label {
 
 .applications-picker-trigger {
   width: 100%;
-  text-align: left;
   cursor: pointer;
+}
+
+.ekara-picker-field-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  color: var(--text-neutral);
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .applications-picker-menu {
@@ -1424,25 +1434,21 @@ span.form-label {
   cursor: pointer;
 }
 
-/* Recipients multi-select (chips + dropdown) */
-.recipients-picker {
-  position: relative;
-  width: 100%;
-  min-width: 0;
-}
-
-.recipients-field {
+/* Chip picker field — recipients, applications, Measures trackers */
+.ekara-picker-field {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
   width: 100%;
+  min-height: 38px;
   padding: 8px 32px 8px 12px;
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
   background: var(--surface-default);
   color: var(--text-neutral);
   font-size: var(--font-size-body);
+  font-family: inherit;
   text-align: left;
   position: relative;
   cursor: pointer;
@@ -1450,14 +1456,38 @@ span.form-label {
   transition: border-color 0.15s;
 }
 
-.recipients-field:has(.recipient-chip) {
+.ekara-picker-field:focus,
+.ekara-picker-field[aria-expanded='true'] {
+  outline: none;
+  border-color: var(--input-focus-border);
+}
+
+.ekara-picker-field:has(.ekara-chip) {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-.recipients-field:focus {
-  outline: none;
-  border-color: var(--input-focus-border);
+.ekara-picker-chevron,
+.recipients-chevron,
+.measure-tracker-chevron {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  background-image: var(--select-chevron-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+  pointer-events: none;
+}
+
+/* Recipients multi-select (chips + dropdown) */
+.recipients-picker {
+  position: relative;
+  width: 100%;
+  min-width: 0;
 }
 
 .recipients-chips {
@@ -1486,20 +1516,6 @@ span.form-label {
 
 .recipients-placeholder.hidden {
   display: none;
-}
-
-.recipients-chevron {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  width: 12px;
-  height: 12px;
-  transform: translateY(-50%);
-  background-image: var(--select-chevron-svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px;
-  pointer-events: none;
 }
 
 /* Ekara chip — shared removable tag (Settings recipients, Measures trackers, …) */
@@ -1837,29 +1853,9 @@ span.form-label {
 }
 
 .measure-tracker-field {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   gap: 8px;
-  width: 100%;
   min-height: 36px;
   padding: 0 28px 0 12px;
-  border: 1px solid var(--input-border-color);
-  border-radius: var(--radius);
-  background: var(--card-bg);
-  color: var(--text-neutral);
-  font-size: var(--font-size-body);
-  font-family: inherit;
-  text-align: left;
-  position: relative;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.measure-tracker-field:focus,
-.measure-tracker-field:has([aria-expanded='true']) {
-  outline: none;
-  border-color: var(--input-focus-border);
 }
 
 .measure-tracker-chips {
@@ -1873,20 +1869,6 @@ span.form-label {
 
 .measure-tracker-chips:empty {
   display: none;
-}
-
-.measure-tracker-chevron {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  width: 12px;
-  height: 12px;
-  transform: translateY(-50%);
-  background-image: var(--select-chevron-svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px;
-  pointer-events: none;
 }
 
 .measure-tracker-chips .ekara-chip-label {
@@ -2582,6 +2564,7 @@ span.form-label {
 }
 
 .rum-journey-breakdown-fill {
+  width: var(--rum-breakdown-fill-pct, 0%);
   height: 100%;
   background: var(--primary);
   border-radius: var(--radius);

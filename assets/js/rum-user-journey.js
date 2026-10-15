@@ -964,7 +964,7 @@ function renderBreakdown() {
         return `
         <div class="rum-journey-breakdown-row">
           <span class="rum-journey-breakdown-label">${escapeHtml(row.label)}</span>
-          <div class="rum-journey-breakdown-track"><div class="rum-journey-breakdown-fill" style="width:${pct}%"></div></div>
+          <div class="rum-journey-breakdown-track"><div class="rum-journey-breakdown-fill" style="--rum-breakdown-fill-pct: ${pct}%"></div></div>
           <span class="rum-journey-breakdown-pct">${pct}%</span>
         </div>`;
       })

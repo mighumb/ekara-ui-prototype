@@ -393,7 +393,7 @@ function bindEvents() {
   });
 
   els.recipientsField.addEventListener('click', (e) => {
-    if (e.target.closest('.recipient-chip-remove')) return;
+    if (e.target.closest('.ekara-chip-remove')) return;
     e.stopPropagation();
     const open = els.recipientsMenu.classList.toggle('open');
     els.recipientsMenu.classList.toggle('hidden', !open);
@@ -408,7 +408,7 @@ function bindEvents() {
   });
 
   els.recipientsChips.addEventListener('click', (e) => {
-    const btn = e.target.closest('.recipient-chip-remove');
+    const btn = e.target.closest('.ekara-chip-remove');
     if (!btn) return;
     e.stopPropagation();
     removeRecipient(btn.dataset.value);
@@ -586,9 +586,9 @@ function renderRecipientsChips() {
   els.recipientsChips.innerHTML = selectedRecipients
     .map(
       (r) => `
-    <span class="recipient-chip">
-      <span class="recipient-chip-label">${escapeHtml(r.label)}</span>
-      <button type="button" class="recipient-chip-remove" data-value="${escapeHtml(r.value)}" aria-label="Remove ${escapeHtml(r.label)}">×</button>
+    <span class="ekara-chip">
+      <span class="ekara-chip-label">${escapeHtml(r.label)}</span>
+      <button type="button" class="ekara-chip-remove" data-value="${escapeHtml(r.value)}" aria-label="Remove ${escapeHtml(r.label)}">×</button>
     </span>`
     )
     .join('');
@@ -626,15 +626,17 @@ function syncSendEndGapUI() {
 }
 
 function updateApplicationsTriggerLabel() {
+  const labelEl = document.getElementById('applications-picker-label');
+  if (!labelEl) return;
   const selected = [...els.applicationOptions].filter((o) => o.checked);
   if (selected.length === 0) {
-    els.applicationsTrigger.textContent = 'Select applications';
+    labelEl.textContent = 'Select applications';
   } else if (selected.length === els.applicationOptions.length) {
-    els.applicationsTrigger.textContent = 'All applications selected';
+    labelEl.textContent = 'All applications selected';
   } else if (selected.length === 1) {
-    els.applicationsTrigger.textContent = selected[0].value;
+    labelEl.textContent = selected[0].value;
   } else {
-    els.applicationsTrigger.textContent = `${selected.length} applications selected`;
+    labelEl.textContent = `${selected.length} applications selected`;
   }
 }
 
