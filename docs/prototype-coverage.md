@@ -11,7 +11,9 @@ Only implemented screens are listed.
 
 ## Measures
 
-*(none yet)*
+| Page | Path | JIRA |
+|------|------|------|
+| RUM user journey mapping | [/measures/explore/rum/user-journey-mapping/](https://mighumb.github.io/ekara-ui-prototype/measures/explore/rum/user-journey-mapping/) | [DFY-21875](https://iplabel.atlassian.net/browse/DFY-21875) / [DFY-23088](https://iplabel.atlassian.net/browse/DFY-23088) — path exploration mock (`?demo=empty`, `?demo=error` for states) |
 
 ## Infrastructure
 

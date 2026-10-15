@@ -3,17 +3,23 @@
  */
 (function () {
   const MODULE_ROUTES = {
+    Measures: 'measures/explore/rum/user-journey-mapping/',
     Management: 'webhooks/',
     Settings: 'settings/alerts/',
   };
 
+  function prototypeRootPrefix() {
+    const path = window.location.pathname;
+    if (path.includes('/settings/alerts')) return '../../';
+    if (path.includes('/measures/explore/rum/user-journey-mapping')) return '../../../../';
+    if (path.includes('/webhooks/')) return '../';
+    return '';
+  }
+
   function moduleHref(module) {
     const route = MODULE_ROUTES[module];
     if (!route) return null;
-    const path = window.location.pathname;
-    if (path.includes('/settings/')) return '../../' + route;
-    if (path.includes('/webhooks/')) return '../' + route;
-    return route;
+    return prototypeRootPrefix() + route;
   }
 
   function initBentoMenu() {
