@@ -2804,6 +2804,18 @@ span.form-label {
   outline: none;
 }
 
+.rum-threshold-marker-label.error {
+  border-color: var(--danger);
+}
+
+.rum-threshold-marker-input.error {
+  color: var(--danger);
+}
+
+.rum-threshold-section-error {
+  margin-top: 8px;
+}
+
 .rum-threshold-marker-unit {
   font-size: inherit;
   color: inherit;

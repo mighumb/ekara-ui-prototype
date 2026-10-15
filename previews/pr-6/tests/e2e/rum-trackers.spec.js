@@ -62,6 +62,30 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('.rum-threshold-block')).toHaveCount(2);
   });
 
+  test('threshold order validation shows correct message per step', async ({ page }) => {
+    await openTrackersFresh(page);
+    await openThresholdsForFirstTracker(page);
+
+    const tolerating = page.locator('[data-marker-field="tolerating"] .rum-threshold-marker-input');
+    await tolerating.fill('1');
+    await tolerating.blur();
+    await expect(page.locator('[data-threshold-error="satisfaction"]')).toHaveText(
+      'The value of the second threshold must be higher than the first.',
+    );
+
+    await tolerating.fill('3');
+    await tolerating.blur();
+    const unacceptable = page.locator('[data-marker-field="unacceptable"] .rum-threshold-marker-input');
+    await unacceptable.fill('3');
+    await unacceptable.blur();
+    await expect(page.locator('[data-threshold-error="satisfaction"]')).toHaveText(
+      'The value of the third threshold must be higher than the second.',
+    );
+
+    await page.locator('#btn-save').click();
+    await expect(page.locator('#slide-panel.open')).toBeVisible();
+  });
+
   test('remove metric block when more than one', async ({ page }) => {
     await openTrackersFresh(page);
     await openThresholdsForFirstTracker(page);

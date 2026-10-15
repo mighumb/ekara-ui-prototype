@@ -24,6 +24,11 @@ const DEFAULT_THRESHOLD_VALUES = {
   performance: { fast: 1, average: 3.8, slow: 7.3 },
 };
 
+const THRESHOLD_ORDER_MESSAGES = [
+  'The value of the second threshold must be higher than the first.',
+  'The value of the third threshold must be higher than the second.',
+];
+
 const DEFAULT_TRACKERS = [
   {
     id: 1,
@@ -268,6 +273,7 @@ function closePanel() {
 
 function saveThresholds() {
   if (editingTrackerId == null) return;
+  if (!validateAllMetricBlocks()) return;
   const payload = draftMetrics.map((block) => ({
     metricId: block.metricId,
     satisfaction: { ...block.satisfaction },
@@ -317,7 +323,10 @@ function renderMetricBlocks() {
   window.EkaraInlineSelect?.scan(els.metricsContainer);
   draftMetrics.forEach((block) => {
     const blockEl = els.metricsContainer.querySelector(`[data-block-id="${block.blockId}"]`);
-    if (blockEl) updateThresholdBars(blockEl, block);
+    if (blockEl) {
+      updateThresholdBars(blockEl, block);
+      validateMetricBlock(blockEl, block);
+    }
   });
   requestAnimationFrame(() => {
     updatePanelBodyScroll();
@@ -361,18 +370,21 @@ function buildMetricBlockElement(block, index) {
   });
 
   wrap.querySelectorAll('.rum-threshold-marker-input').forEach((input) => {
-    input.addEventListener('input', () => syncThresholdFromMarkerInput(wrap, block.blockId, input));
+    input.addEventListener('input', () => {
+      syncThresholdFromMarkerInput(wrap, block.blockId, input);
+      const metric = draftMetrics.find((m) => m.blockId === block.blockId);
+      if (metric) validateMetricBlock(wrap, metric);
+    });
     input.addEventListener('blur', () => {
       syncThresholdFromMarkerInput(wrap, block.blockId, input);
       const metric = draftMetrics.find((m) => m.blockId === block.blockId);
-      normalizeThresholdOrder(metric);
-      if (metric) {
-        const field = input.dataset.field;
-        const group = input.dataset.group;
-        const bucket = group === 'satisfaction' ? metric.satisfaction : metric.performance;
-        if (field in bucket) input.value = formatThresholdDisplay(bucket[field]);
-        updateThresholdBars(wrap, metric);
-      }
+      if (!metric) return;
+      const field = input.dataset.field;
+      const group = input.dataset.group;
+      const bucket = group === 'satisfaction' ? metric.satisfaction : metric.performance;
+      if (field in bucket) input.value = formatThresholdDisplay(bucket[field]);
+      updateThresholdBars(wrap, metric);
+      validateMetricBlock(wrap, metric);
     });
   });
 
@@ -407,6 +419,7 @@ function buildSatisfactionThresholdSection(block) {
           <span class="rum-threshold-bar-seg rum-threshold-bar-seg--red" data-seg="sat-4"></span>
         </div>
       </div>
+      <div class="form-error rum-threshold-section-error" data-threshold-error="satisfaction"></div>
     </div>`;
 }
 
@@ -426,6 +439,7 @@ function buildPerformanceThresholdSection(block) {
           <span class="rum-threshold-bar-seg rum-threshold-bar-seg--red" data-seg="perf-3"></span>
         </div>
       </div>
+      <div class="form-error rum-threshold-section-error" data-threshold-error="performance"></div>
     </div>`;
 }
 
@@ -464,15 +478,72 @@ function syncThresholdFromMarkerInput(blockEl, blockId, input) {
   updateThresholdBars(blockEl, b);
 }
 
-function normalizeThresholdOrder(block) {
-  if (!block) return;
+function validateThresholdChain(values) {
+  for (let i = 0; i < values.length - 1; i += 1) {
+    const left = Number(values[i]);
+    const right = Number(values[i + 1]);
+    if (!Number.isFinite(left) || !Number.isFinite(right) || right <= left) {
+      return {
+        valid: false,
+        invalidIndex: i + 1,
+        message: THRESHOLD_ORDER_MESSAGES[i] || THRESHOLD_ORDER_MESSAGES[THRESHOLD_ORDER_MESSAGES.length - 1],
+      };
+    }
+  }
+  return { valid: true };
+}
+
+function applyThresholdSectionValidation(blockEl, visual, fields, values, result) {
+  const section = blockEl.querySelector(`[data-visual="${visual}"]`)?.closest('.rum-threshold-section');
+  const errorEl = section?.querySelector(`[data-threshold-error="${visual}"]`);
+
+  fields.forEach((field, index) => {
+    const marker = blockEl.querySelector(
+      `[data-visual="${visual}"] .rum-threshold-marker[data-marker-field="${field}"]`,
+    );
+    const input = marker?.querySelector('.rum-threshold-marker-input');
+    const label = marker?.querySelector('.rum-threshold-marker-label');
+    const invalid = !result.valid && index === result.invalidIndex;
+    input?.classList.toggle('error', invalid);
+    label?.classList.toggle('error', invalid);
+    if (invalid) {
+      input?.setAttribute('aria-invalid', 'true');
+    } else {
+      input?.removeAttribute('aria-invalid');
+    }
+  });
+
+  if (errorEl) {
+    errorEl.textContent = result.valid ? '' : result.message;
+  }
+}
+
+function validateMetricBlock(blockEl, block) {
+  if (!blockEl || !block) return true;
   ensureSatisfactionShape(block.satisfaction);
-  const sat = block.satisfaction;
-  if (sat.tolerating <= sat.satisfied) sat.tolerating = sat.satisfied + 0.5;
-  if (sat.unacceptable <= sat.tolerating) sat.unacceptable = sat.tolerating + 0.5;
-  const perf = block.performance;
-  if (perf.average <= perf.fast) perf.average = perf.fast + 0.5;
-  if (perf.slow <= perf.average) perf.slow = perf.average + 0.5;
+
+  const satFields = ['satisfied', 'tolerating', 'unacceptable'];
+  const satValues = satFields.map((f) => block.satisfaction[f]);
+  const satResult = validateThresholdChain(satValues);
+  applyThresholdSectionValidation(blockEl, 'satisfaction', satFields, satValues, satResult);
+
+  const perfFields = ['average', 'slow'];
+  const perfValues = perfFields.map((f) => block.performance[f]);
+  const perfResult = validateThresholdChain(perfValues);
+  applyThresholdSectionValidation(blockEl, 'performance', perfFields, perfValues, perfResult);
+
+  return satResult.valid && perfResult.valid;
+}
+
+function validateAllMetricBlocks() {
+  let allValid = true;
+  draftMetrics.forEach((block) => {
+    const blockEl = els.metricsContainer.querySelector(`[data-block-id="${block.blockId}"]`);
+    const valid = validateMetricBlock(blockEl, block);
+    if (!valid) allValid = false;
+  });
+  if (!allValid) updatePanelBodyScroll();
+  return allValid;
 }
 
 function optionsHtmlForBlock(blockId, selectedId) {
