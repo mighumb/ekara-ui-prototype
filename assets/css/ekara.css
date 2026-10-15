@@ -2610,12 +2610,11 @@ span.form-label {
 .data-table--trackers {
   grid-template-columns:
     40px
-    72px
+    56px
     minmax(100px, 1.1fr)
     minmax(72px, 0.9fr)
     minmax(120px, 1.2fr)
     72px
-    88px
     120px
     48px;
 }
@@ -2624,14 +2623,47 @@ span.form-label {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
 }
 
 .rum-tracker-status--active {
-  color: var(--color-g600);
+  color: var(--color-t500);
 }
 
 .rum-tracker-status--inactive {
   color: var(--color-r600);
+}
+
+.rum-tracker-status-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.rum-tracker-status-icon circle {
+  fill: currentColor;
+}
+
+.rum-tracker-status-icon path,
+.rum-tracker-status-icon rect {
+  fill: var(--color-n0);
+}
+
+.rum-tracker-table-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px 20px 16px;
+  font-size: var(--font-size-14);
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  background: var(--card-bg);
+}
+
+.rum-tracker-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .page-header-actions {

@@ -146,35 +146,47 @@ function cloneMetricBlock(block) {
   });
 }
 
+function trackerStatusIconSvg(active) {
+  if (active) {
+    return `<svg class="rum-tracker-status-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="8"/>
+      <path d="M6.2 4.8v6.4L11.6 8z"/>
+    </svg>`;
+  }
+  return `<svg class="rum-tracker-status-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+    <circle cx="8" cy="8" r="8"/>
+    <rect x="5.25" y="5.25" width="5.5" height="5.5" rx="0.5"/>
+  </svg>`;
+}
+
+function formatScopeCell(row) {
+  const parts = [];
+  if (row.scopeRum) parts.push('RUM');
+  if (row.scopeBrowserAgent) parts.push('Browser Agent');
+  return parts.length ? parts.join(', ') : '—';
+}
+
 function renderTable() {
   els.tableBody.innerHTML = trackers
     .map((row) => {
       const statusClass = row.active ? 'rum-tracker-status--active' : 'rum-tracker-status--inactive';
       const statusLabel = row.active ? 'Active' : 'Inactive';
-      const scopeRum = row.scopeRum ? 'RUM' : '—';
-      const scopeBa = row.scopeBrowserAgent ? 'Browser Agent' : '—';
+      const scope = formatScopeCell(row);
       return `
     <div class="data-table-row" data-tracker-id="${row.id}">
       <div class="data-table-cell">
         <input type="checkbox" class="data-table-checkbox" aria-label="Select ${escapeHtml(row.name)}">
       </div>
       <div class="data-table-cell">
-        <span class="rum-tracker-status ${statusClass}" aria-label="${statusLabel}">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
-            ${
-              row.active
-                ? '<path d="M8 5v14l11-7z"/>'
-                : '<rect x="6" y="6" width="12" height="12" rx="1"/>'
-            }
-          </svg>
+        <span class="rum-tracker-status ${statusClass}" role="img" aria-label="${statusLabel}">
+          ${trackerStatusIconSvg(row.active)}
         </span>
       </div>
       <div class="data-table-cell">${escapeHtml(row.application)}</div>
       <div class="data-table-cell">${escapeHtml(row.name)}</div>
       <div class="data-table-cell">${escapeHtml(row.uid)}</div>
       <div class="data-table-cell">${escapeHtml(row.ratio)}</div>
-      <div class="data-table-cell">${escapeHtml(scopeRum)}</div>
-      <div class="data-table-cell">${escapeHtml(scopeBa)}</div>
+      <div class="data-table-cell">${escapeHtml(scope)}</div>
       <div class="data-table-actions">
         <button type="button" class="btn-icon menu-trigger" data-id="${row.id}" aria-label="Actions">
           <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
