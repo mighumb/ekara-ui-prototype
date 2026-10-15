@@ -51,9 +51,10 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Text button | `.btn-text` | `--primary` text; hover `--surface-hover-action` |
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
-| Text input / select | `.form-input`, `.form-select` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` (same tokens for input and select) |
+| Text input | `.form-input`, `.form-textarea` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` |
+| Read-only field (no dropdown) | `.form-input.form-input--disabled-static` | Disabled input tokens (e.g. global Applications scope) |
 | Date range | `.ekara-date-range-picker` + `ekara-date-range-picker.js` | Display format **`DD/MM/YYYY - DD/MM/YYYY`** (same on every page); presets + dual month grid; range `--date-range-selection-bg`, endpoints `--primary` / `--text-on-primary`; include script after `ekara.css` |
-| Inline select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | Custom listbox (native `<select>` hidden); menu uses `--shadow-dropdown`, `--surface-hover-action` for selected option — do not rely on OS select popup. **Measures filters:** `.measure-filter-inline`. **Forms (e.g. Webhooks Service):** `.form-select-wrap` with `.form-select` inside. |
+| Dropdown / select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | DS listbox only — no visible native `<select>` popup. Hidden `<select>` holds value. **Measures:** `.measure-filter-inline`. **Forms:** `.form-select-wrap` + `.form-select`. Dynamic rows: `EkaraInlineSelect.wrapFormSelect(select)`. |
 | Link | `a` | `--link-color` |
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
 | Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` (alias `.recipient-chip*`) | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |

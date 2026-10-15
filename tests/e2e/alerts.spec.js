@@ -59,6 +59,22 @@ test.describe('Settings — Alert rules', () => {
     await expect(page.locator('.data-table-header-sort.is-sorted')).toHaveCount(0);
   });
 
+  test('alert drawer uses DS inline select for trigger and timezone', async ({ page }) => {
+    await openAlertsFresh(page);
+    await page.locator('#btn-add-alert').click();
+    await expect(page.locator('#slide-panel.open')).toBeVisible();
+
+    const trigger = page.locator('[data-ekara-inline-select]:has(#field-trigger)');
+    await trigger.locator('.ekara-inline-select-trigger').click();
+    await trigger.locator('.ekara-inline-select-option', { hasText: 'Performance degradation' }).click();
+    await expect(page.locator('#field-trigger')).toHaveValue('Performance degradation');
+
+    const tz = page.locator('[data-ekara-inline-select]:has(#field-timezone)');
+    await tz.locator('.ekara-inline-select-trigger').click();
+    await tz.locator('.ekara-inline-select-option', { hasText: 'UTC' }).click();
+    await expect(page.locator('#field-timezone')).toHaveValue('UTC');
+  });
+
   test('minimum gap follows send end of alert toggle', async ({ page }) => {
     await openAlertsFresh(page);
     await page.locator('#btn-add-alert').click();
