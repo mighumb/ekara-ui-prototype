@@ -6,9 +6,13 @@
   const ATTR = 'data-tooltip';
   const SHOW_DELAY_MS = 350;
 
+  const POINTER_ATTR = 'data-tooltip-at';
+  const POINTER_VALUE = 'pointer';
+
   let tipEl = null;
   let activeTarget = null;
   let showTimer = null;
+  let lastPointer = { x: 0, y: 0 };
 
   function ensureTip() {
     if (!tipEl) {
@@ -50,13 +54,38 @@
     migrateAll(root);
   }
 
+  function usesPointerAnchor(target) {
+    return target.getAttribute(POINTER_ATTR) === POINTER_VALUE;
+  }
+
+  function positionAtPointer(tip, tipRect, gap) {
+    let top = lastPointer.y - tipRect.height - gap;
+    let left = lastPointer.x - tipRect.width / 2;
+
+    if (top < 8) {
+      top = lastPointer.y + gap;
+    }
+
+    left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+    top = Math.max(8, Math.min(top, window.innerHeight - tipRect.height - 8));
+
+    tip.style.top = `${top}px`;
+    tip.style.left = `${left}px`;
+  }
+
   function position(target) {
     const tip = ensureTip();
     if (tip.hidden) return;
 
-    const rect = target.getBoundingClientRect();
     const tipRect = tip.getBoundingClientRect();
     const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tooltip-offset')) || 6;
+
+    if (usesPointerAnchor(target)) {
+      positionAtPointer(tip, tipRect, gap);
+      return;
+    }
+
+    const rect = target.getBoundingClientRect();
 
     let top = rect.bottom + gap;
     let left = rect.left + rect.width / 2 - tipRect.width / 2;
@@ -120,7 +149,17 @@
     hideImmediate();
   }
 
+  function onPointerMove(e) {
+    lastPointer.x = e.clientX;
+    lastPointer.y = e.clientY;
+    if (activeTarget && usesPointerAnchor(activeTarget) && tipEl && !tipEl.hidden) {
+      position(activeTarget);
+    }
+  }
+
   function onPointerOver(e) {
+    lastPointer.x = e.clientX;
+    lastPointer.y = e.clientY;
     const target = e.target.closest(`[${ATTR}]`);
     if (target) show(target);
   }
@@ -133,6 +172,7 @@
     hide(target);
   }
 
+  document.addEventListener('mousemove', onPointerMove);
   document.addEventListener('mouseover', onPointerOver);
   document.addEventListener('mouseout', onPointerOut);
   document.addEventListener('focusin', (e) => {
