@@ -2697,77 +2697,102 @@ span.form-label {
 }
 
 .rum-threshold-section-title {
-  margin: 0 0 12px;
-  font-size: var(--font-size-14);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-neutral);
-  text-transform: none;
-  letter-spacing: normal;
+  margin: 0 0 10px;
+  font-size: var(--label-font-size);
+  font-weight: var(--label-font-weight);
+  color: var(--label-color);
+  text-transform: uppercase;
+  letter-spacing: var(--label-letter-spacing);
 }
 
-.rum-threshold-row {
-  display: grid;
-  grid-template-columns: 100px 20px minmax(0, 1fr) 24px;
-  gap: 8px;
+.rum-threshold-visual {
+  margin-top: 4px;
+}
+
+.rum-threshold-markers {
+  position: relative;
+  height: 34px;
+  margin-bottom: 2px;
+}
+
+.rum-threshold-marker {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 8px;
+  min-width: 0;
 }
 
-.rum-threshold-row-label {
-  font-size: var(--font-size-14);
-  font-weight: var(--font-weight-semibold);
+.rum-threshold-marker-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 2px 8px;
+  background: var(--color-n0);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: var(--font-size-12);
+  color: var(--text-neutral);
+  white-space: nowrap;
 }
 
-.rum-threshold-row-label--satisfied,
-.rum-threshold-row-label--fast {
-  color: var(--color-g700);
+.rum-threshold-marker-input {
+  width: 2.5em;
+  min-width: 1.5em;
+  max-width: 4em;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: right;
 }
 
-.rum-threshold-row-label--tolerating,
-.rum-threshold-row-label--average {
-  color: var(--color-y700);
+.rum-threshold-marker-input:focus {
+  outline: none;
 }
 
-.rum-threshold-row-label--slow {
-  color: var(--color-o500);
+.rum-threshold-marker-unit {
+  font-size: inherit;
+  color: inherit;
 }
 
-.rum-threshold-row-op {
-  color: var(--text-muted);
-  text-align: center;
-}
-
-.rum-threshold-unit {
-  font-size: var(--font-size-14);
-  color: var(--text-muted);
+.rum-threshold-marker-caret {
+  width: 0;
+  height: 0;
+  margin-top: 1px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--border-color);
 }
 
 .rum-threshold-bar {
   display: flex;
-  height: 8px;
-  margin-top: 12px;
-  border-radius: var(--radius);
+  height: 10px;
+  border-radius: 999px;
   overflow: hidden;
   background: var(--surface-muted);
 }
 
 .rum-threshold-bar-seg {
-  min-width: 4px;
+  min-width: 3px;
 }
 
-.rum-threshold-bar-seg--good {
-  background: var(--color-g500);
+.rum-threshold-bar-seg--teal {
+  background: var(--color-t500);
 }
 
-.rum-threshold-bar-seg--mid {
+.rum-threshold-bar-seg--yellow {
   background: var(--color-y500);
 }
 
-.rum-threshold-bar-seg--warn {
+.rum-threshold-bar-seg--orange {
   background: var(--color-o500);
 }
 
-.rum-threshold-bar-seg--poor {
+.rum-threshold-bar-seg--red {
   background: var(--color-r500);
 }
 
