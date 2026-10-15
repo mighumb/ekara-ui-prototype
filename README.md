@@ -21,7 +21,7 @@ Used to review layout, component behaviour, and UX flows, then hand off to engin
 | 2. GitHub Pages rebuild | ~1–3 minutes |
 | 3. Browser | May cache CSS/JS — hard refresh or bump `?v=` on assets |
 
-Saving a file locally does not update the live URL. Only push to `main` does (legacy Pages from `main`, until Actions-based deploy is enabled).
+Saving a file locally does not update the live URL. Production updates when changes are **merged to `main`** and the **Deploy Pages** workflow publishes to `gh-pages` (see below).
 
 ## Preview a pull request before merge
 
@@ -43,16 +43,18 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Starts a local static server on port 3456 and runs E2E specs in `tests/e2e/` (`alerts.spec.js`, `webhooks.spec.js`). The same suite runs on **pull requests and pushes to `main`** via the [E2E tests](.github/workflows/e2e.yml) workflow.
+Starts a local static server on port 3456 and runs E2E specs in `tests/e2e/` (`alerts.spec.js`, `webhooks.spec.js`, `rum-journey.spec.js`). The same suite runs on **pull requests and pushes to `main`** via the [E2E tests](.github/workflows/e2e.yml) workflow.
 
-### Prototype data in the browser
+### Prototype data in the browser (`localStorage`)
+
+Only some screens **persist edits** in the browser so you can rehearse CRUD without a backend. Other screens (e.g. RUM user journey mapping) use **in-memory mock data** — a refresh resets them.
 
 | `localStorage` key | Screen |
 |--------------------|--------|
 | `ekara-prototype-alert-rules` | Settings → Alert rules |
 | `ekara-prototype-webhooks` | Webhooks |
 
-Remove a key (or clear site data) to reset that screen to its seeded defaults.
+Remove a key (or clear site data) to reset that screen to its seeded defaults. Keys are documented in `docs/prototype-coverage.md` per screen.
 
 ## Structure
 
