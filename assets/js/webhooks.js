@@ -538,7 +538,9 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
       <input type="text" class="form-input mapping-target" placeholder="Target key" value="${escapeAttr(targetKey)}">
       <div class="form-error mapping-target-error"></div>
     </div>
-    <select class="form-select mapping-source">${SOURCE_TYPES.map((s) => `<option value="${s}"${s === source ? ' selected' : ''}>${s}</option>`).join('')}</select>
+    <div class="form-select-wrap form-select-wrap--mapping" data-ekara-inline-select>
+      <select class="form-select mapping-source">${SOURCE_TYPES.map((s) => `<option value="${s}"${s === source ? ' selected' : ''}>${s}</option>`).join('')}</select>
+    </div>
     <div class="mapping-value-cell">
       <div class="mapping-value-container"></div>
       <div class="form-error mapping-value-error"></div>
@@ -578,6 +580,7 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
         updatePayloadPreview();
       });
       valueContainer.appendChild(select);
+      window.EkaraInlineSelect?.wrapFormSelect(select, 'form-select-wrap--mapping-value');
     } else if (src === 'Scenario tag') {
       const select = document.createElement('select');
       select.className = 'form-select mapping-value scenario-tag-select';
@@ -604,6 +607,7 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
         updatePayloadPreview();
       });
       valueContainer.appendChild(select);
+      window.EkaraInlineSelect?.wrapFormSelect(select, 'form-select-wrap--mapping-value');
     } else {
       const input = document.createElement('input');
       input.type = 'text';
@@ -639,6 +643,8 @@ function addMappingRow(targetKey = '', source = 'Static value', value = '') {
 
   setupMappingRowDrag(row);
   els.mappingsContainer.appendChild(row);
+  const sourceWrap = row.querySelector('[data-ekara-inline-select]');
+  window.EkaraInlineSelect?.init(sourceWrap);
   updateMappingLabelsVisibility();
   updatePayloadPreview();
 }

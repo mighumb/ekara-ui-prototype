@@ -805,6 +805,30 @@ span.form-label {
   display: none;
 }
 
+.form-input--disabled-static {
+  cursor: default;
+  background-color: var(--input-disabled-bg);
+  color: var(--input-disabled-text);
+  border-color: var(--input-disabled-border);
+}
+
+.ekara-inline-select-trigger:disabled {
+  cursor: not-allowed;
+  color: var(--input-disabled-text);
+}
+
+.mapping-row .form-select-wrap,
+.mapping-value-cell .form-select-wrap {
+  min-width: 0;
+  width: 100%;
+}
+
+.form-select-wrap--mapping .ekara-inline-select-menu,
+.form-select-wrap--mapping-value .ekara-inline-select-menu {
+  max-height: min(280px, 50vh);
+  overflow-y: auto;
+}
+
 .service-help {
   grid-column: 2;
   min-width: 0;

@@ -1,6 +1,6 @@
 /**
- * Ekara inline select — custom listbox for Measures filter bar (replaces native select popup).
- * Markup: .measure-filter-inline[data-ekara-inline-select] > select + optional prefix.
+ * Ekara inline select — DS listbox (replaces native select popup).
+ * Markup: [data-ekara-inline-select] > select — e.g. `.measure-filter-inline`, `.form-select-wrap`.
  */
 (function () {
   function closeAllExcept(exceptRoot) {
@@ -68,6 +68,7 @@
     function syncUI() {
       const opt = select.options[select.selectedIndex];
       valueEl.textContent = opt ? opt.textContent : '';
+      trigger.disabled = select.disabled;
       menu.querySelectorAll('.ekara-inline-select-option').forEach((btn) => {
         const selected = btn.dataset.value === select.value;
         btn.classList.toggle('is-selected', selected);
@@ -88,6 +89,7 @@
 
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (select.disabled) return;
       if (menu.classList.contains('hidden')) openMenu();
       else closeMenu();
     });
@@ -113,5 +115,27 @@
     document.querySelectorAll('[data-ekara-inline-select]').forEach(initRoot);
   });
 
-  window.EkaraInlineSelect = { init: initRoot };
+  function wrapFormSelect(selectEl, extraClass = '') {
+    if (!selectEl) return null;
+    const existing = selectEl.closest('[data-ekara-inline-select]');
+    if (existing) {
+      initRoot(existing);
+      return existing;
+    }
+    const wrap = document.createElement('div');
+    wrap.className = ['form-select-wrap', extraClass].filter(Boolean).join(' ');
+    wrap.setAttribute('data-ekara-inline-select', '');
+    const parent = selectEl.parentNode;
+    if (!parent) return null;
+    parent.insertBefore(wrap, selectEl);
+    wrap.appendChild(selectEl);
+    initRoot(wrap);
+    return wrap;
+  }
+
+  function scan(root = document) {
+    root.querySelectorAll('[data-ekara-inline-select]').forEach(initRoot);
+  }
+
+  window.EkaraInlineSelect = { init: initRoot, wrapFormSelect, scan };
 })();
