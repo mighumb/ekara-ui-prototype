@@ -462,7 +462,7 @@ function buildSatisfactionThresholdSection(block) {
     <div class="rum-threshold-section">
       <h3 class="rum-threshold-section-title">Satisfaction thresholds</h3>
       <div class="rum-threshold-visual" data-visual="satisfaction">
-        <div class="rum-threshold-markers">
+        <div class="rum-threshold-markers rum-threshold-markers--count-3">
           ${thresholdMarker('satisfaction', 'satisfied', sat.satisfied, 'Satisfied threshold')}
           ${thresholdMarker('satisfaction', 'tolerating', sat.tolerating, 'Tolerating threshold')}
           ${thresholdMarker('satisfaction', 'unacceptable', sat.unacceptable, 'Unacceptable threshold')}
@@ -484,7 +484,7 @@ function buildPerformanceThresholdSection(block) {
     <div class="rum-threshold-section">
       <h3 class="rum-threshold-section-title">Performance thresholds</h3>
       <div class="rum-threshold-visual" data-visual="performance">
-        <div class="rum-threshold-markers">
+        <div class="rum-threshold-markers rum-threshold-markers--count-2">
           ${thresholdMarker('performance', 'average', perf.average, 'Average threshold')}
           ${thresholdMarker('performance', 'slow', perf.slow, 'Slow threshold')}
         </div>
@@ -727,26 +727,11 @@ function updateThresholdBars(blockEl, block) {
   setBarSegment(blockEl, 'perf-1', perf.average);
   setBarSegment(blockEl, 'perf-2', Math.max(perf.slow - perf.average, 0.15));
   setBarSegment(blockEl, 'perf-3', Math.max(perfScale - perf.slow, 0.15));
-
-  positionMarker(blockEl, 'satisfaction', 'satisfied', sat.satisfied / satScale);
-  positionMarker(blockEl, 'satisfaction', 'tolerating', sat.tolerating / satScale);
-  positionMarker(blockEl, 'satisfaction', 'unacceptable', sat.unacceptable / satScale);
-  positionMarker(blockEl, 'performance', 'average', perf.average / perfScale);
-  positionMarker(blockEl, 'performance', 'slow', perf.slow / perfScale);
 }
 
 function setBarSegment(blockEl, segKey, weight) {
   const seg = blockEl.querySelector(`[data-seg="${segKey}"]`);
   if (seg) seg.style.flex = `${Math.max(weight, 0.1)} 1 0`;
-}
-
-function positionMarker(blockEl, visual, field, ratio) {
-  const marker = blockEl.querySelector(
-    `[data-visual="${visual}"] .rum-threshold-marker[data-marker-field="${field}"]`,
-  );
-  if (!marker) return;
-  const pct = Math.min(Math.max(ratio * 100, 6), 94);
-  marker.style.left = `${pct}%`;
 }
 
 function updatePanelBodyScroll() {
