@@ -29,6 +29,11 @@ const THRESHOLD_ORDER_MESSAGES = [
   'The value of the third threshold must be higher than the second.',
 ];
 
+const THRESHOLD_TOO_HIGH_VS_NEXT = [
+  'The value of the first threshold must be lower than the second.',
+  'The value of the second threshold must be lower than the third.',
+];
+
 const DEFAULT_TRACKERS = [
   {
     id: 1,
@@ -405,9 +410,24 @@ function buildMetricBlockElement(block, index) {
   });
 
   wrap.querySelectorAll('.rum-threshold-marker-input').forEach((input) => {
-    input.addEventListener('input', () => {
-      syncThresholdFromMarkerInput(wrap, block.blockId, input);
+    input.addEventListener('focus', () => {
       const metric = draftMetrics.find((m) => m.blockId === block.blockId);
+      if (metric) {
+        metric._lastThresholdEdit = {
+          group: input.dataset.group,
+          field: input.dataset.field,
+        };
+      }
+    });
+    input.addEventListener('input', () => {
+      const metric = draftMetrics.find((m) => m.blockId === block.blockId);
+      if (metric) {
+        metric._lastThresholdEdit = {
+          group: input.dataset.group,
+          field: input.dataset.field,
+        };
+      }
+      syncThresholdFromMarkerInput(wrap, block.blockId, input);
       if (metric) validateMetricBlock(wrap, metric);
     });
     input.addEventListener('blur', () => {
@@ -510,6 +530,7 @@ function syncThresholdFromMarkerInput(blockEl, blockId, input) {
   if (group === 'performance' && field in b.performance) {
     b.performance[field] = val;
   }
+  b._lastThresholdEdit = { group, field };
   updateThresholdBars(blockEl, b);
 }
 
@@ -518,13 +539,68 @@ function validateThresholdChain(values) {
     const left = Number(values[i]);
     const right = Number(values[i + 1]);
     if (!Number.isFinite(left) || !Number.isFinite(right) || right <= left) {
+      return { valid: false };
+    }
+  }
+  return { valid: true };
+}
+
+function fieldThresholdIssue(values, index) {
+  const v = Number(values[index]);
+  if (!Number.isFinite(v)) {
+    return { invalid: true, message: THRESHOLD_ORDER_MESSAGES[0] };
+  }
+  if (index > 0) {
+    const prev = Number(values[index - 1]);
+    if (Number.isFinite(prev) && v <= prev) {
       return {
-        valid: false,
-        invalidIndex: i + 1,
-        message: THRESHOLD_ORDER_MESSAGES[i] || THRESHOLD_ORDER_MESSAGES[THRESHOLD_ORDER_MESSAGES.length - 1],
+        invalid: true,
+        message: THRESHOLD_ORDER_MESSAGES[index - 1],
       };
     }
   }
+  if (index < values.length - 1) {
+    const next = Number(values[index + 1]);
+    if (Number.isFinite(next) && v >= next) {
+      return {
+        invalid: true,
+        message:
+          THRESHOLD_TOO_HIGH_VS_NEXT[index] ||
+          THRESHOLD_ORDER_MESSAGES[index] ||
+          THRESHOLD_ORDER_MESSAGES[THRESHOLD_ORDER_MESSAGES.length - 1],
+      };
+    }
+  }
+  return { invalid: false };
+}
+
+function resolveSectionValidation(block, visual, fields, values) {
+  if (validateThresholdChain(values).valid) {
+    return { valid: true };
+  }
+
+  const edit = block._lastThresholdEdit;
+  if (edit?.group === visual) {
+    const editedIndex = fields.indexOf(edit.field);
+    if (editedIndex >= 0) {
+      const editedIssue = fieldThresholdIssue(values, editedIndex);
+      if (editedIssue.invalid) {
+        return {
+          valid: false,
+          invalidIndex: editedIndex,
+          message: editedIssue.message,
+        };
+      }
+    }
+  }
+
+  for (let i = 0; i < fields.length; i += 1) {
+    const issue = fieldThresholdIssue(values, i);
+    if (issue.invalid) {
+      return { valid: false, invalidIndex: i, message: issue.message };
+    }
+  }
+
   return { valid: true };
 }
 
@@ -559,12 +635,12 @@ function validateMetricBlock(blockEl, block) {
 
   const satFields = ['satisfied', 'tolerating', 'unacceptable'];
   const satValues = satFields.map((f) => block.satisfaction[f]);
-  const satResult = validateThresholdChain(satValues);
+  const satResult = resolveSectionValidation(block, 'satisfaction', satFields, satValues);
   applyThresholdSectionValidation(blockEl, 'satisfaction', satFields, satValues, satResult);
 
   const perfFields = ['average', 'slow'];
   const perfValues = perfFields.map((f) => block.performance[f]);
-  const perfResult = validateThresholdChain(perfValues);
+  const perfResult = resolveSectionValidation(block, 'performance', perfFields, perfValues);
   applyThresholdSectionValidation(blockEl, 'performance', perfFields, perfValues, perfResult);
 
   return satResult.valid && perfResult.valid;

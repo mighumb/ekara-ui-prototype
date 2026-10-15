@@ -86,6 +86,23 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('#slide-panel.open')).toBeVisible();
   });
 
+  test('validation error highlights the field being edited', async ({ page }) => {
+    await openTrackersFresh(page);
+    await openThresholdsForFirstTracker(page);
+
+    const tolerating = page.locator('[data-marker-field="tolerating"] .rum-threshold-marker-input');
+    await tolerating.fill('8');
+    await tolerating.blur();
+
+    await expect(page.locator('[data-threshold-error="satisfaction"]')).toHaveText(
+      'The value of the second threshold must be lower than the third.',
+    );
+    await expect(tolerating).toHaveClass(/error/);
+    await expect(page.locator('[data-marker-field="unacceptable"] .rum-threshold-marker-input')).not.toHaveClass(
+      /error/,
+    );
+  });
+
   test('remove metric block when more than one', async ({ page }) => {
     await openTrackersFresh(page);
     await openThresholdsForFirstTracker(page);
