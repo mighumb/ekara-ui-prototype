@@ -73,7 +73,7 @@ jobs:
                 label: 'Alert rules (Settings)',
                 path: 'settings/alerts/',
                 match: (f) =>
-                  f.startsWith('settings/alerts/') || f === 'assets/js/alerts.js',
+                  f === 'assets/js/alerts.js' || f.startsWith('tests/e2e/alerts'),
               },
               {
                 label: 'Webhooks (Management)',
