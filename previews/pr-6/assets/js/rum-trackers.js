@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadThresholds();
   renderTable();
   bindEvents();
+  initSidebarGroups();
 });
 
 function cacheElements() {
@@ -83,6 +84,18 @@ function cacheElements() {
   els.panelSubtitle = document.getElementById('panel-subtitle');
   els.metricsContainer = document.getElementById('metrics-container');
   els.btnAddMetric = document.getElementById('btn-add-metric');
+}
+
+function initSidebarGroups() {
+  document.querySelectorAll('[data-sidebar-toggle]').forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const chevron = toggle.querySelector('.sidebar-chevron');
+      const group = toggle.closest('.sidebar-item')?.nextElementSibling;
+      if (!group || !group.matches('[data-sidebar-group]')) return;
+      const collapsed = group.classList.toggle('collapsed');
+      if (chevron) chevron.classList.toggle('expanded', !collapsed);
+    });
+  });
 }
 
 function bindEvents() {
