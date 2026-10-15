@@ -33,8 +33,7 @@ All **values** live in `tokens.css` only. `ekara.css` references semantic tokens
 | `--primary-light` | `var(--color-b400)` — sidebar active border |
 | `--surface-hover-action` | `var(--color-b50)` — hover on action buttons (Cancel, outline, close) |
 | `--surface-hover-neutral` | `var(--color-n10)` — hover on passive surfaces (tabs, table rows, dropdown items) |
-| `--border-color` | `var(--color-n30)` — dividers, table borders, mode-toggle outer border |
-| `--mode-toggle-divider` | `var(--color-n20)` — separator between Mapping / Custom JSON tabs |
+| `--border-color` | `var(--color-n30)` — dividers, table borders |
 | `--input-border-color` | `var(--color-n60)` — input/select at rest |
 | `--text-placeholder` | `var(--color-n100)` — input/textarea placeholder |
 | `--danger` | `var(--color-r600)` — delete button, errors |
@@ -55,9 +54,12 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Read-only field (no dropdown) | `.form-input.form-input--disabled-static` | Disabled input tokens (e.g. global Applications scope) |
 | Date range | `.ekara-date-range-picker` + `ekara-date-range-picker.js` | Display format **`DD/MM/YYYY - DD/MM/YYYY`** (same on every page); presets + dual month grid; range `--date-range-selection-bg`, endpoints `--primary` / `--text-on-primary`; include script after `ekara.css` |
 | Dropdown / select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | DS listbox only — no visible native `<select>` popup. Hidden `<select>` holds value. **Measures:** `.measure-filter-inline`. **Forms:** `.form-select-wrap` + `.form-select`. Dynamic rows: `EkaraInlineSelect.wrapFormSelect(select)`. |
+| Chip picker field | `.ekara-picker-field` + `.ekara-picker-chevron` | Multi-select / menu triggers (Settings recipients & applications, Measures trackers). Same border/focus as inputs; chips use `.ekara-chip*`. |
+| Day filter pills | `.day-pill` / `.day-pill-group` | Alert schedule days; active uses primary tokens |
+| Channel choice | `.channel-option` in `.channel-options` | Alert drawer radios (stacked layout: `--stacked`) |
 | Link | `a` | `--link-color` |
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
-| Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` (alias `.recipient-chip*`) | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
+| Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |
 
 **Tooltip** — include `tooltip.js` on every page that needs it. Do not use native `title`. Default placement: below host, centered (flip above if needed). For large or irregular hit targets (e.g. journey flow curves), set `data-tooltip-at="pointer"` to anchor above the cursor. For table cells with ellipsis, set `data-tooltip-full="…"` and call `EkaraTooltip.syncTruncated(tableBody)` after render (sets `data-tooltip` only when text overflows). Static controls can use `data-tooltip` directly.
@@ -70,7 +72,7 @@ New pages/modals: use these classes — do not hardcode colors in HTML or per-pa
 
 **RUM user journey mapping** — Measures screen under `measures/explore/rum/user-journey-mapping/`; journey UI classes prefixed `rum-journey-*`; mock states via `?demo=empty` or tracker `Tracker_Empty_` / `Tracker_Error_`. **Path exploration** (GA Path exploration–like handoff): zone `.rum-journey-path-graph` (same white card surface as parent), columns **Step 1…N**, nodes `.rum-journey-node` with volume bar, SVG `.rum-journey-path-links` (stroke ∝ metric). **Filters (mock, realistic):** selected trackers are **summed** from per-tracker slices in `MOCK_TRACKER_JOURNEY`; date range **scales** volumes vs a 30-day baseline; **Metric** drives displayed numbers and path ranking; **Breakdown** shows aggregated device/browser for the selection (side card only). Node volumes are **derived from link totals** after merge. **Top 5** = five highest full journeys for the current filters; **Paths through** (focus) = up to five journeys that include the selected page group from the **full** merged path list (not only Top 5). Unlisted trackers use a small default share of the `agent` slice.
 
-**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). Focus and open state: `--input-focus-border` on `.measure-filter-inline` (`:focus`, `:focus-within`, or child `[aria-expanded="true"]`) and on `.measure-tracker-field` (same rules). **Trackers** use `.measure-tracker-picker` with **`.measure-filter-prefix`** (`Trackers:`) plus **`.ekara-chip`** for selections (same tokens as Settings recipients); empty selection shows prefix only; dropdown row `Trackers (N)` with select-all (max **10**); × removes one tracker or clears all.
+**Measures filter bar** — no `form-label` above fields; use `.measure-filter-inline` with `.measure-filter-prefix` inside the control (same pattern as RUM / RUM trends). Focus and open state: `--input-focus-border` on `.measure-filter-inline` (`:focus`, `:focus-within`, or child `[aria-expanded="true"]`) and on `.ekara-picker-field` / `.measure-tracker-field`. **Trackers** use `.measure-tracker-picker` with **`.measure-filter-prefix`** (`Trackers:`) plus **`.ekara-chip`** for selections; field shell **`.ekara-picker-field.measure-tracker-field`**; empty selection shows prefix only; dropdown row `Trackers (N)` with select-all (max **10**); × removes one tracker or clears all.
 
 ## Typography (Ekara DS)
 
@@ -118,7 +120,7 @@ Visibility is driven by the **Service** dropdown (`updateServiceSections` in `we
 <link rel="stylesheet" href="../assets/css/ekara.css?v=…">
 ```
 
-Bump `?v=` on **both** files after deploy (tokens + ekara) so the browser does not serve a stale `tokens.css` via cache. Keep the same `?v=` on every HTML page when you change shared CSS.
+After any shared CSS change, bump `?v=` on **both** files to the **same value on every HTML page** in the repo (`index.html`, `webhooks/`, `settings/alerts/`, journey mapping). Keep script `?v=` in sync when those files change.
 
 **Sidebar group rows** — wrap icon + label in `.sidebar-group-label` (no inline flex styles).
 
