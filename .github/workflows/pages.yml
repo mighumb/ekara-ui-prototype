@@ -3,8 +3,8 @@
 # One-time (repo admin): Settings → Pages → Build and deployment
 #   → Source: Deploy from branch → Branch: gh-pages → Folder: / (root)
 #
-# Preview URL (PR #N):
-#   https://mighumb.github.io/ekara-ui-prototype/previews/pr-N/settings/alerts/
+# Preview URL (PR #N) — use a screen path, not the folder root (landing hub):
+#   https://mighumb.github.io/ekara-ui-prototype/previews/pr-N/settings/rum/trackers/
 # Production (after merge to main):
 #   https://mighumb.github.io/ekara-ui-prototype/
 
@@ -60,10 +60,15 @@ jobs:
               '',
               'Prerequisite: publish GitHub Pages from the `gh-pages` branch (see README).',
               '',
-              `Preview: ${url}`,
+              `Hub (all screens): ${url}`,
               '',
-              `- [Alert rules (Settings)](${url}settings/alerts/)`,
+              '**This PR (Settings / RUM):**',
+              `- [RUM Trackers — thresholds drawer](${url}settings/rum/trackers/)`,
+              `- [Alert rules — sidebar nav](${url}settings/alerts/)`,
+              '',
+              '**Other screens:**',
               `- [Webhooks (Management)](${url}webhooks/)`,
+              `- [RUM user journey mapping (Measures)](${url}measures/explore/rum/user-journey-mapping/)`,
               '',
               '_Updated on each push to this branch._',
             ].join('\n');
