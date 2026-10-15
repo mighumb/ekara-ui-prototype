@@ -106,6 +106,10 @@ function bindEvents() {
   els.btnAddMetric.addEventListener('click', addMetricBlock);
 
   document.addEventListener('click', () => closeAllMenus());
+
+  window.addEventListener('resize', () => {
+    if (els.panel?.classList.contains('open')) updatePanelBodyScroll();
+  });
 }
 
 function loadThresholds() {
@@ -314,6 +318,10 @@ function renderMetricBlocks() {
   draftMetrics.forEach((block) => {
     const blockEl = els.metricsContainer.querySelector(`[data-block-id="${block.blockId}"]`);
     if (blockEl) updateThresholdBars(blockEl, block);
+  });
+  requestAnimationFrame(() => {
+    updatePanelBodyScroll();
+    requestAnimationFrame(updatePanelBodyScroll);
   });
 }
 

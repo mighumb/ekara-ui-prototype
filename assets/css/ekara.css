@@ -661,12 +661,9 @@ html.slide-panel-open body {
 .slide-panel-body {
   flex: 1;
   min-height: 0;
-  overflow-y: hidden;
-  padding: 20px 24px;
-}
-
-.slide-panel-body.can-scroll {
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 24px;
 }
 
 .slide-panel-footer {
