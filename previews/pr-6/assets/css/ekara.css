@@ -606,7 +606,8 @@ select:not(:disabled) {
   top: 0;
   right: 0;
   bottom: 0;
-  width: var(--modal-width);
+  width: var(--slide-panel-width);
+  max-width: 100vw;
   background: var(--surface-default);
   z-index: 400;
   display: flex;
@@ -619,6 +620,10 @@ select:not(:disabled) {
 
 .slide-panel.open {
   transform: translateX(0);
+}
+
+.slide-panel--narrow {
+  width: var(--slide-panel-width-narrow);
 }
 
 html.slide-panel-open,
@@ -2620,10 +2625,10 @@ span.form-label {
   margin: 6px 0 0;
   font-size: var(--font-size-14);
   font-weight: var(--font-weight-regular);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: none;
   letter-spacing: normal;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .data-table--trackers {
