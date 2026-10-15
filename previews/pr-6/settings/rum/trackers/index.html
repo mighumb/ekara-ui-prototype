@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../../assets/css/tokens.css?v=96">
-  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=116">
+  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=117">
 </head>
 <body>
   <div class="app-layout">
@@ -179,14 +179,27 @@
           <div class="data-table-header-cell"></div>
           <div class="data-table-header-cell">Status</div>
           <div class="data-table-header-cell">Application</div>
-          <div class="data-table-header-cell">Name</div>
+          <div class="data-table-header-cell">Tracker</div>
           <div class="data-table-header-cell">UID</div>
           <div class="data-table-header-cell">Ratio</div>
-          <div class="data-table-header-cell">Scope RUM</div>
-          <div class="data-table-header-cell">Scope Browser Agent</div>
+          <div class="data-table-header-cell">Scope</div>
           <div class="data-table-header-cell"></div>
         </div>
         <div id="tracker-table-body"></div>
+        <div class="rum-tracker-table-footer">
+          <span class="rum-tracker-legend-item">
+            <span class="rum-tracker-status rum-tracker-status--active" aria-hidden="true">
+              <svg class="rum-tracker-status-icon" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/><path d="M6.2 4.8v6.4L11.6 8z"/></svg>
+            </span>
+            Active
+          </span>
+          <span class="rum-tracker-legend-item">
+            <span class="rum-tracker-status rum-tracker-status--inactive" aria-hidden="true">
+              <svg class="rum-tracker-status-icon" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/><rect x="5.25" y="5.25" width="5.5" height="5.5" rx="0.5"/></svg>
+            </span>
+            Inactive
+          </span>
+        </div>
       </div>
     </main>
   </div>
@@ -217,6 +230,6 @@
 
   <script src="../../../assets/js/bento.js?v=2"></script>
   <script src="../../../assets/js/ekara-inline-select.js?v=3"></script>
-  <script src="../../../assets/js/rum-trackers.js?v=2"></script>
+  <script src="../../../assets/js/rum-trackers.js?v=3"></script>
 </body>
 </html>
