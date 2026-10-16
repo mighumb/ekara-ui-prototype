@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=131');
+@import url('tokens.css?v=132');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -2599,20 +2599,22 @@ span.form-label {
   border-radius: var(--radius);
 }
 
-.sidebar-subitem-link {
+/* Sidebar sub-route links (Alerts ↔ Trackers, etc.) — must beat global `a { color: --link-color }`. */
+.sidebar-nav a.sidebar-subitem-link,
+.sidebar-nav a.sidebar-subitem-link:visited {
   display: block;
   color: var(--sidebar-text);
   text-decoration: none;
 }
 
-.sidebar-subitem-link:hover,
-.sidebar-subitem-link:focus-visible {
+.sidebar-nav a.sidebar-subitem-link:hover,
+.sidebar-nav a.sidebar-subitem-link:focus-visible {
   background: var(--sidebar-hover-bg);
   color: var(--sidebar-text-active);
   text-decoration: none;
 }
 
-.sidebar-subitem-link.active {
+.sidebar-nav a.sidebar-subitem-link.active {
   background: var(--sidebar-active-bg);
   color: var(--sidebar-text-active);
 }
