@@ -145,47 +145,12 @@ function defaultMetricsForTracker(trackerId) {
 
 function createMetricBlock(metricId, values) {
   blockIdSeq += 1;
-  const block = {
+  return {
     blockId: `b-${blockIdSeq}`,
     metricId,
     satisfaction: { ...values.satisfaction },
     performance: { ...values.performance },
   };
-  initLayoutSnapshot(block);
-  return block;
-}
-
-/** Last valid positions for bar + markers (frozen while threshold order is invalid). */
-function initLayoutSnapshot(block) {
-  ensureSatisfactionShape(block.satisfaction);
-  block._layoutSat = {
-    satisfied: block.satisfaction.satisfied,
-    tolerating: block.satisfaction.tolerating,
-    unacceptable: block.satisfaction.unacceptable,
-  };
-  block._layoutPerf = {
-    average: block.performance.average,
-    slow: block.performance.slow,
-  };
-}
-
-function syncLayoutSnapshot(block) {
-  ensureSatisfactionShape(block.satisfaction);
-  const satValues = ['satisfied', 'tolerating', 'unacceptable'].map((f) => block.satisfaction[f]);
-  if (validateThresholdChain(satValues).valid) {
-    block._layoutSat = {
-      satisfied: block.satisfaction.satisfied,
-      tolerating: block.satisfaction.tolerating,
-      unacceptable: block.satisfaction.unacceptable,
-    };
-  }
-  const perfValues = ['average', 'slow'].map((f) => block.performance[f]);
-  if (validateThresholdChain(perfValues).valid) {
-    block._layoutPerf = {
-      average: block.performance.average,
-      slow: block.performance.slow,
-    };
-  }
 }
 
 function cloneMetricBlock(block) {
@@ -363,10 +328,7 @@ function renderMetricBlocks() {
   window.EkaraInlineSelect?.scan(els.metricsContainer);
   draftMetrics.forEach((block) => {
     const blockEl = els.metricsContainer.querySelector(`[data-block-id="${block.blockId}"]`);
-    if (blockEl) {
-      updateThresholdBars(blockEl, block);
-      validateMetricBlock(blockEl, block);
-    }
+    if (blockEl) validateMetricBlock(blockEl, block);
   });
   requestAnimationFrame(() => {
     updatePanelBodyScroll();
@@ -438,7 +400,6 @@ function buildMetricBlockElement(block, index) {
       const group = input.dataset.group;
       const bucket = group === 'satisfaction' ? metric.satisfaction : metric.performance;
       if (field in bucket) input.value = formatThresholdDisplay(bucket[field]);
-      updateThresholdBars(wrap, metric);
       validateMetricBlock(wrap, metric);
     });
   });
@@ -462,7 +423,7 @@ function buildSatisfactionThresholdSection(block) {
     <div class="rum-threshold-section">
       <h3 class="rum-threshold-section-title">Satisfaction thresholds</h3>
       <div class="rum-threshold-visual" data-visual="satisfaction">
-        <div class="rum-threshold-markers rum-threshold-markers--count-3">
+        <div class="rum-threshold-markers rum-threshold-markers--satisfaction">
           ${thresholdMarker('satisfaction', 'satisfied', sat.satisfied, 'Satisfied threshold')}
           ${thresholdMarker('satisfaction', 'tolerating', sat.tolerating, 'Tolerating threshold')}
           ${thresholdMarker('satisfaction', 'unacceptable', sat.unacceptable, 'Unacceptable threshold')}
@@ -484,7 +445,7 @@ function buildPerformanceThresholdSection(block) {
     <div class="rum-threshold-section">
       <h3 class="rum-threshold-section-title">Performance thresholds</h3>
       <div class="rum-threshold-visual" data-visual="performance">
-        <div class="rum-threshold-markers rum-threshold-markers--count-2">
+        <div class="rum-threshold-markers rum-threshold-markers--performance">
           ${thresholdMarker('performance', 'average', perf.average, 'Average threshold')}
           ${thresholdMarker('performance', 'slow', perf.slow, 'Slow threshold')}
         </div>
@@ -531,7 +492,6 @@ function syncThresholdFromMarkerInput(blockEl, blockId, input) {
     b.performance[field] = val;
   }
   b._lastThresholdEdit = { group, field };
-  updateThresholdBars(blockEl, b);
 }
 
 function validateThresholdChain(values) {
@@ -707,31 +667,6 @@ function formatThresholdDisplay(n) {
   const fixed = Math.round(num * 10) / 10;
   const str = fixed % 1 === 0 ? String(fixed) : fixed.toFixed(1);
   return str.replace('.', ',');
-}
-
-function updateThresholdBars(blockEl, block) {
-  ensureSatisfactionShape(block.satisfaction);
-  if (!block._layoutSat || !block._layoutPerf) initLayoutSnapshot(block);
-  syncLayoutSnapshot(block);
-  const sat = block._layoutSat;
-  const perf = block._layoutPerf;
-
-  const satScale = Math.max(sat.unacceptable * 1.25, 5);
-  const perfScale = Math.max(perf.slow * 1.15, 8);
-
-  setBarSegment(blockEl, 'sat-1', sat.satisfied);
-  setBarSegment(blockEl, 'sat-2', Math.max(sat.tolerating - sat.satisfied, 0.15));
-  setBarSegment(blockEl, 'sat-3', Math.max(sat.unacceptable - sat.tolerating, 0.15));
-  setBarSegment(blockEl, 'sat-4', Math.max(satScale - sat.unacceptable, 0.15));
-
-  setBarSegment(blockEl, 'perf-1', perf.average);
-  setBarSegment(blockEl, 'perf-2', Math.max(perf.slow - perf.average, 0.15));
-  setBarSegment(blockEl, 'perf-3', Math.max(perfScale - perf.slow, 0.15));
-}
-
-function setBarSegment(blockEl, segKey, weight) {
-  const seg = blockEl.querySelector(`[data-seg="${segKey}"]`);
-  if (seg) seg.style.flex = `${Math.max(weight, 0.1)} 1 0`;
 }
 
 function updatePanelBodyScroll() {
