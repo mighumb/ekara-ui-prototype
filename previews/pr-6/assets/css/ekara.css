@@ -635,7 +635,7 @@ html.slide-panel-open body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: var(--slide-panel-padding);
   flex-shrink: 0;
 }
 
@@ -663,15 +663,15 @@ html.slide-panel-open body {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 20px 24px;
+  padding: var(--slide-panel-padding);
 }
 
 .slide-panel-footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  padding: 24px;
+  gap: var(--slide-panel-actions-gap);
+  padding: var(--slide-panel-padding);
   flex-shrink: 0;
 }
 
@@ -1120,7 +1120,7 @@ span.form-label {
   background: var(--surface-default);
   border-radius: var(--radius-dialog);
   box-shadow: var(--shadow-dialog);
-  padding: 24px;
+  padding: var(--slide-panel-padding);
   z-index: 500;
   min-width: 320px;
   display: none;
@@ -1145,7 +1145,7 @@ span.form-label {
 .confirm-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--slide-panel-actions-gap);
 }
 
 .btn-danger {
