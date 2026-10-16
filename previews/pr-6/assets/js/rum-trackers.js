@@ -47,11 +47,12 @@ const METRIC_THRESHOLD_PRESETS = {
     },
   },
   ont: {
-    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_LOCK },
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
     performance: {
       layout: 'four',
       values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
       editable: ALL_SAT_LOCK,
+      muted: true,
     },
   },
   fplt: {

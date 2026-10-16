@@ -134,9 +134,13 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(satisfactionField(page, 'unacceptable')).toBeEnabled();
 
     await selectMetricInBlock(page, 0, 'ONT');
-    await expect(satisfactionField(page, 'satisfied')).toBeDisabled();
+    await expect(satisfactionField(page, 'satisfied')).toBeEnabled();
+    await expect(satisfactionField(page, 'tolerating')).toBeEnabled();
     await expect(
       page.locator('[data-visual="performance"] [data-marker-field="satisfied"] .rum-threshold-marker-input'),
+    ).toBeDisabled();
+    await expect(
+      page.locator('[data-visual="performance"] [data-marker-field="tolerating"] .rum-threshold-marker-input'),
     ).toBeDisabled();
   });
 
