@@ -17,6 +17,19 @@ async function openThresholdsForFirstTracker(page) {
   await expect(page.locator('#slide-panel.open')).toBeVisible();
 }
 
+function satisfactionField(page, field) {
+  return page.locator(
+    `[data-visual="satisfaction"] .rum-threshold-marker[data-marker-field="${field}"] .rum-threshold-marker-input`,
+  );
+}
+
+async function selectMetricInBlock(page, blockIndex, labelPart) {
+  const block = page.locator('.rum-threshold-block').nth(blockIndex);
+  const wrap = block.locator('[data-ekara-inline-select]');
+  await wrap.locator('.ekara-inline-select-trigger').click();
+  await wrap.locator('.ekara-inline-select-option').filter({ hasText: labelPart }).first().click();
+}
+
 test.describe('Settings — RUM Trackers thresholds', () => {
   test('page loads tracker table', async ({ page }) => {
     await openTrackersFresh(page);
@@ -66,7 +79,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await openTrackersFresh(page);
     await openThresholdsForFirstTracker(page);
 
-    const tolerating = page.locator('[data-marker-field="tolerating"] .rum-threshold-marker-input');
+    const tolerating = satisfactionField(page, 'tolerating');
     await tolerating.fill('1');
     await tolerating.blur();
     await expect(page.locator('[data-threshold-error="satisfaction"]')).toHaveText(
@@ -75,7 +88,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
 
     await tolerating.fill('3');
     await tolerating.blur();
-    const unacceptable = page.locator('[data-marker-field="unacceptable"] .rum-threshold-marker-input');
+    const unacceptable = satisfactionField(page, 'unacceptable');
     await unacceptable.fill('3');
     await unacceptable.blur();
     await expect(page.locator('[data-threshold-error="satisfaction"]')).toHaveText(
@@ -90,7 +103,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await openTrackersFresh(page);
     await openThresholdsForFirstTracker(page);
 
-    const tolerating = page.locator('[data-marker-field="tolerating"] .rum-threshold-marker-input');
+    const tolerating = satisfactionField(page, 'tolerating');
     await tolerating.fill('8');
     await tolerating.blur();
 
@@ -98,9 +111,26 @@ test.describe('Settings — RUM Trackers thresholds', () => {
       'The value of the second threshold must be lower than the third.',
     );
     await expect(tolerating).toHaveClass(/error/);
-    await expect(page.locator('[data-marker-field="unacceptable"] .rum-threshold-marker-input')).not.toHaveClass(
-      /error/,
-    );
+    await expect(satisfactionField(page, 'unacceptable')).not.toHaveClass(/error/);
+  });
+
+  test('metric preset applies official defaults and locks standard performance', async ({ page }) => {
+    await openTrackersFresh(page);
+    await openThresholdsForFirstTracker(page);
+
+    await selectMetricInBlock(page, 0, 'LCP');
+    await expect(
+      page.locator('[data-visual="performance"] [data-marker-field="average"] .rum-threshold-marker-input'),
+    ).toBeDisabled();
+    await expect(page.locator('.rum-threshold-standard-note')).toHaveText('Standard thresholds are not editable');
+    await expect(satisfactionField(page, 'satisfied')).toHaveValue('1');
+    await expect(
+      page.locator('[data-visual="performance"] [data-marker-field="average"] .rum-threshold-marker-input'),
+    ).toHaveValue('2,5');
+
+    await selectMetricInBlock(page, 0, 'DOM Interactive');
+    await expect(satisfactionField(page, 'satisfied')).toHaveValue('2');
+    await expect(satisfactionField(page, 'tolerating')).toBeDisabled();
   });
 
   test('remove metric block when more than one', async ({ page }) => {

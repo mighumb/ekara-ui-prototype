@@ -2825,11 +2825,33 @@ span.form-label {
   outline: none;
 }
 
+.rum-threshold-marker-label--locked {
+  background: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+  color: var(--input-disabled-text);
+}
+
+.rum-threshold-marker-label--locked .rum-threshold-marker-input {
+  color: var(--input-disabled-text);
+  -webkit-text-fill-color: var(--input-disabled-text);
+  cursor: default;
+}
+
 .rum-threshold-marker-label.error {
   border-color: var(--danger);
 }
 
 .rum-threshold-marker-input.error {
+  color: var(--danger);
+}
+
+.rum-threshold-section--performance-muted .rum-threshold-bar-seg {
+  opacity: 0.5;
+}
+
+.rum-threshold-standard-note {
+  margin: 8px 0 0;
+  font-size: var(--font-size-12);
   color: var(--danger);
 }
 

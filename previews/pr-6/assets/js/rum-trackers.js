@@ -19,10 +19,214 @@ const METRIC_CATALOG = [
   { id: 'other', label: 'Other metrics' },
 ];
 
-const DEFAULT_THRESHOLD_VALUES = {
-  satisfaction: { satisfied: 1, tolerating: 3, unacceptable: 4 },
-  performance: { fast: 1, average: 3.8, slow: 7.3 },
+const SAT_FIELDS = ['satisfied', 'tolerating', 'unacceptable'];
+
+const ALL_SAT_EDIT = { satisfied: true, tolerating: true, unacceptable: true };
+const SAT_EDIT_12 = { satisfied: true, tolerating: true, unacceptable: false };
+const SAT_EDIT_1 = { satisfied: true, tolerating: false, unacceptable: false };
+const ALL_SAT_LOCK = { satisfied: false, tolerating: false, unacceptable: false };
+
+const PERF_EDIT_BOTH = { average: true, slow: true };
+const PERF_LOCK_BOTH = { average: false, slow: false };
+const PERF_EDIT_SLOW_ONLY = { average: false, slow: true };
+
+/** Official default thresholds + which fields are editable (per metric). */
+const METRIC_THRESHOLD_PRESETS = {
+  tti: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: ALL_SAT_EDIT,
+    },
+  },
+  'dom-interactive': {
+    satisfaction: { values: { satisfied: 2, tolerating: 3, unacceptable: 4 }, editable: SAT_EDIT_1 },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: SAT_EDIT_1,
+    },
+  },
+  ont: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: { satisfied: false, tolerating: true, unacceptable: true },
+    },
+  },
+  fplt: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: SAT_EDIT_12 },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: SAT_EDIT_12,
+    },
+  },
+  lcp: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'three',
+      values: { average: 2.5, slow: 4 },
+      editable: PERF_LOCK_BOTH,
+      standardNote: true,
+      muted: true,
+    },
+  },
+  inp: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'three',
+      values: { average: 0.2, slow: 0.5 },
+      editable: PERF_LOCK_BOTH,
+      standardNote: true,
+      muted: true,
+    },
+  },
+  cls: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'three',
+      values: { average: 0.1, slow: 0.25 },
+      editable: PERF_LOCK_BOTH,
+      unit: 'none',
+      standardNote: true,
+      muted: true,
+    },
+  },
+  fcp: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: ALL_SAT_EDIT,
+    },
+  },
+  ttfb: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'three',
+      values: { average: 0.2, slow: 0.5 },
+      editable: PERF_LOCK_BOTH,
+      standardNote: true,
+      muted: true,
+    },
+  },
+  'avg-dns': {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'three',
+      values: { average: 0.1, slow: 0.14 },
+      editable: PERF_LOCK_BOTH,
+      standardNote: true,
+      muted: true,
+    },
+  },
+  bplt: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: ALL_SAT_EDIT,
+    },
+  },
+  other: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: ALL_SAT_LOCK,
+      standardNote: true,
+      muted: true,
+    },
+  },
 };
+
+function getMetricPreset(metricId) {
+  return METRIC_THRESHOLD_PRESETS[metricId] || METRIC_THRESHOLD_PRESETS.tti;
+}
+
+function isSatisfactionFieldEditable(metricId, field) {
+  const preset = getMetricPreset(metricId);
+  return preset.satisfaction.editable[field] !== false;
+}
+
+function isPerformanceFieldEditable(metricId, field) {
+  const preset = getMetricPreset(metricId);
+  const perf = preset.performance;
+  if (perf.layout === 'four') {
+    return perf.editable[field] !== false;
+  }
+  return perf.editable[field] !== false;
+}
+
+function applyMetricPresetToBlock(block) {
+  const preset = getMetricPreset(block.metricId);
+  block.satisfaction = { ...preset.satisfaction.values };
+  const perf = preset.performance;
+  if (perf.layout === 'four') {
+    block.performance = {
+      layout: 'four',
+      satisfied: perf.values.satisfied,
+      tolerating: perf.values.tolerating,
+      unacceptable: perf.values.unacceptable,
+    };
+  } else {
+    block.performance = {
+      layout: 'three',
+      average: perf.values.average,
+      slow: perf.values.slow,
+    };
+  }
+}
+
+function mergeSavedMetricBlock(block, saved) {
+  applyMetricPresetToBlock(block);
+  if (!saved) return;
+  SAT_FIELDS.forEach((field) => {
+    if (isSatisfactionFieldEditable(block.metricId, field) && saved.satisfaction?.[field] != null) {
+      block.satisfaction[field] = saved.satisfaction[field];
+    }
+  });
+  const perf = getMetricPreset(block.metricId).performance;
+  if (perf.layout === 'four') {
+    SAT_FIELDS.forEach((field) => {
+      if (isPerformanceFieldEditable(block.metricId, field) && saved.performance?.[field] != null) {
+        block.performance[field] = saved.performance[field];
+      }
+    });
+  } else {
+    ['average', 'slow'].forEach((field) => {
+      if (isPerformanceFieldEditable(block.metricId, field) && saved.performance?.[field] != null) {
+        block.performance[field] = saved.performance[field];
+      }
+    });
+  }
+}
+
+function enforceLockedThresholdValues(block) {
+  const preset = getMetricPreset(block.metricId);
+  SAT_FIELDS.forEach((field) => {
+    if (!preset.satisfaction.editable[field]) {
+      block.satisfaction[field] = preset.satisfaction.values[field];
+    }
+  });
+  const perf = preset.performance;
+  if (perf.layout === 'four') {
+    SAT_FIELDS.forEach((field) => {
+      if (!perf.editable[field]) {
+        block.performance[field] = perf.values[field];
+      }
+    });
+  } else {
+    ['average', 'slow'].forEach((field) => {
+      if (!perf.editable[field]) {
+        block.performance[field] = perf.values[field];
+      }
+    });
+  }
+}
 
 const THRESHOLD_ORDER_MESSAGES = [
   'The value of the second threshold must be higher than the first.',
@@ -140,24 +344,23 @@ function defaultMetricsForTracker(trackerId) {
   if (saved && saved.length) {
     return saved.map(cloneMetricBlock);
   }
-  return [createMetricBlock('tti', { ...DEFAULT_THRESHOLD_VALUES })];
+  return [createMetricBlock('tti')];
 }
 
-function createMetricBlock(metricId, values) {
+function createMetricBlock(metricId) {
   blockIdSeq += 1;
-  return {
+  const block = {
     blockId: `b-${blockIdSeq}`,
     metricId,
-    satisfaction: { ...values.satisfaction },
-    performance: { ...values.performance },
   };
+  applyMetricPresetToBlock(block);
+  return block;
 }
 
 function cloneMetricBlock(block) {
-  return createMetricBlock(block.metricId, {
-    satisfaction: { ...block.satisfaction },
-    performance: { ...block.performance },
-  });
+  const fresh = createMetricBlock(block.metricId);
+  mergeSavedMetricBlock(fresh, block);
+  return fresh;
 }
 
 function trackerStatusIconSvg(active) {
@@ -278,6 +481,7 @@ function closePanel() {
 
 function saveThresholds() {
   if (editingTrackerId == null) return;
+  draftMetrics.forEach((block) => enforceLockedThresholdValues(block));
   if (!validateAllMetricBlocks()) return;
   const payload = draftMetrics.map((block) => ({
     metricId: block.metricId,
@@ -307,7 +511,7 @@ function updateAddMetricButton() {
 function addMetricBlock() {
   const metricId = getNextAvailableMetricId();
   if (!metricId) return;
-  draftMetrics.push(createMetricBlock(metricId, { ...DEFAULT_THRESHOLD_VALUES }));
+  draftMetrics.push(createMetricBlock(metricId));
   renderMetricBlocks();
   updateAddMetricButton();
 }
@@ -368,6 +572,8 @@ function buildMetricBlockElement(block, index) {
     const b = draftMetrics.find((m) => m.blockId === block.blockId);
     if (!b) return;
     b.metricId = select.value;
+    applyMetricPresetToBlock(b);
+    renderMetricBlocks();
     refreshAllMetricSelects();
   });
 
@@ -419,14 +625,15 @@ function ensureSatisfactionShape(sat) {
 function buildSatisfactionThresholdSection(block) {
   ensureSatisfactionShape(block.satisfaction);
   const sat = block.satisfaction;
+  const metricId = block.metricId;
   return `
     <div class="rum-threshold-section">
       <h3 class="rum-threshold-section-title">Satisfaction thresholds</h3>
       <div class="rum-threshold-visual" data-visual="satisfaction">
         <div class="rum-threshold-markers rum-threshold-markers--satisfaction">
-          ${thresholdMarker('satisfaction', 'satisfied', sat.satisfied, 'Satisfied threshold')}
-          ${thresholdMarker('satisfaction', 'tolerating', sat.tolerating, 'Tolerating threshold')}
-          ${thresholdMarker('satisfaction', 'unacceptable', sat.unacceptable, 'Unacceptable threshold')}
+          ${thresholdMarker('satisfaction', 'satisfied', sat.satisfied, 'Satisfied threshold', metricId)}
+          ${thresholdMarker('satisfaction', 'tolerating', sat.tolerating, 'Tolerating threshold', metricId)}
+          ${thresholdMarker('satisfaction', 'unacceptable', sat.unacceptable, 'Unacceptable threshold', metricId)}
         </div>
         <div class="rum-threshold-bar rum-threshold-bar--satisfaction" aria-hidden="true">
           <span class="rum-threshold-bar-seg rum-threshold-bar-seg--teal" data-seg="sat-1"></span>
@@ -440,14 +647,43 @@ function buildSatisfactionThresholdSection(block) {
 }
 
 function buildPerformanceThresholdSection(block) {
+  const preset = getMetricPreset(block.metricId).performance;
   const perf = block.performance;
+  const mutedClass = preset.muted ? ' rum-threshold-section--performance-muted' : '';
+  const standardNote = preset.standardNote
+    ? '<p class="rum-threshold-standard-note">Standard thresholds are not editable</p>'
+    : '';
+
+  if (preset.layout === 'four') {
+    return `
+    <div class="rum-threshold-section${mutedClass}">
+      <h3 class="rum-threshold-section-title">Performance thresholds</h3>
+      <div class="rum-threshold-visual" data-visual="performance">
+        <div class="rum-threshold-markers rum-threshold-markers--satisfaction">
+          ${thresholdMarker('performance', 'satisfied', perf.satisfied, 'Performance threshold', block.metricId)}
+          ${thresholdMarker('performance', 'tolerating', perf.tolerating, 'Performance threshold', block.metricId)}
+          ${thresholdMarker('performance', 'unacceptable', perf.unacceptable, 'Performance threshold', block.metricId)}
+        </div>
+        <div class="rum-threshold-bar rum-threshold-bar--satisfaction" aria-hidden="true">
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--teal" data-seg="perf-1"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--yellow" data-seg="perf-2"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--orange" data-seg="perf-3"></span>
+          <span class="rum-threshold-bar-seg rum-threshold-bar-seg--red" data-seg="perf-4"></span>
+        </div>
+      </div>
+      ${standardNote}
+      <div class="form-error rum-threshold-section-error" data-threshold-error="performance"></div>
+    </div>`;
+  }
+
+  const unit = preset.unit === 'none' ? 'none' : 's';
   return `
-    <div class="rum-threshold-section">
+    <div class="rum-threshold-section${mutedClass}">
       <h3 class="rum-threshold-section-title">Performance thresholds</h3>
       <div class="rum-threshold-visual" data-visual="performance">
         <div class="rum-threshold-markers rum-threshold-markers--performance">
-          ${thresholdMarker('performance', 'average', perf.average, 'Average threshold')}
-          ${thresholdMarker('performance', 'slow', perf.slow, 'Slow threshold')}
+          ${thresholdMarker('performance', 'average', perf.average, 'Average threshold', block.metricId, unit)}
+          ${thresholdMarker('performance', 'slow', perf.slow, 'Slow threshold', block.metricId, unit)}
         </div>
         <div class="rum-threshold-bar rum-threshold-bar--performance" aria-hidden="true">
           <span class="rum-threshold-bar-seg rum-threshold-bar-seg--teal" data-seg="perf-1"></span>
@@ -455,14 +691,30 @@ function buildPerformanceThresholdSection(block) {
           <span class="rum-threshold-bar-seg rum-threshold-bar-seg--red" data-seg="perf-3"></span>
         </div>
       </div>
+      ${standardNote}
       <div class="form-error rum-threshold-section-error" data-threshold-error="performance"></div>
     </div>`;
 }
 
-function thresholdMarker(group, field, value, ariaLabel) {
+function thresholdFieldEditable(group, field, metricId) {
+  if (group === 'satisfaction') {
+    return isSatisfactionFieldEditable(metricId, field);
+  }
+  return isPerformanceFieldEditable(metricId, field);
+}
+
+function thresholdMarker(group, field, value, ariaLabel, metricId, unitOverride) {
+  const editable = thresholdFieldEditable(group, field, metricId);
+  const preset = getMetricPreset(metricId).performance;
+  const unit =
+    unitOverride ??
+    (group === 'performance' && preset.layout === 'three' && preset.unit === 'none' ? 'none' : 's');
+  const unitHtml = unit === 's' ? '<span class="rum-threshold-marker-unit" aria-hidden="true"> s</span>' : '';
+  const lockedClass = editable ? '' : ' rum-threshold-marker-label--locked';
+  const disabledAttr = editable ? '' : ' disabled readonly tabindex="-1"';
   return `
     <div class="rum-threshold-marker" data-marker-field="${field}">
-      <label class="rum-threshold-marker-label">
+      <label class="rum-threshold-marker-label${lockedClass}">
         <input
           type="text"
           class="rum-threshold-marker-input"
@@ -471,19 +723,22 @@ function thresholdMarker(group, field, value, ariaLabel) {
           data-field="${field}"
           value="${escapeAttr(formatThresholdDisplay(value))}"
           aria-label="${escapeAttr(ariaLabel)}"
+          ${disabledAttr}
         >
-        <span class="rum-threshold-marker-unit" aria-hidden="true"> s</span>
+        ${unitHtml}
       </label>
       <span class="rum-threshold-marker-caret" aria-hidden="true"></span>
     </div>`;
 }
 
 function syncThresholdFromMarkerInput(blockEl, blockId, input) {
+  if (input.disabled) return;
   const b = draftMetrics.find((m) => m.blockId === blockId);
   if (!b) return;
   const val = parseThresholdNumber(input.value);
   const field = input.dataset.field;
   const group = input.dataset.group;
+  if (!thresholdFieldEditable(group, field, b.metricId)) return;
   if (group === 'satisfaction') {
     ensureSatisfactionShape(b.satisfaction);
     if (field in b.satisfaction) b.satisfaction[field] = val;
@@ -589,16 +844,23 @@ function applyThresholdSectionValidation(blockEl, visual, fields, values, result
   }
 }
 
+function performanceFieldsForBlock(block) {
+  if (block.performance.layout === 'four') {
+    return SAT_FIELDS;
+  }
+  return ['average', 'slow'];
+}
+
 function validateMetricBlock(blockEl, block) {
   if (!blockEl || !block) return true;
+  enforceLockedThresholdValues(block);
   ensureSatisfactionShape(block.satisfaction);
 
-  const satFields = ['satisfied', 'tolerating', 'unacceptable'];
-  const satValues = satFields.map((f) => block.satisfaction[f]);
-  const satResult = resolveSectionValidation(block, 'satisfaction', satFields, satValues);
-  applyThresholdSectionValidation(blockEl, 'satisfaction', satFields, satValues, satResult);
+  const satValues = SAT_FIELDS.map((f) => block.satisfaction[f]);
+  const satResult = resolveSectionValidation(block, 'satisfaction', SAT_FIELDS, satValues);
+  applyThresholdSectionValidation(blockEl, 'satisfaction', SAT_FIELDS, satValues, satResult);
 
-  const perfFields = ['average', 'slow'];
+  const perfFields = performanceFieldsForBlock(block);
   const perfValues = perfFields.map((f) => block.performance[f]);
   const perfResult = resolveSectionValidation(block, 'performance', perfFields, perfValues);
   applyThresholdSectionValidation(blockEl, 'performance', perfFields, perfValues, perfResult);
@@ -664,8 +926,9 @@ function parseThresholdNumber(raw) {
 function formatThresholdDisplay(n) {
   const num = Number(n);
   if (!Number.isFinite(num)) return '0';
-  const fixed = Math.round(num * 10) / 10;
-  const str = fixed % 1 === 0 ? String(fixed) : fixed.toFixed(1);
+  if (Number.isInteger(num)) return String(num);
+  const rounded = Math.round(num * 100) / 100;
+  const str = rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
   return str.replace('.', ',');
 }
 
