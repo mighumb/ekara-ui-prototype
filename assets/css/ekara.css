@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=84');
+@import url('tokens.css?v=99');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -346,6 +346,25 @@ select:not(:disabled) {
   background: var(--surface-hover-action);
 }
 
+.btn:disabled,
+.btn[disabled] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-outline:disabled,
+.btn-outline[disabled] {
+  background: var(--input-disabled-bg);
+  color: var(--input-disabled-text);
+  border-color: var(--input-disabled-border);
+}
+
+.btn-primary:disabled,
+.btn-primary[disabled] {
+  background: var(--color-n40);
+  color: var(--input-disabled-text);
+}
+
 .btn-text {
   color: var(--primary);
   padding: 8px 12px;
@@ -388,6 +407,7 @@ select:not(:disabled) {
 .data-table-header,
 #webhook-table-body,
 #alert-table-body,
+#tracker-table-body,
 .data-table-row {
   display: contents;
 }
@@ -586,7 +606,8 @@ select:not(:disabled) {
   top: 0;
   right: 0;
   bottom: 0;
-  width: var(--modal-width);
+  width: var(--slide-panel-width);
+  max-width: 100vw;
   background: var(--surface-default);
   z-index: 400;
   display: flex;
@@ -601,6 +622,10 @@ select:not(:disabled) {
   transform: translateX(0);
 }
 
+.slide-panel--narrow {
+  width: var(--slide-panel-width-narrow);
+}
+
 html.slide-panel-open,
 html.slide-panel-open body {
   overflow: hidden;
@@ -610,7 +635,7 @@ html.slide-panel-open body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: var(--slide-panel-padding);
   flex-shrink: 0;
 }
 
@@ -636,20 +661,17 @@ html.slide-panel-open body {
 .slide-panel-body {
   flex: 1;
   min-height: 0;
-  overflow-y: hidden;
-  padding: 20px 24px;
-}
-
-.slide-panel-body.can-scroll {
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--slide-panel-padding);
 }
 
 .slide-panel-footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  padding: 16px 24px;
+  gap: var(--slide-panel-actions-gap);
+  padding: var(--slide-panel-padding);
   flex-shrink: 0;
 }
 
@@ -1098,7 +1120,7 @@ span.form-label {
   background: var(--surface-default);
   border-radius: var(--radius-dialog);
   box-shadow: var(--shadow-dialog);
-  padding: 24px;
+  padding: var(--slide-panel-padding);
   z-index: 500;
   min-width: 320px;
   display: none;
@@ -1123,7 +1145,7 @@ span.form-label {
 .confirm-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--slide-panel-actions-gap);
 }
 
 .btn-danger {
@@ -2584,5 +2606,303 @@ span.form-label {
 .sidebar-subitem-link.active {
   background: var(--sidebar-active-bg);
   color: var(--sidebar-text-active);
+}
+
+.slide-panel-header--with-lead {
+  align-items: flex-start;
+}
+
+.slide-panel-header-text {
+  flex: 1;
+  min-width: 0;
+  padding-right: 12px;
+}
+
+.slide-panel-subtitle {
+  margin: 6px 0 0;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-secondary);
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.45;
+}
+
+.data-table--trackers {
+  grid-template-columns:
+    52px
+    88px
+    minmax(108px, 1.15fr)
+    minmax(80px, 0.9fr)
+    minmax(168px, 1.55fr)
+    72px
+    minmax(112px, 1fr)
+    52px;
+}
+
+.data-table--trackers .data-table-header-cell:nth-child(1),
+.data-table--trackers .data-table-cell:nth-child(1) {
+  padding-left: 16px;
+  padding-right: 6px;
+  overflow: visible;
+}
+
+.data-table--trackers .data-table-header-cell:nth-child(2),
+.data-table--trackers .data-table-cell:nth-child(2) {
+  padding-left: 6px;
+  padding-right: 12px;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.data-table--trackers .data-table-cell:nth-child(1),
+.data-table--trackers .data-table-cell:nth-child(2) {
+  display: flex;
+  align-items: center;
+}
+
+.data-table--trackers .data-table-checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.rum-tracker-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.rum-tracker-status--active {
+  color: var(--color-t500);
+}
+
+.rum-tracker-status--inactive {
+  color: var(--color-r600);
+}
+
+.rum-tracker-status-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.rum-tracker-status-icon circle {
+  fill: currentColor;
+}
+
+.rum-tracker-status-icon path,
+.rum-tracker-status-icon rect {
+  fill: var(--color-n0);
+}
+
+.rum-tracker-table-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px 20px 16px;
+  font-size: var(--font-size-14);
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  background: var(--card-bg);
+}
+
+.rum-tracker-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rum-threshold-block {
+  margin-bottom: 8px;
+}
+
+.rum-threshold-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.rum-threshold-block-header .form-label {
+  margin-bottom: 0;
+}
+
+.rum-threshold-metric-select {
+  margin-top: 8px;
+}
+
+.rum-threshold-section {
+  margin-top: 20px;
+}
+
+.rum-threshold-section-title {
+  margin: 0 0 10px;
+  font-size: var(--label-font-size);
+  font-weight: var(--label-font-weight);
+  color: var(--label-color);
+  text-transform: uppercase;
+  letter-spacing: var(--label-letter-spacing);
+}
+
+.rum-threshold-visual {
+  margin-top: 4px;
+}
+
+/* Carets sit on segment boundaries (same % as equal-width bar segments). */
+.rum-threshold-markers {
+  position: relative;
+  min-height: 34px;
+  margin-bottom: 6px;
+}
+
+.rum-threshold-markers--satisfaction .rum-threshold-marker:nth-child(1) {
+  left: 25%;
+}
+
+.rum-threshold-markers--satisfaction .rum-threshold-marker:nth-child(2) {
+  left: 50%;
+}
+
+.rum-threshold-markers--satisfaction .rum-threshold-marker:nth-child(3) {
+  left: 75%;
+}
+
+.rum-threshold-markers--performance .rum-threshold-marker:nth-child(1) {
+  left: 33.3333%;
+}
+
+.rum-threshold-markers--performance .rum-threshold-marker:nth-child(2) {
+  left: 66.6667%;
+}
+
+.rum-threshold-marker {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.rum-threshold-marker-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 2px 8px;
+  background: var(--color-n0);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: var(--font-size-12);
+  color: var(--text-neutral);
+  white-space: nowrap;
+}
+
+.rum-threshold-marker-input {
+  width: 2.5em;
+  min-width: 1.5em;
+  max-width: 4em;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: right;
+}
+
+.rum-threshold-marker-input:focus {
+  outline: none;
+}
+
+.rum-threshold-marker-label--locked {
+  background: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+  color: var(--input-disabled-text);
+}
+
+.rum-threshold-marker-label--locked .rum-threshold-marker-input {
+  color: var(--input-disabled-text);
+  -webkit-text-fill-color: var(--input-disabled-text);
+  cursor: default;
+}
+
+.rum-threshold-marker-label.error {
+  border-color: var(--danger);
+}
+
+.rum-threshold-marker-input.error {
+  color: var(--danger);
+}
+
+.rum-threshold-section--performance-muted .rum-threshold-bar-seg {
+  opacity: 0.5;
+}
+
+.rum-threshold-standard-note {
+  margin: 8px 0 0;
+  font-size: var(--font-size-12);
+  color: var(--danger);
+}
+
+.rum-threshold-section-error {
+  margin-top: 8px;
+}
+
+.rum-threshold-marker-unit {
+  font-size: inherit;
+  color: inherit;
+}
+
+.rum-threshold-marker-caret {
+  width: 0;
+  height: 0;
+  margin-top: 1px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--border-color);
+}
+
+.rum-threshold-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--surface-muted);
+}
+
+.rum-threshold-bar-seg {
+  flex: 1 1 0;
+  min-width: 3px;
+}
+
+.rum-threshold-bar-seg--teal {
+  background: var(--color-t500);
+}
+
+.rum-threshold-bar-seg--yellow {
+  background: var(--color-y500);
+}
+
+.rum-threshold-bar-seg--orange {
+  background: var(--color-o500);
+}
+
+.rum-threshold-bar-seg--red {
+  background: var(--color-r500);
+}
+
+.rum-threshold-block-divider {
+  margin: 24px 0 8px;
 }
 

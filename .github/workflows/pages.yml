@@ -3,8 +3,8 @@
 # One-time (repo admin): Settings → Pages → Build and deployment
 #   → Source: Deploy from branch → Branch: gh-pages → Folder: / (root)
 #
-# Preview URL (PR #N):
-#   https://mighumb.github.io/ekara-ui-prototype/previews/pr-N/settings/alerts/
+# Preview URL (PR #N) — use a screen path, not the folder root (landing hub):
+#   https://mighumb.github.io/ekara-ui-prototype/previews/pr-N/settings/rum/trackers/
 # Production (after merge to main):
 #   https://mighumb.github.io/ekara-ui-prototype/
 
@@ -54,16 +54,60 @@ jobs:
             const base = 'https://mighumb.github.io/ekara-ui-prototype';
             const url = `${base}/previews/pr-${prNumber}/`;
             const marker = '<!-- ekara-pages-preview -->';
+
+            const { data: prFiles } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const changed = prFiles.map((f) => f.filename);
+
+            const screens = [
+              {
+                label: 'RUM Trackers (Settings)',
+                path: 'settings/rum/trackers/',
+                match: (f) =>
+                  f.startsWith('settings/rum/trackers/') || f === 'assets/js/rum-trackers.js',
+              },
+              {
+                label: 'Alert rules (Settings)',
+                path: 'settings/alerts/',
+                match: (f) =>
+                  f.startsWith('settings/alerts/') ||
+                  f === 'assets/js/alerts.js' ||
+                  f.startsWith('tests/e2e/alerts'),
+              },
+              {
+                label: 'Webhooks (Management)',
+                path: 'webhooks/',
+                match: (f) => f.startsWith('webhooks/') || f === 'assets/js/webhooks.js',
+              },
+              {
+                label: 'RUM user journey mapping (Measures)',
+                path: 'measures/explore/rum/user-journey-mapping/',
+                match: (f) =>
+                  f.startsWith('measures/explore/rum/user-journey-mapping/') ||
+                  f === 'assets/js/rum-user-journey.js',
+              },
+            ];
+
+            const sharedCss = (f) => f === 'assets/css/ekara.css' || f === 'assets/css/tokens.css';
+            const previewLinks = screens.filter((s) => changed.some((f) => s.match(f) || sharedCss(f)));
+            const linkLines =
+              previewLinks.length > 0
+                ? previewLinks.map((s) => `- [${s.label}](${url}${s.path})`)
+                : [`- [Prototype hub](${url})`];
+
             const body = [
               marker,
               `### Ekara UI prototype — preview PR #${prNumber}`,
               '',
               'Prerequisite: publish GitHub Pages from the `gh-pages` branch (see README).',
               '',
-              `Preview: ${url}`,
-              '',
-              `- [Alert rules (Settings)](${url}settings/alerts/)`,
-              `- [Webhooks (Management)](${url}webhooks/)`,
+              previewLinks.length === 1
+                ? `**Preview this PR:** ${url}${previewLinks[0].path}`
+                : '**Preview (screens changed in this PR):**',
+              ...linkLines,
               '',
               '_Updated on each push to this branch._',
             ].join('\n');
