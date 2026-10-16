@@ -73,7 +73,9 @@ jobs:
                 label: 'Alert rules (Settings)',
                 path: 'settings/alerts/',
                 match: (f) =>
-                  f === 'assets/js/alerts.js' || f.startsWith('tests/e2e/alerts'),
+                  f.startsWith('settings/alerts/') ||
+                  f === 'assets/js/alerts.js' ||
+                  f.startsWith('tests/e2e/alerts'),
               },
               {
                 label: 'Webhooks (Management)',
@@ -89,7 +91,8 @@ jobs:
               },
             ];
 
-            const previewLinks = screens.filter((s) => changed.some(s.match));
+            const sharedCss = (f) => f === 'assets/css/ekara.css' || f === 'assets/css/tokens.css';
+            const previewLinks = screens.filter((s) => changed.some((f) => s.match(f) || sharedCss(f)));
             const linkLines =
               previewLinks.length > 0
                 ? previewLinks.map((s) => `- [${s.label}](${url}${s.path})`)

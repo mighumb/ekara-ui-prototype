@@ -24,9 +24,7 @@ const SAT_FIELDS = ['satisfied', 'tolerating', 'unacceptable'];
 const ALL_SAT_EDIT = { satisfied: true, tolerating: true, unacceptable: true };
 const ALL_SAT_LOCK = { satisfied: false, tolerating: false, unacceptable: false };
 
-const PERF_EDIT_BOTH = { average: true, slow: true };
 const PERF_LOCK_BOTH = { average: false, slow: false };
-const PERF_EDIT_SLOW_ONLY = { average: false, slow: true };
 
 /** Official defaults; `editable: false` only where captures show grey read-only fields. */
 const METRIC_THRESHOLD_PRESETS = {
