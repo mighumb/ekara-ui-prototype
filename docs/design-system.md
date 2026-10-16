@@ -121,7 +121,9 @@ Visibility is driven by the **Service** dropdown (`updateServiceSections` in `we
 <link rel="stylesheet" href="../assets/css/ekara.css?v=…">
 ```
 
-After any shared CSS change, bump `?v=` on **both** files to the **same value on every HTML page** in the repo (`index.html`, `webhooks/`, `settings/alerts/`, journey mapping). Keep script `?v=` in sync when those files change.
+After any shared CSS change, bump `assetVersion` in `assets/js/prototype-routes.js` and set the same `?v=` on `tokens.css` and `ekara.css` on **every HTML page** (`npm run check:assets`). Keep script `?v=` in sync when those files change.
+
+**Navigation:** module URLs and the default entry live in `prototype-routes.js`; `bento.js` uses them so every screen stays on the same deployment when switching modules.
 
 **Sidebar group rows** — wrap icon + label in `.sidebar-group-label` (no inline flex styles).
 
