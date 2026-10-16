@@ -125,6 +125,8 @@ After any shared CSS change, bump `assetVersion` in `assets/js/prototype-routes.
 
 **Navigation:** module URLs and the default entry live in `prototype-routes.js`; `bento.js` uses them so every screen stays on the same deployment when switching modules.
 
+**Settings sidebar cross-links:** any clickable sub-item in the dark sidebar must use `sidebar-item sidebar-subitem sidebar-subitem-link` (including the current page with `active` + `href="./"`). Plain `<a>` without that class inherits body/link colors and becomes unreadable on `--sidebar-bg`.
+
 **Sidebar group rows** — wrap icon + label in `.sidebar-group-label` (no inline flex styles).
 
 **Typography** — use `--font-size-*` / semantic sizes only in `ekara.css` (no raw `13px`). Palette steps (`--color-b100`, etc.) belong in `tokens.css` as semantic aliases (e.g. `--date-range-selection-bg`), not directly in component rules.

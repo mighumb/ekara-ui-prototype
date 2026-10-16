@@ -32,6 +32,11 @@ test.describe('Prototype entry (single main URL)', () => {
     await expectSidebarLinkMatchesSubitem(page, 'Alerts', 'Scenarios');
   });
 
+  test('active RUM journey sidebar link is readable on Measures', async ({ page }) => {
+    await page.goto('/measures/explore/rum/user-journey-mapping/');
+    await expectSidebarLinkMatchesSubitem(page, 'RUM user journey mapping', 'Performance');
+  });
+
   test('bento navigates between modules on the same deployment', async ({ page }) => {
     await page.goto('/settings/rum/trackers/');
     await page.locator('#btn-bento').click();
