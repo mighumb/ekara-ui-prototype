@@ -22,15 +22,13 @@ const METRIC_CATALOG = [
 const SAT_FIELDS = ['satisfied', 'tolerating', 'unacceptable'];
 
 const ALL_SAT_EDIT = { satisfied: true, tolerating: true, unacceptable: true };
-const SAT_EDIT_12 = { satisfied: true, tolerating: true, unacceptable: false };
-const SAT_EDIT_1 = { satisfied: true, tolerating: false, unacceptable: false };
 const ALL_SAT_LOCK = { satisfied: false, tolerating: false, unacceptable: false };
 
 const PERF_EDIT_BOTH = { average: true, slow: true };
 const PERF_LOCK_BOTH = { average: false, slow: false };
 const PERF_EDIT_SLOW_ONLY = { average: false, slow: true };
 
-/** Official default thresholds + which fields are editable (per metric). */
+/** Official defaults; `editable: false` only where captures show grey read-only fields. */
 const METRIC_THRESHOLD_PRESETS = {
   tti: {
     satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
@@ -41,27 +39,27 @@ const METRIC_THRESHOLD_PRESETS = {
     },
   },
   'dom-interactive': {
-    satisfaction: { values: { satisfied: 2, tolerating: 3, unacceptable: 4 }, editable: SAT_EDIT_1 },
+    satisfaction: { values: { satisfied: 2, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
     performance: {
       layout: 'four',
       values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
-      editable: SAT_EDIT_1,
+      editable: ALL_SAT_EDIT,
     },
   },
   ont: {
+    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_LOCK },
+    performance: {
+      layout: 'four',
+      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+      editable: ALL_SAT_LOCK,
+    },
+  },
+  fplt: {
     satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
     performance: {
       layout: 'four',
       values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
-      editable: { satisfied: false, tolerating: true, unacceptable: true },
-    },
-  },
-  fplt: {
-    satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: SAT_EDIT_12 },
-    performance: {
-      layout: 'four',
-      values: { satisfied: 1, tolerating: 3, unacceptable: 4 },
-      editable: SAT_EDIT_12,
+      editable: ALL_SAT_EDIT,
     },
   },
   lcp: {
