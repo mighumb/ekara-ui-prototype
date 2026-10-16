@@ -130,7 +130,14 @@ test.describe('Settings — RUM Trackers thresholds', () => {
 
     await selectMetricInBlock(page, 0, 'DOM Interactive');
     await expect(satisfactionField(page, 'satisfied')).toHaveValue('2');
-    await expect(satisfactionField(page, 'tolerating')).toBeDisabled();
+    await expect(satisfactionField(page, 'tolerating')).toBeEnabled();
+    await expect(satisfactionField(page, 'unacceptable')).toBeEnabled();
+
+    await selectMetricInBlock(page, 0, 'ONT');
+    await expect(satisfactionField(page, 'satisfied')).toBeDisabled();
+    await expect(
+      page.locator('[data-visual="performance"] [data-marker-field="satisfied"] .rum-threshold-marker-input'),
+    ).toBeDisabled();
   });
 
   test('remove metric block when more than one', async ({ page }) => {
