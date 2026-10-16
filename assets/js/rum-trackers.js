@@ -28,6 +28,7 @@ const PERF_LOCK_BOTH = { average: false, slow: false };
 
 /** Official defaults; `editable: false` only where captures show grey read-only fields. */
 const METRIC_THRESHOLD_PRESETS = {
+  // TTI: no dedicated official capture in DFY-23522 — defaults match FCP until product confirms.
   tti: {
     satisfaction: { values: { satisfied: 1, tolerating: 3, unacceptable: 4 }, editable: ALL_SAT_EDIT },
     performance: {
@@ -150,12 +151,41 @@ function isSatisfactionFieldEditable(metricId, field) {
 }
 
 function isPerformanceFieldEditable(metricId, field) {
-  const preset = getMetricPreset(metricId);
-  const perf = preset.performance;
-  if (perf.layout === 'four') {
-    return perf.editable[field] !== false;
-  }
+  const perf = getMetricPreset(metricId).performance;
   return perf.editable[field] !== false;
+}
+
+function savedPerformanceShapeMatches(metricId, savedPerf) {
+  if (!savedPerf || typeof savedPerf !== 'object') return false;
+  const preset = getMetricPreset(metricId).performance;
+  if (preset.layout === 'four') {
+    return savedPerf.layout === 'four' || savedPerf.satisfied != null;
+  }
+  return savedPerf.layout === 'three' || savedPerf.average != null;
+}
+
+/** Ensures catalog ↔ presets stay aligned and threshold values are strictly ordered. */
+function validateMetricPresetDefinitions() {
+  const errors = [];
+  METRIC_CATALOG.forEach(({ id }) => {
+    if (!METRIC_THRESHOLD_PRESETS[id]) errors.push(`missing preset for catalog metric "${id}"`);
+  });
+  Object.entries(METRIC_THRESHOLD_PRESETS).forEach(([id, preset]) => {
+    const sat = preset.satisfaction.values;
+    if (!(sat.satisfied < sat.tolerating && sat.tolerating < sat.unacceptable)) {
+      errors.push(`${id}: satisfaction values must be strictly increasing`);
+    }
+    const perf = preset.performance;
+    if (perf.layout === 'four') {
+      const v = perf.values;
+      if (!(v.satisfied < v.tolerating && v.tolerating < v.unacceptable)) {
+        errors.push(`${id}: performance (four-segment) values must be strictly increasing`);
+      }
+    } else if (!(perf.values.average < perf.values.slow)) {
+      errors.push(`${id}: performance (standard) average must be less than slow`);
+    }
+  });
+  return { ok: errors.length === 0, errors };
 }
 
 function applyMetricPresetToBlock(block) {
@@ -186,16 +216,18 @@ function mergeSavedMetricBlock(block, saved) {
       block.satisfaction[field] = saved.satisfaction[field];
     }
   });
+  if (!savedPerformanceShapeMatches(block.metricId, saved.performance)) return;
+
   const perf = getMetricPreset(block.metricId).performance;
   if (perf.layout === 'four') {
     SAT_FIELDS.forEach((field) => {
-      if (isPerformanceFieldEditable(block.metricId, field) && saved.performance?.[field] != null) {
+      if (isPerformanceFieldEditable(block.metricId, field) && saved.performance[field] != null) {
         block.performance[field] = saved.performance[field];
       }
     });
   } else {
     ['average', 'slow'].forEach((field) => {
-      if (isPerformanceFieldEditable(block.metricId, field) && saved.performance?.[field] != null) {
+      if (isPerformanceFieldEditable(block.metricId, field) && saved.performance[field] != null) {
         block.performance[field] = saved.performance[field];
       }
     });
@@ -279,12 +311,20 @@ let blockIdSeq = 0;
 const els = {};
 
 document.addEventListener('DOMContentLoaded', () => {
+  const presetCheck = validateMetricPresetDefinitions();
+  if (!presetCheck.ok) {
+    console.error('[rum-trackers] Invalid METRIC_THRESHOLD_PRESETS:', presetCheck.errors);
+  }
   cacheElements();
   loadThresholds();
   renderTable();
   bindEvents();
   initSidebarGroups();
 });
+
+if (typeof window !== 'undefined') {
+  window.__ekaraValidateRumMetricPresets = validateMetricPresetDefinitions;
+}
 
 function cacheElements() {
   els.tableBody = document.getElementById('tracker-table-body');
