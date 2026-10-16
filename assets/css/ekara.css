@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=130');
+@import url('tokens.css?v=131');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -2601,12 +2601,14 @@ span.form-label {
 
 .sidebar-subitem-link {
   display: block;
-  color: inherit;
+  color: var(--sidebar-text);
   text-decoration: none;
 }
 
 .sidebar-subitem-link:hover,
 .sidebar-subitem-link:focus-visible {
+  background: var(--sidebar-hover-bg);
+  color: var(--sidebar-text-active);
   text-decoration: none;
 }
 
