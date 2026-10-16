@@ -52,6 +52,18 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('[data-ekara-inline-select] .ekara-inline-select-trigger')).toHaveCount(1);
   });
 
+  test('threshold drawer shows a single fixed zone legend', async ({ page }) => {
+    await openTrackersFresh(page);
+    await openThresholdsForFirstTracker(page);
+    const legend = page.locator('.rum-threshold-drawer-legend');
+    await expect(legend).toHaveCount(1);
+    await expect(legend.getByText('Very satisfied')).toBeVisible();
+    await expect(legend.getByText('Frustrated')).toBeVisible();
+    await page.locator('#btn-add-metric').click();
+    await expect(page.locator('.rum-threshold-block')).toHaveCount(2);
+    await expect(page.locator('.rum-threshold-drawer-legend')).toHaveCount(1);
+  });
+
   test('add metric, exclude duplicates, save persists, cancel discards draft', async ({ page }) => {
     await openTrackersFresh(page);
     await openThresholdsForFirstTracker(page);
