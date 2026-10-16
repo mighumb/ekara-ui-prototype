@@ -3,7 +3,19 @@
 Interactive HTML/CSS/JS prototype of the Ekara product UI.
 Used to review layout, component behaviour, and UX flows, then hand off to engineering.
 
-**Live preview:** https://mighumb.github.io/ekara-ui-prototype/
+**Live preview (main):** https://mighumb.github.io/ekara-ui-prototype/  
+Opens **directly** on the default Measures screen (same deploy for every module). Optional screen list: `?hub=1` on the root URL.
+
+**Canonical URLs** (all updated together on each merge to `main`):
+
+| Screen | URL |
+|--------|-----|
+| Default entry (RUM user journey) | https://mighumb.github.io/ekara-ui-prototype/measures/explore/rum/user-journey-mapping/ |
+| Webhooks | https://mighumb.github.io/ekara-ui-prototype/webhooks/ |
+| Alert rules | https://mighumb.github.io/ekara-ui-prototype/settings/alerts/ |
+| RUM Trackers | https://mighumb.github.io/ekara-ui-prototype/settings/rum/trackers/ |
+
+Switch modules with the **bento** menu (top right) on any screen. Shared CSS/JS versions are defined in `assets/js/prototype-routes.js` (`npm run check:assets` enforces the same `?v=` on every HTML page).
 
 ## Context
 

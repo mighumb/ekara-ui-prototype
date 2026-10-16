@@ -1,31 +1,12 @@
 /**
- * Module switcher (bento) — open/close + navigation between prototype screens.
+ * Module switcher (bento) — navigation between prototype screens (see prototype-routes.js).
  */
 (function () {
-  const MODULE_ROUTES = {
-    Measures: 'measures/explore/rum/user-journey-mapping/',
-    Management: 'webhooks/',
-    Settings: 'settings/alerts/',
-  };
-
-  function prototypeRootPrefix() {
-    const path = window.location.pathname;
-    if (path.includes('/settings/alerts')) return '../../';
-    if (path.includes('/measures/explore/rum/user-journey-mapping')) return '../../../../';
-    if (path.includes('/webhooks/')) return '../';
-    return '';
-  }
-
-  function moduleHref(module) {
-    const route = MODULE_ROUTES[module];
-    if (!route) return null;
-    return prototypeRootPrefix() + route;
-  }
-
   function initBentoMenu() {
+    const routes = window.EkaraPrototypeRoutes;
     const btn = document.getElementById('btn-bento');
     const menu = document.getElementById('bento-menu');
-    if (!btn || !menu) return;
+    if (!btn || !menu || !routes) return;
 
     function openBento() {
       menu.hidden = false;
@@ -48,7 +29,7 @@
       if (!item) return;
       e.stopPropagation();
       const module = item.getAttribute('data-module');
-      const href = moduleHref(module);
+      const href = routes.moduleHref(module);
       if (href) {
         window.location.href = href;
         return;
