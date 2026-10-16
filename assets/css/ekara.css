@@ -2759,53 +2759,41 @@ span.form-label {
   margin-top: 4px;
 }
 
+/* Carets sit on segment boundaries (same % as equal-width bar segments). */
 .rum-threshold-markers {
-  display: grid;
-  gap: 12px;
+  position: relative;
+  min-height: 34px;
   margin-bottom: 6px;
-  align-items: end;
-}
-
-/* Markers align with segment boundaries (4- and 3-segment bars). */
-.rum-threshold-markers--satisfaction {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .rum-threshold-markers--satisfaction .rum-threshold-marker:nth-child(1) {
-  grid-column: 1;
-  justify-self: end;
+  left: 25%;
 }
 
 .rum-threshold-markers--satisfaction .rum-threshold-marker:nth-child(2) {
-  grid-column: 2;
-  justify-self: end;
+  left: 50%;
 }
 
 .rum-threshold-markers--satisfaction .rum-threshold-marker:nth-child(3) {
-  grid-column: 3;
-  justify-self: end;
-}
-
-.rum-threshold-markers--performance {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  left: 75%;
 }
 
 .rum-threshold-markers--performance .rum-threshold-marker:nth-child(1) {
-  grid-column: 1;
-  justify-self: end;
+  left: 33.3333%;
 }
 
 .rum-threshold-markers--performance .rum-threshold-marker:nth-child(2) {
-  grid-column: 2;
-  justify-self: end;
+  left: 66.6667%;
 }
 
 .rum-threshold-marker {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 0;
-  max-width: 100%;
 }
 
 .rum-threshold-marker-label {
