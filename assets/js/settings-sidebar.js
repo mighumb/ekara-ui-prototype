@@ -76,8 +76,8 @@
           </div>
         </div>
         <div class="sidebar-subitems" data-sidebar-group>
-          <div class="sidebar-item sidebar-subitem">Page groups</div>
           ${linkAttrs('trackers', activeScreen, 'Trackers')}
+          <div class="sidebar-item sidebar-subitem">Page groups</div>
           <div class="sidebar-item sidebar-subitem">Dimensions</div>
         </div>
 

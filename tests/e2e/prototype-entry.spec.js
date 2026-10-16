@@ -28,9 +28,17 @@ test.describe('Prototype entry (single main URL)', () => {
     await expect(page.getByRole('link', { name: 'Alerts' })).toHaveAttribute('aria-current', 'page');
   });
 
+  test('RUM sidebar lists Trackers before Page groups', async ({ page }) => {
+    await page.goto('/settings/rum/trackers/');
+    const rumGroup = page.locator('[data-ekara-settings-sidebar] .sidebar-subitems').nth(2);
+    const labels = rumGroup.locator('.sidebar-subitem, .sidebar-subitem-link');
+    await expect(labels.nth(0)).toHaveText('Trackers');
+    await expect(labels.nth(1)).toHaveText('Page groups');
+  });
+
   test('Trackers sidebar link is readable on Alert rules', async ({ page }) => {
     await page.goto('/settings/alerts/');
-    await expectSidebarLinkMatchesSubitem(page, 'Trackers', 'Page groups');
+    await expectSidebarLinkMatchesSubitem(page, 'Trackers', 'Dimensions');
   });
 
   test('Alerts sidebar link is readable on RUM Trackers', async ({ page }) => {
