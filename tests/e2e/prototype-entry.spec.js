@@ -22,6 +22,12 @@ test.describe('Prototype entry (single main URL)', () => {
     expect(linkColor).toBe(referenceColor);
   }
 
+  test('Settings sidebar is mounted from shared script on Alert rules', async ({ page }) => {
+    await page.goto('/settings/alerts/');
+    await expect(page.locator('[data-ekara-settings-sidebar] .sidebar-nav')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Alerts' })).toHaveAttribute('aria-current', 'page');
+  });
+
   test('Trackers sidebar link is readable on Alert rules', async ({ page }) => {
     await page.goto('/settings/alerts/');
     await expectSidebarLinkMatchesSubitem(page, 'Trackers', 'Page groups');
@@ -32,11 +38,6 @@ test.describe('Prototype entry (single main URL)', () => {
     await expectSidebarLinkMatchesSubitem(page, 'Alerts', 'Scenarios');
   });
 
-<<<<<<< HEAD
-  test('active RUM journey sidebar link is readable on Measures', async ({ page }) => {
-    await page.goto('/measures/explore/rum/user-journey-mapping/');
-    await expectSidebarLinkMatchesSubitem(page, 'RUM user journey mapping', 'Performance');
-=======
   test('active sidebar links use the same active color across screens', async ({ page }) => {
     await page.goto('/settings/alerts/');
     const alertsActive = page.getByRole('link', { name: 'Alerts' });
@@ -46,7 +47,6 @@ test.describe('Prototype entry (single main URL)', () => {
     const journeyActive = page.getByRole('link', { name: 'RUM user journey mapping' });
     const journeyColor = await journeyActive.evaluate((el) => getComputedStyle(el).color);
     expect(journeyColor).toBe(alertsColor);
->>>>>>> b3fb690 (chore(sidebar): align Trackers active item pattern; document link class rule)
   });
 
   test('bento navigates between modules on the same deployment', async ({ page }) => {

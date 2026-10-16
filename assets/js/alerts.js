@@ -301,7 +301,6 @@ function init() {
   resetRecipientsSelection();
   bindEvents();
   bindAlertFieldErrorClearing();
-  initSidebarGroups();
   updateCharCounter();
   syncGlobalApplicationsUI();
   syncSendEndGapUI();
@@ -647,18 +646,6 @@ function resetApplicationsSelection() {
   els.applicationsSelectAll.checked = false;
   els.applicationsSelectAll.indeterminate = false;
   updateApplicationsTriggerLabel();
-}
-
-function initSidebarGroups() {
-  document.querySelectorAll('[data-sidebar-toggle]').forEach((toggle) => {
-    toggle.addEventListener('click', () => {
-      const chevron = toggle.querySelector('.sidebar-chevron');
-      const group = toggle.closest('.sidebar-item')?.nextElementSibling;
-      if (!group || !group.matches('[data-sidebar-group]')) return;
-      const collapsed = group.classList.toggle('collapsed');
-      if (chevron) chevron.classList.toggle('expanded', !collapsed);
-    });
-  });
 }
 
 function updateCharCounter() {
