@@ -14,6 +14,15 @@ test.describe('Prototype entry (single main URL)', () => {
     await expect(page.getByRole('link', { name: /RUM Trackers/ })).toBeVisible();
   });
 
+  test('Trackers sidebar link is readable on Alert rules', async ({ page }) => {
+    await page.goto('/settings/alerts/');
+    const trackers = page.getByRole('link', { name: 'Trackers' });
+    const pageGroups = page.locator('.sidebar-subitem', { hasText: 'Page groups' });
+    const trackersColor = await trackers.evaluate((el) => getComputedStyle(el).color);
+    const referenceColor = await pageGroups.evaluate((el) => getComputedStyle(el).color);
+    expect(trackersColor).toBe(referenceColor);
+  });
+
   test('bento navigates between modules on the same deployment', async ({ page }) => {
     await page.goto('/settings/rum/trackers/');
     await page.locator('#btn-bento').click();
