@@ -671,7 +671,7 @@ html.slide-panel-open body {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  padding: 16px 24px;
+  padding: 24px;
   flex-shrink: 0;
 }
 
