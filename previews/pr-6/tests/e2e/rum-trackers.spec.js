@@ -31,6 +31,13 @@ async function selectMetricInBlock(page, blockIndex, labelPart) {
 }
 
 test.describe('Settings — RUM Trackers thresholds', () => {
+  test('metric preset catalog is internally consistent', async ({ page }) => {
+    await page.goto(TRACKERS_PATH);
+    const result = await page.evaluate(() => window.__ekaraValidateRumMetricPresets());
+    expect(result.ok).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
   test('page loads tracker table', async ({ page }) => {
     await openTrackersFresh(page);
     await expect(page.locator('.page-title')).toHaveText('Trackers');
@@ -142,6 +149,33 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(
       page.locator('[data-visual="performance"] [data-marker-field="tolerating"] .rum-threshold-marker-input'),
     ).toBeDisabled();
+  });
+
+  test('legacy saved performance shape does not corrupt four-segment metrics', async ({ page }) => {
+    await openTrackersFresh(page);
+    await page.evaluate((key) => {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          1: [
+            {
+              metricId: 'fcp',
+              satisfaction: { satisfied: 1, tolerating: 3, unacceptable: 4 },
+              performance: { average: 9, slow: 99 },
+            },
+          ],
+        }),
+      );
+    }, STORAGE_KEY);
+    await page.reload();
+    await openThresholdsForFirstTracker(page);
+    await selectMetricInBlock(page, 0, 'FCP');
+    await expect(
+      page.locator('[data-visual="performance"] [data-marker-field="satisfied"] .rum-threshold-marker-input'),
+    ).toHaveValue('1');
+    await expect(
+      page.locator('[data-visual="performance"] [data-marker-field="tolerating"] .rum-threshold-marker-input'),
+    ).toHaveValue('3');
   });
 
   test('remove metric block when more than one', async ({ page }) => {

@@ -24,7 +24,7 @@ Only implemented screens are listed.
 | Page | Path | JIRA |
 |------|------|------|
 | Alert rules | [/settings/alerts/](https://mighumb.github.io/ekara-ui-prototype/settings/alerts/) | [DFY-23972](https://iplabel.atlassian.net/browse/DFY-23972) — minimum gap (drawer), sortable table columns (session), `localStorage` mock (`ekara-prototype-alert-rules`) |
-| RUM Trackers | [/settings/rum/trackers/](https://mighumb.github.io/ekara-ui-prototype/settings/rum/trackers/) | [DFY-23522](https://iplabel.atlassian.net/browse/DFY-23522) — multi-metric RUM threshold drawer (`+ Add a metric`, no duplicate metrics), `localStorage` mock (`ekara-prototype-rum-tracker-thresholds`) |
+| RUM Trackers | [/settings/rum/trackers/](https://mighumb.github.io/ekara-ui-prototype/settings/rum/trackers/) | [DFY-23522](https://iplabel.atlassian.net/browse/DFY-23522) — multi-metric RUM threshold drawer (`+ Add a metric`, no duplicate metrics), per-metric official defaults and read-only fields in `METRIC_THRESHOLD_PRESETS` (`assets/js/rum-trackers.js`, validated at load + E2E), `localStorage` mock (`ekara-prototype-rum-tracker-thresholds`) |
 
 ## Ekara Green
 
