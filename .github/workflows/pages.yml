@@ -60,14 +60,37 @@ jobs:
               repo: context.repo.repo,
               pull_number: prNumber,
             });
-            const changed = prFiles.map((f) => f.filename);
+            function isVersionBumpOnlyLine(line) {
+              const t = line.replace(/^[-+]/, '').trim();
+              if (!t) return true;
+              return (
+                /tokens\.css\?v=\d+/.test(t) ||
+                /ekara\.css\?v=\d+/.test(t) ||
+                /assetVersion\s*=\s*'\d+'/.test(t)
+              );
+            }
+
+            function isVersionBumpOnlyFile(file) {
+              const { patch } = file;
+              if (!patch) return false;
+              const hunks = patch.split('\n').filter((l) => l.startsWith('+') || l.startsWith('-'));
+              if (!hunks.length) return false;
+              return hunks.every(isVersionBumpOnlyLine);
+            }
+
+            const substantiveFilenames = prFiles
+              .filter((file) => !isVersionBumpOnlyFile(file))
+              .map((file) => file.filename);
 
             const screens = [
               {
                 label: 'RUM Trackers (Settings)',
                 path: 'settings/rum/trackers/',
                 match: (f) =>
-                  f.startsWith('settings/rum/trackers/') || f === 'assets/js/rum-trackers.js',
+                  f.startsWith('settings/rum/trackers/') ||
+                  f === 'assets/js/rum-trackers.js' ||
+                  f === 'assets/js/settings-sidebar.js' ||
+                  f.startsWith('tests/e2e/rum-trackers'),
               },
               {
                 label: 'Alert rules (Settings)',
@@ -75,24 +98,30 @@ jobs:
                 match: (f) =>
                   f.startsWith('settings/alerts/') ||
                   f === 'assets/js/alerts.js' ||
+                  f === 'assets/js/settings-sidebar.js' ||
                   f.startsWith('tests/e2e/alerts'),
               },
               {
                 label: 'Webhooks (Management)',
                 path: 'webhooks/',
-                match: (f) => f.startsWith('webhooks/') || f === 'assets/js/webhooks.js',
+                match: (f) =>
+                  f.startsWith('webhooks/') ||
+                  f === 'assets/js/webhooks.js' ||
+                  f.startsWith('tests/e2e/webhooks'),
               },
               {
                 label: 'RUM user journey mapping (Measures)',
                 path: 'measures/explore/rum/user-journey-mapping/',
                 match: (f) =>
                   f.startsWith('measures/explore/rum/user-journey-mapping/') ||
-                  f === 'assets/js/rum-user-journey.js',
+                  f === 'assets/js/rum-user-journey.js' ||
+                  f.startsWith('tests/e2e/rum-journey'),
               },
             ];
 
-            const sharedCss = (f) => f === 'assets/css/ekara.css' || f === 'assets/css/tokens.css';
-            const previewLinks = screens.filter((s) => changed.some((f) => s.match(f) || sharedCss(f)));
+            const previewLinks = screens.filter((s) =>
+              substantiveFilenames.some((f) => s.match(f)),
+            );
             const linkLines =
               previewLinks.length > 0
                 ? previewLinks.map((s) => `- [${s.label}](${url}${s.path})`)
