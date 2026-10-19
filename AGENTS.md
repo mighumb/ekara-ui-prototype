@@ -12,7 +12,8 @@
 - Collaborate with the owner in French; UI copy in English
 - Discuss before implementing; implement only when explicitly asked
 - Use `tokens.css` / `ekara.css`; no hardcoded colors
-- Push to `main`; bump asset `?v=` after CSS/JS changes
+- **Git:** work on `cursor/<topic>-f787`, push the branch, open a **draft PR** to `main` — the owner merges; do **not** push feature work directly to `main`
+- Bump asset `?v=` after CSS/JS changes (on the PR branch)
 - Keep docs factual; do not invent product behaviour
 
 ## Adding a screen
