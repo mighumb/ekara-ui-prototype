@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../../assets/css/tokens.css?v=134">
-  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=134">
+  <link rel="stylesheet" href="../../../assets/css/tokens.css?v=135">
+  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=135">
 </head>
 <body data-settings-screen="trackers">
   <div class="app-layout">
@@ -183,10 +183,20 @@
     </div>
   </div>
 
+  <div class="modal-overlay modal-overlay--confirm" id="confirm-overlay"></div>
+  <div class="confirm-dialog" id="confirm-dialog">
+    <div class="confirm-dialog-title">Delete tracker</div>
+    <div class="confirm-dialog-message" id="confirm-message"></div>
+    <div class="confirm-dialog-actions">
+      <button type="button" class="btn btn-text" id="confirm-cancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+
   <script src="../../../assets/js/prototype-routes.js?v=1"></script>
   <script src="../../../assets/js/settings-sidebar.js?v=2"></script>
   <script src="../../../assets/js/bento.js?v=3"></script>
   <script src="../../../assets/js/ekara-inline-select.js?v=3"></script>
-  <script src="../../../assets/js/rum-trackers.js?v=15"></script>
+  <script src="../../../assets/js/rum-trackers.js?v=16"></script>
 </body>
 </html>

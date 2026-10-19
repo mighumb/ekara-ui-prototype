@@ -3,10 +3,14 @@ const { test, expect } = require('@playwright/test');
 
 const TRACKERS_PATH = '/settings/rum/trackers/index.html';
 const STORAGE_KEY = 'ekara-prototype-rum-tracker-thresholds';
+const TRACKERS_STORAGE_KEY = 'ekara-prototype-rum-trackers';
 
 async function openTrackersFresh(page) {
   await page.goto(TRACKERS_PATH);
-  await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
+  await page.evaluate(
+    (keys) => keys.forEach((key) => localStorage.removeItem(key)),
+    [STORAGE_KEY, TRACKERS_STORAGE_KEY],
+  );
   await page.reload();
   await expect(page.locator('#tracker-table-body .data-table-row').first()).toBeVisible();
 }
@@ -42,6 +46,48 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await openTrackersFresh(page);
     await expect(page.locator('.page-title')).toHaveText('Trackers');
     await expect(page.locator('#tracker-table-body .data-table-row')).toHaveCount(3);
+  });
+
+  test('kebab menu shows Disable for active tracker and Enable for inactive', async ({ page }) => {
+    await openTrackersFresh(page);
+    const activeRow = page.locator('#tracker-table-body .data-table-row').filter({ hasText: '1111' });
+    await activeRow.locator('.menu-trigger').click();
+    const activeMenu = page.locator('#menu-1.open');
+    await expect(activeMenu.getByText('Thresholds', { exact: true })).toBeVisible();
+    await expect(activeMenu.locator('[data-action="delete"]')).toBeVisible();
+    await expect(activeMenu.locator('[data-action="disable"]')).toBeVisible();
+    await expect(activeMenu.locator('[data-action="enable"]')).toHaveCount(0);
+    await page.keyboard.press('Escape');
+    await page.locator('body').click({ position: { x: 8, y: 8 } });
+
+    const inactiveRow = page.locator('#tracker-table-body .data-table-row').filter({ hasText: 'CVA storefront' });
+    await inactiveRow.locator('.menu-trigger').click();
+    const inactiveMenu = page.locator('#menu-3.open');
+    await expect(inactiveMenu.locator('[data-action="enable"]')).toBeVisible();
+    await expect(inactiveMenu.locator('[data-action="disable"]')).toHaveCount(0);
+  });
+
+  test('delete tracker opens confirm dialog and removes row on confirm', async ({ page }) => {
+    await openTrackersFresh(page);
+    const row = page.locator('#tracker-table-body .data-table-row').filter({ hasText: 'CVA storefront' });
+    await row.locator('.menu-trigger').click();
+    await page.locator('#menu-3 [data-action="delete"]').click();
+    await expect(page.locator('#confirm-dialog.open')).toBeVisible();
+    await expect(page.locator('#confirm-message')).toContainText('CVA storefront');
+    await page.locator('#confirm-ok').click();
+    await expect(page.locator('#tracker-table-body .data-table-row')).toHaveCount(2);
+    await expect(page.locator('#tracker-table-body')).not.toContainText('CVA storefront');
+  });
+
+  test('enable toggles inactive tracker status in table', async ({ page }) => {
+    await openTrackersFresh(page);
+    const row = page.locator('#tracker-table-body .data-table-row').filter({ hasText: 'CVA storefront' });
+    await expect(row.locator('.rum-tracker-status--inactive')).toBeVisible();
+    await row.locator('.menu-trigger').click();
+    await page.locator('#menu-3 [data-action="enable"]').click();
+    await expect(row.locator('.rum-tracker-status--active')).toBeVisible();
+    await row.locator('.menu-trigger').click();
+    await expect(page.locator('#menu-3.open [data-action="disable"]')).toBeVisible();
   });
 
   test('threshold drawer opens with one metric block and DS select', async ({ page }) => {
