@@ -57,6 +57,14 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(activeMenu.locator('[data-action="delete"]')).toBeVisible();
     await expect(activeMenu.locator('[data-action="disable"]')).toBeVisible();
     await expect(activeMenu.locator('[data-action="enable"]')).toHaveCount(0);
+    const tableInactiveColor = await page
+      .locator('#tracker-table-body .rum-tracker-status--inactive')
+      .first()
+      .evaluate((el) => getComputedStyle(el).color);
+    const menuDisableIconColor = await activeMenu
+      .locator('[data-action="disable"] .dropdown-item-status-icon')
+      .evaluate((el) => getComputedStyle(el).color);
+    expect(menuDisableIconColor).toBe(tableInactiveColor);
     await page.keyboard.press('Escape');
     await page.locator('body').click({ position: { x: 8, y: 8 } });
 
