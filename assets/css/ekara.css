@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=133');
+@import url('tokens.css?v=134');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -2735,8 +2735,11 @@ span.form-label {
 
 .rum-threshold-drawer-legend {
   flex-shrink: 0;
-  padding: 0 var(--slide-panel-padding) 14px;
-  border-bottom: 1px solid var(--border-color);
+  padding: 0 var(--slide-panel-padding);
+}
+
+.rum-threshold-drawer-legend-divider {
+  margin: 14px 0 0;
 }
 
 .rum-threshold-drawer-legend-list {
