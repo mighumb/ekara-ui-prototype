@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=134');
+@import url('tokens.css?v=135');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -581,6 +581,16 @@ select:not(:disabled) {
   height: 1px;
   margin: 4px 0;
   background: var(--border-color);
+}
+
+.dropdown-item .dropdown-item-status-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-item .dropdown-item-status-icon .rum-tracker-status-icon {
+  width: 16px;
+  height: 16px;
 }
 
 /* Modal overlay */

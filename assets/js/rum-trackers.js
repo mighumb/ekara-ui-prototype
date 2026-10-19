@@ -3,6 +3,7 @@
  */
 
 const THRESHOLDS_STORAGE_KEY = 'ekara-prototype-rum-tracker-thresholds';
+const TRACKERS_STORAGE_KEY = 'ekara-prototype-rum-trackers';
 
 const METRIC_CATALOG = [
   { id: 'tti', label: 'TTI (Time To Interact)' },
@@ -300,11 +301,12 @@ const DEFAULT_TRACKERS = [
   },
 ];
 
-let trackers = [...DEFAULT_TRACKERS];
+let trackers = [];
 let thresholdsByTracker = {};
 let draftMetrics = [];
 let editingTrackerId = null;
 let openMenuId = null;
+let deleteTargetId = null;
 let savedScrollY = 0;
 let blockIdSeq = 0;
 
@@ -316,6 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('[rum-trackers] Invalid METRIC_THRESHOLD_PRESETS:', presetCheck.errors);
   }
   cacheElements();
+  loadTrackers();
   loadThresholds();
   renderTable();
   bindEvents();
@@ -334,6 +337,11 @@ function cacheElements() {
   els.panelSubtitle = document.getElementById('panel-subtitle');
   els.metricsContainer = document.getElementById('metrics-container');
   els.btnAddMetric = document.getElementById('btn-add-metric');
+  els.confirmOverlay = document.getElementById('confirm-overlay');
+  els.confirmDialog = document.getElementById('confirm-dialog');
+  els.confirmMessage = document.getElementById('confirm-message');
+  els.confirmCancel = document.getElementById('confirm-cancel');
+  els.confirmOk = document.getElementById('confirm-ok');
 }
 
 function bindEvents() {
@@ -343,11 +351,44 @@ function bindEvents() {
   els.overlay.addEventListener('click', closePanel);
   els.btnAddMetric.addEventListener('click', addMetricBlock);
 
+  if (els.confirmCancel) els.confirmCancel.addEventListener('click', closeConfirm);
+  if (els.confirmOverlay) els.confirmOverlay.addEventListener('click', closeConfirm);
+  if (els.confirmOk) {
+    els.confirmOk.addEventListener('click', () => {
+      if (deleteTargetId == null) return;
+      const id = deleteTargetId;
+      deleteTracker(id);
+      closeConfirm();
+    });
+  }
+
   document.addEventListener('click', () => closeAllMenus());
 
   window.addEventListener('resize', () => {
     if (els.panel?.classList.contains('open')) updatePanelBodyScroll();
   });
+}
+
+function loadTrackers() {
+  try {
+    const raw = localStorage.getItem(TRACKERS_STORAGE_KEY);
+    if (!raw) {
+      trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+      return;
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || !parsed.length) {
+      trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+      return;
+    }
+    trackers = parsed;
+  } catch {
+    trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+  }
+}
+
+function persistTrackers() {
+  localStorage.setItem(TRACKERS_STORAGE_KEY, JSON.stringify(trackers));
 }
 
 function loadThresholds() {
@@ -361,6 +402,38 @@ function loadThresholds() {
 
 function persistThresholds() {
   localStorage.setItem(THRESHOLDS_STORAGE_KEY, JSON.stringify(thresholdsByTracker));
+}
+
+function setTrackerActive(id, active) {
+  const row = trackers.find((t) => t.id === id);
+  if (!row || row.active === active) return;
+  row.active = active;
+  persistTrackers();
+  renderTable();
+}
+
+function deleteTracker(id) {
+  trackers = trackers.filter((t) => t.id !== id);
+  delete thresholdsByTracker[String(id)];
+  persistTrackers();
+  persistThresholds();
+  if (editingTrackerId === id) closePanel();
+  renderTable();
+}
+
+function confirmDeleteTracker(id) {
+  const row = trackers.find((t) => t.id === id);
+  if (!row) return;
+  deleteTargetId = id;
+  els.confirmMessage.textContent = `Are you sure you want to delete the tracker "${row.name}"?`;
+  els.confirmOverlay.classList.add('open');
+  els.confirmDialog.classList.add('open');
+}
+
+function closeConfirm() {
+  els.confirmOverlay?.classList.remove('open');
+  els.confirmDialog?.classList.remove('open');
+  deleteTargetId = null;
 }
 
 function defaultMetricsForTracker(trackerId) {
@@ -407,6 +480,31 @@ function formatScopeCell(row) {
   return parts.length ? parts.join(', ') : '—';
 }
 
+function trackerDropdownMenuHtml(row) {
+  const statusToggle = row.active
+    ? `<div class="dropdown-item" data-action="disable" data-id="${row.id}">
+          <span class="rum-tracker-status rum-tracker-status--inactive dropdown-item-status-icon" aria-hidden="true">${trackerStatusIconSvg(false)}</span>
+          Disable
+        </div>`
+    : `<div class="dropdown-item" data-action="enable" data-id="${row.id}">
+          <span class="rum-tracker-status rum-tracker-status--active dropdown-item-status-icon" aria-hidden="true">${trackerStatusIconSvg(true)}</span>
+          Enable
+        </div>`;
+
+  return `
+          <div class="dropdown-item" data-action="thresholds" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            Thresholds
+          </div>
+          <div class="dropdown-divider" role="separator"></div>
+          <div class="dropdown-item danger" data-action="delete" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </div>
+          <div class="dropdown-divider" role="separator"></div>
+          ${statusToggle}`;
+}
+
 function renderTable() {
   els.tableBody.innerHTML = trackers
     .map((row) => {
@@ -433,10 +531,7 @@ function renderTable() {
           <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
         </button>
         <div class="dropdown-menu" id="menu-${row.id}">
-          <div class="dropdown-item" data-action="thresholds" data-id="${row.id}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-            Thresholds
-          </div>
+          ${trackerDropdownMenuHtml(row)}
         </div>
       </div>
     </div>`;
@@ -457,6 +552,9 @@ function renderTable() {
       const action = item.dataset.action;
       closeAllMenus();
       if (action === 'thresholds') openThresholdsDrawer(id);
+      if (action === 'delete') confirmDeleteTracker(id);
+      if (action === 'enable') setTrackerActive(id, true);
+      if (action === 'disable') setTrackerActive(id, false);
     });
   });
 }
