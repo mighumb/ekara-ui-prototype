@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=135');
+@import url('tokens.css?v=136');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -563,7 +563,7 @@ select:not(:disabled) {
   background: var(--surface-hover-neutral);
 }
 
-.dropdown-item svg {
+.dropdown-item > svg {
   width: 14px;
   height: 14px;
   color: var(--text-secondary);
@@ -573,7 +573,7 @@ select:not(:disabled) {
   color: var(--danger);
 }
 
-.dropdown-item.danger svg {
+.dropdown-item.danger > svg {
   color: var(--danger);
 }
 
@@ -588,9 +588,18 @@ select:not(:disabled) {
   height: 16px;
 }
 
+.dropdown-item .dropdown-item-status-icon.rum-tracker-status--inactive {
+  color: var(--color-r600);
+}
+
+.dropdown-item .dropdown-item-status-icon.rum-tracker-status--active {
+  color: var(--color-t500);
+}
+
 .dropdown-item .dropdown-item-status-icon .rum-tracker-status-icon {
   width: 16px;
   height: 16px;
+  color: inherit;
 }
 
 /* Modal overlay */
