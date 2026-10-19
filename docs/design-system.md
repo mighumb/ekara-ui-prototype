@@ -62,7 +62,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |
 | Slide-in drawer | `.slide-panel` (+ optional `.slide-panel--narrow` for compact forms) | `--slide-panel-width` / `--slide-panel-width-narrow`; header, body, footer share `--slide-panel-padding`; footer actions `--slide-panel-actions-gap` |
-| RUM threshold zone legend | `.rum-threshold-drawer-legend` (fixed strip between drawer header and scrollable body) | Reuses `.rum-threshold-bar-seg--*` swatches; one instance per drawer, not per metric block |
+| RUM threshold zone legend | `.rum-threshold-drawer-legend` (fixed strip between drawer header and scrollable body) | Reuses `.rum-threshold-bar-seg--*` swatches; separator `.section-divider` inside padded strip (no full-bleed border) |
 
 **Tooltip** — include `tooltip.js` on every page that needs it. Do not use native `title`. Default placement: below host, centered (flip above if needed). For large or irregular hit targets (e.g. journey flow curves), set `data-tooltip-at="pointer"` to anchor above the cursor. For table cells with ellipsis, set `data-tooltip-full="…"` and call `EkaraTooltip.syncTruncated(tableBody)` after render (sets `data-tooltip` only when text overflows). Static controls can use `data-tooltip` directly.
 
