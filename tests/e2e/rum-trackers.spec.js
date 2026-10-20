@@ -48,6 +48,22 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('#tracker-table-body .data-table-row')).toHaveCount(3);
   });
 
+  test('header select-all toggles row checkboxes', async ({ page }) => {
+    await openTrackersFresh(page);
+    const selectAll = page.locator('#tracker-select-all');
+    const rowBoxes = page.locator('#tracker-table-body .data-table-checkbox');
+    await expect(rowBoxes).toHaveCount(3);
+    await selectAll.check();
+    await expect(rowBoxes).toHaveCount(3);
+    for (let i = 0; i < 3; i += 1) {
+      await expect(rowBoxes.nth(i)).toBeChecked();
+    }
+    await rowBoxes.nth(0).uncheck();
+    await expect(selectAll).not.toBeChecked();
+    await selectAll.check();
+    await expect(rowBoxes.nth(0)).toBeChecked();
+  });
+
   test('kebab menu shows Disable for active tracker and Enable for inactive', async ({ page }) => {
     await openTrackersFresh(page);
     const activeRow = page.locator('#tracker-table-body .data-table-row').filter({ hasText: '1111' });

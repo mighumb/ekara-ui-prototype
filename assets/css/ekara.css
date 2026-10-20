@@ -2675,6 +2675,8 @@ span.form-label {
   padding-left: 16px;
   padding-right: 6px;
   overflow: visible;
+  display: flex;
+  align-items: center;
 }
 
 .data-table--trackers .data-table-header-cell:nth-child(2),

@@ -337,6 +337,7 @@ function cacheElements() {
   els.panelSubtitle = document.getElementById('panel-subtitle');
   els.metricsContainer = document.getElementById('metrics-container');
   els.btnAddMetric = document.getElementById('btn-add-metric');
+  els.trackerSelectAll = document.getElementById('tracker-select-all');
   els.confirmOverlay = document.getElementById('confirm-overlay');
   els.confirmDialog = document.getElementById('confirm-dialog');
   els.confirmMessage = document.getElementById('confirm-message');
@@ -363,6 +364,18 @@ function bindEvents() {
   }
 
   document.addEventListener('click', () => closeAllMenus());
+
+  els.trackerSelectAll?.addEventListener('change', () => {
+    const on = els.trackerSelectAll.checked;
+    els.tableBody.querySelectorAll('.data-table-checkbox').forEach((cb) => {
+      cb.checked = on;
+    });
+    els.trackerSelectAll.indeterminate = false;
+  });
+
+  els.tableBody.addEventListener('change', (e) => {
+    if (e.target.matches('.data-table-checkbox')) syncTrackerSelectAllState();
+  });
 
   window.addEventListener('resize', () => {
     if (els.panel?.classList.contains('open')) updatePanelBodyScroll();
@@ -473,6 +486,20 @@ function trackerStatusIconSvg(active) {
   </svg>`;
 }
 
+function syncTrackerSelectAllState() {
+  const selectAll = els.trackerSelectAll;
+  if (!selectAll) return;
+  const boxes = els.tableBody.querySelectorAll('.data-table-checkbox');
+  if (!boxes.length) {
+    selectAll.checked = false;
+    selectAll.indeterminate = false;
+    return;
+  }
+  const checkedCount = [...boxes].filter((cb) => cb.checked).length;
+  selectAll.checked = checkedCount === boxes.length;
+  selectAll.indeterminate = checkedCount > 0 && checkedCount < boxes.length;
+}
+
 function formatScopeCell(row) {
   const parts = [];
   if (row.scopeRum) parts.push('RUM');
@@ -557,6 +584,8 @@ function renderTable() {
       if (action === 'disable') setTrackerActive(id, false);
     });
   });
+
+  syncTrackerSelectAllState();
 }
 
 function toggleMenu(id) {
