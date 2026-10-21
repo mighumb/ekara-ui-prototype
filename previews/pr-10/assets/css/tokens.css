@@ -232,6 +232,7 @@
   /* ── Components — interactive (reuse on every page/modal) ── */
   --link-color: var(--primary);
   --input-focus-border: var(--primary);
+  --input-hover-border: var(--color-n200);
   --surface-hover-light: var(--color-b50);
   --surface-hover-action: var(--color-b50);
   --toggle-track-off: var(--color-n50);
