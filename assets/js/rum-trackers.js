@@ -278,17 +278,13 @@ const TRACKER_APPLICATION_OPTIONS = [
   'Application',
 ];
 
-/** Default metric dropdown in New/Edit tracker (labels per product UI). */
+/** Default metric dropdown in New/Edit tracker (order + labels per product UI capture). */
 const TRACKER_DEFAULT_METRIC_OPTIONS = [
   { id: 'tti', label: 'Time To Interact' },
   { id: 'dom-interactive', label: 'DOM interactive' },
   { id: 'ont', label: 'Overall Navigation Timing' },
   { id: 'fplt', label: 'Full Page Loading Time' },
   { id: 'lcp', label: 'LCP' },
-  { id: 'inp', label: 'INP' },
-  { id: 'cls', label: 'CLS' },
-  { id: 'fcp', label: 'FCP' },
-  { id: 'ttfb', label: 'TTFB' },
   { id: 'avg-css', label: 'Avg css' },
   { id: 'avg-dns', label: 'Avg DNS' },
   { id: 'avg-duration', label: 'Avg Duration' },
