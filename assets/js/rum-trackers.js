@@ -705,6 +705,13 @@ function initTrackerFormSelects() {
   els.formMetric.innerHTML = TRACKER_DEFAULT_METRIC_OPTIONS.map(
     (m) => `<option value="${escapeAttr(m.id)}">${escapeHtml(m.label)}</option>`,
   ).join('');
+  const panel = document.getElementById('tracker-form-panel');
+  if (panel) {
+    panel.querySelectorAll('[data-ekara-inline-select]').forEach((wrap) => {
+      window.EkaraInlineSelect?.destroy(wrap);
+    });
+    window.EkaraInlineSelect?.scan(panel);
+  }
 }
 
 function ensureApplicationOption(value) {
@@ -748,12 +755,31 @@ function formatRatioTableCell(value) {
   return `${n}%`;
 }
 
+function generateTrackerSnippetUid() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'c841e463-ab72-43ca-add1-aab2ebcf9225';
+}
+
 function buildTrackerSnippet(uid) {
   return `<script type="text/javascript"> var ekaraRumConf = { trackerUID: "${uid}" }</script> <script async src="https://ekararum.ip-label.net/ekararum.js"></script>`;
 }
 
+function highlightTrackerSnippet(snippet) {
+  const escaped = escapeHtml(snippet);
+  return escaped
+    .replace(/(&lt;script[^&]*&gt;)/g, '<span class="rum-tracker-snippet-tag">$1</span>')
+    .replace(/(&lt;\/script&gt;)/g, '<span class="rum-tracker-snippet-tag">$1</span>')
+    .replace(/\bvar\b/g, '<span class="rum-tracker-snippet-kw">var</span>')
+    .replace(/(trackerUID:\s*)(&quot;[^&]*&quot;)/g, '$1<span class="rum-tracker-snippet-str">$2</span>');
+}
+
 function updateTrackerSnippetPreview(uid) {
-  if (els.formSnippetCode) els.formSnippetCode.textContent = buildTrackerSnippet(uid);
+  if (!els.formSnippetCode) return;
+  const plain = buildTrackerSnippet(uid);
+  els.formSnippetCode.dataset.plainSnippet = plain;
+  els.formSnippetCode.innerHTML = highlightTrackerSnippet(plain);
 }
 
 function updateTrackerCharCounter() {
@@ -774,8 +800,16 @@ function syncTrackerFormSaveState() {
   els.formSave.disabled = !ok;
 }
 
+function refreshTrackerFormInlineSelects() {
+  [els.formApplication, els.formMetric, els.formScope].forEach((selectEl) => {
+    const wrap = selectEl?.closest('[data-ekara-inline-select]');
+    window.EkaraInlineSelect?.destroy(wrap);
+  });
+}
+
 function populateTrackerForm(tracker) {
   const row = normalizeTracker(tracker);
+  refreshTrackerFormInlineSelects();
   ensureApplicationOption(row.application);
   els.formApplication.value = row.application || '';
   els.formScope.value = scopeValueFromTracker(row);
@@ -796,7 +830,7 @@ function populateTrackerForm(tracker) {
 }
 
 function resetTrackerFormForCreate() {
-  const draftUid = `TRACKER_${Date.now()}_`;
+  const draftUid = generateTrackerSnippetUid();
   populateTrackerForm({
     id: 0,
     application: '',
@@ -838,7 +872,7 @@ function openTrackerFormDrawer(mode, trackerId) {
 function readTrackerFormIntoDraft() {
   const name = els.formName.value.trim();
   const existing = trackerFormMode === 'edit' ? trackers.find((t) => t.id === trackerFormEditingId) : null;
-  const snippetUid = existing?.snippetUid || existing?.uid || `TRACKER_${Date.now()}_`;
+  const snippetUid = existing?.snippetUid || existing?.uid || generateTrackerSnippetUid();
   return {
     application: els.formApplication.value,
     name,
@@ -892,7 +926,7 @@ function saveTrackerForm() {
 }
 
 async function copyTrackerSnippet() {
-  const text = els.formSnippetCode?.textContent;
+  const text = els.formSnippetCode?.dataset.plainSnippet || els.formSnippetCode?.textContent;
   if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
@@ -1361,15 +1395,7 @@ function refreshAllMetricSelects() {
 }
 
 function destroyInlineSelect(wrap) {
-  if (!wrap) return;
-  const select = wrap.querySelector('select');
-  if (!select) return;
-  wrap.querySelector('.ekara-inline-select-control')?.remove();
-  wrap.querySelector('.ekara-inline-select-menu')?.remove();
-  select.classList.remove('hidden');
-  select.removeAttribute('tabindex');
-  select.removeAttribute('aria-hidden');
-  delete wrap.dataset.ekaraInlineSelectReady;
+  window.EkaraInlineSelect?.destroy(wrap);
 }
 
 function parseThresholdNumber(raw) {

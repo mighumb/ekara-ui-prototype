@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=139');
+@import url('tokens.css?v=140');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -841,6 +841,35 @@ span.form-label {
   padding: 8px 12px;
   min-height: 38px;
   box-sizing: border-box;
+}
+
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger--searchable {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: text;
+}
+
+.ekara-inline-select-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+.ekara-inline-select-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.ekara-inline-select-input:disabled {
+  cursor: not-allowed;
+  color: var(--input-disabled-text);
 }
 
 .form-select-wrap[data-ekara-inline-select] select.form-select.hidden {
@@ -2762,6 +2791,18 @@ span.form-label {
   line-height: 1.6;
   max-height: 120px;
   overflow: auto;
+}
+
+.rum-tracker-snippet-tag {
+  color: var(--primary);
+}
+
+.rum-tracker-snippet-kw {
+  color: var(--primary);
+}
+
+.rum-tracker-snippet-str {
+  color: var(--danger);
 }
 
 .rum-tracker-snippet-help {
