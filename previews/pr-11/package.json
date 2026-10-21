@@ -1,0 +1,12 @@
+{
+  "name": "ekara-ui-prototype",
+  "private": true,
+  "scripts": {
+    "check:assets": "node scripts/check-asset-versions.mjs",
+    "test:e2e": "npm run check:assets && playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.0"
+  }
+}
