@@ -268,6 +268,35 @@ const THRESHOLD_TOO_HIGH_VS_NEXT = [
   'The value of the second threshold must be lower than the third.',
 ];
 
+const TRACKER_APPLICATION_OPTIONS = [
+  '3615-15_new',
+  '3615-2',
+  '3615-4',
+  "AAN's apps",
+  'AEkara6',
+  'Application cva',
+  'Application',
+];
+
+/** Default metric dropdown in New/Edit tracker (labels per product UI). */
+const TRACKER_DEFAULT_METRIC_OPTIONS = [
+  { id: 'tti', label: 'Time To Interact' },
+  { id: 'dom-interactive', label: 'DOM interactive' },
+  { id: 'ont', label: 'Overall Navigation Timing' },
+  { id: 'fplt', label: 'Full Page Loading Time' },
+  { id: 'lcp', label: 'LCP' },
+  { id: 'inp', label: 'INP' },
+  { id: 'cls', label: 'CLS' },
+  { id: 'fcp', label: 'FCP' },
+  { id: 'ttfb', label: 'TTFB' },
+  { id: 'avg-css', label: 'Avg css' },
+  { id: 'avg-dns', label: 'Avg DNS' },
+  { id: 'avg-duration', label: 'Avg Duration' },
+  { id: 'avg-img', label: 'Avg img' },
+  { id: 'avg-link', label: 'Avg link' },
+  { id: 'avg-other', label: 'Avg other' },
+];
+
 const DEFAULT_TRACKERS = [
   {
     id: 1,
@@ -320,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('[rum-trackers] Invalid METRIC_THRESHOLD_PRESETS:', presetCheck.errors);
   }
   cacheElements();
+  initTrackerFormSelects();
   loadTrackers();
   loadThresholds();
   renderTable();
@@ -355,6 +385,7 @@ function cacheElements() {
   els.formSnippetCode = document.getElementById('tracker-snippet-code');
   els.formSave = document.getElementById('tracker-form-save');
   els.formNameError = document.getElementById('tracker-error-name');
+  els.formApplicationError = document.getElementById('tracker-error-application');
   els.confirmOverlay = document.getElementById('confirm-overlay');
   els.confirmDialog = document.getElementById('confirm-dialog');
   els.confirmMessage = document.getElementById('confirm-message');
@@ -375,8 +406,18 @@ function bindEvents() {
     syncTrackerFormSaveState();
     if (els.formNameError) els.formNameError.textContent = '';
   });
+  els.formApplication?.addEventListener('change', () => {
+    syncTrackerFormSaveState();
+    if (els.formApplicationError) els.formApplicationError.textContent = '';
+  });
   els.formDescription?.addEventListener('input', updateTrackerCharCounter);
-  els.formSessionReplay?.addEventListener('change', syncTrackerSessionReplayFields);
+  els.formSessionReplay?.addEventListener('change', () => {
+    if (els.formSessionReplay.checked) {
+      if (!els.formSampling.value.trim()) els.formSampling.value = '1';
+      if (!els.formMax24h.value.trim()) els.formMax24h.value = '100';
+    }
+    syncTrackerSessionReplayFields();
+  });
   document.getElementById('tracker-snippet-copy')?.addEventListener('click', copyTrackerSnippet);
   els.btnAddMetric.addEventListener('click', addMetricBlock);
 
@@ -656,13 +697,40 @@ function getNextTrackerId() {
   return trackers.reduce((max, row) => Math.max(max, row.id), 0) + 1;
 }
 
+function initTrackerFormSelects() {
+  if (!els.formApplication || !els.formMetric) return;
+  els.formApplication.innerHTML = `<option value="">Application</option>${TRACKER_APPLICATION_OPTIONS.map(
+    (name) => `<option value="${escapeAttr(name)}">${escapeHtml(name)}</option>`,
+  ).join('')}`;
+  els.formMetric.innerHTML = TRACKER_DEFAULT_METRIC_OPTIONS.map(
+    (m) => `<option value="${escapeAttr(m.id)}">${escapeHtml(m.label)}</option>`,
+  ).join('');
+}
+
+function ensureApplicationOption(value) {
+  if (!value || !els.formApplication) return;
+  const exists = [...els.formApplication.options].some((o) => o.value === value);
+  if (!exists) {
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = value;
+    els.formApplication.appendChild(opt);
+  }
+}
+
 function scopeValueFromTracker(tracker) {
-  return tracker.scopeBrowserAgent ? 'rum-ba' : 'rum';
+  if (tracker.scopeBrowserAgent && !tracker.scopeRum) return 'browser-agent';
+  return 'rum';
 }
 
 function applyScopeValueToTracker(tracker, scopeValue) {
-  tracker.scopeRum = true;
-  tracker.scopeBrowserAgent = scopeValue === 'rum-ba';
+  if (scopeValue === 'browser-agent') {
+    tracker.scopeRum = false;
+    tracker.scopeBrowserAgent = true;
+  } else {
+    tracker.scopeRum = true;
+    tracker.scopeBrowserAgent = false;
+  }
 }
 
 function ratioNumberFromDisplay(ratio) {
@@ -681,7 +749,7 @@ function formatRatioTableCell(value) {
 }
 
 function buildTrackerSnippet(uid) {
-  return `<script type="text/javascript"> var ekaraRumConf = { trackerUID: "${uid}" }</script>\n<script async src="https://ekararum.ip-label.com/agent.js"></script>`;
+  return `<script type="text/javascript"> var ekaraRumConf = { trackerUID: "${uid}" }</script> <script async src="https://ekararum.ip-label.net/ekararum.js"></script>`;
 }
 
 function updateTrackerSnippetPreview(uid) {
@@ -702,12 +770,14 @@ function syncTrackerSessionReplayFields() {
 
 function syncTrackerFormSaveState() {
   if (!els.formSave || !els.formName) return;
-  els.formSave.disabled = !els.formName.value.trim();
+  const ok = Boolean(els.formName.value.trim() && els.formApplication?.value);
+  els.formSave.disabled = !ok;
 }
 
 function populateTrackerForm(tracker) {
   const row = normalizeTracker(tracker);
-  els.formApplication.value = row.application;
+  ensureApplicationOption(row.application);
+  els.formApplication.value = row.application || '';
   els.formScope.value = scopeValueFromTracker(row);
   els.formName.value = row.name;
   els.formDescription.value = row.description || '';
@@ -719,6 +789,8 @@ function populateTrackerForm(tracker) {
   syncTrackerSessionReplayFields();
   updateTrackerCharCounter();
   updateTrackerSnippetPreview(row.snippetUid);
+  if (els.formApplicationError) els.formApplicationError.textContent = '';
+  if (els.formNameError) els.formNameError.textContent = '';
   window.EkaraInlineSelect?.scan(els.formPanel);
   syncTrackerFormSaveState();
 }
@@ -727,7 +799,7 @@ function resetTrackerFormForCreate() {
   const draftUid = `TRACKER_${Date.now()}_`;
   populateTrackerForm({
     id: 0,
-    application: 'Application',
+    application: '',
     name: '',
     description: '',
     ratio: '10',
@@ -782,9 +854,18 @@ function readTrackerFormIntoDraft() {
 
 function saveTrackerForm() {
   const draft = readTrackerFormIntoDraft();
+  let valid = true;
+  if (!els.formApplication?.value) {
+    if (els.formApplicationError) els.formApplicationError.textContent = 'Application is required.';
+    valid = false;
+  }
   if (!draft.name) {
     if (els.formNameError) els.formNameError.textContent = 'Tracker name is required.';
-    els.formName?.focus();
+    valid = false;
+  }
+  if (!valid) {
+    if (!els.formApplication?.value) els.formApplication?.focus();
+    else els.formName?.focus();
     return;
   }
   if (trackerFormMode === 'edit' && trackerFormEditingId != null) {

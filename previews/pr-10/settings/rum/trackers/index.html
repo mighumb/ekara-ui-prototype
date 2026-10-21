@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../../assets/css/tokens.css?v=138">
-  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=138">
+  <link rel="stylesheet" href="../../../assets/css/tokens.css?v=139">
+  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=139">
 </head>
 <body data-settings-screen="trackers">
   <div class="app-layout">
@@ -198,19 +198,17 @@
           <label class="form-label" id="tracker-field-application-label">Application</label>
           <div class="form-select-wrap" data-ekara-inline-select>
             <select class="form-select" id="tracker-field-application" aria-labelledby="tracker-field-application-label">
-              <option value="3615-15_new">3615-15_new</option>
-              <option value="3615-2">3615-2</option>
-              <option value="Application cva">Application cva</option>
-              <option value="Application">Application</option>
+              <option value="">Application</option>
             </select>
           </div>
+          <div class="form-error" id="tracker-error-application"></div>
         </div>
         <div class="form-group">
           <label class="form-label" id="tracker-field-scope-label">Scope</label>
           <div class="form-select-wrap" data-ekara-inline-select>
             <select class="form-select" id="tracker-field-scope" aria-labelledby="tracker-field-scope-label">
               <option value="rum">RUM</option>
-              <option value="rum-ba">RUM, Browser Agent</option>
+              <option value="browser-agent">Browser Agent</option>
             </select>
           </div>
         </div>
@@ -238,12 +236,7 @@
         <div class="form-group">
           <label class="form-label" id="tracker-field-metric-label">Default metric</label>
           <div class="form-select-wrap" data-ekara-inline-select>
-            <select class="form-select" id="tracker-field-metric" aria-labelledby="tracker-field-metric-label">
-              <option value="tti">Time To Interact</option>
-              <option value="dom-interactive">DOM Interactive</option>
-              <option value="lcp">LCP (Largest Contentful Paint)</option>
-              <option value="inp">INP (Interaction to Next Paint)</option>
-            </select>
+            <select class="form-select" id="tracker-field-metric" aria-labelledby="tracker-field-metric-label"></select>
           </div>
         </div>
       </div>
@@ -278,6 +271,11 @@
           </div>
           <pre class="rum-tracker-snippet-code" id="tracker-snippet-code"></pre>
         </div>
+        <p class="rum-tracker-snippet-help">
+          For help with the integration script, see the
+          <a href="#" class="rum-tracker-snippet-wiki">wiki</a>
+          (search for &ldquo;RUM deploy&rdquo;, for example).
+        </p>
       </div>
     </div>
     <div class="slide-panel-footer">
@@ -300,6 +298,6 @@
   <script src="../../../assets/js/settings-sidebar.js?v=2"></script>
   <script src="../../../assets/js/bento.js?v=3"></script>
   <script src="../../../assets/js/ekara-inline-select.js?v=3"></script>
-  <script src="../../../assets/js/rum-trackers.js?v=19"></script>
+  <script src="../../../assets/js/rum-trackers.js?v=20"></script>
 </body>
 </html>
