@@ -121,11 +121,13 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
     await expect(page.locator('#tracker-form-title')).toHaveText('New tracker');
     await expect(page.locator('#tracker-form-save')).toBeDisabled();
-    await page.evaluate(() => {
-      const sel = document.getElementById('tracker-field-application');
-      sel.value = '3615-15_new';
-      sel.dispatchEvent(new Event('change', { bubbles: true }));
-    });
+    const appField = page
+      .locator('#tracker-field-application')
+      .locator('xpath=ancestor::*[@data-ekara-inline-select][1]');
+    await appField.locator('.ekara-inline-select-trigger').click();
+    await expect(appField.locator('.ekara-inline-select-menu:not(.hidden)')).toBeVisible();
+    await appField.locator('.ekara-inline-select-option').filter({ hasText: '3615-15_new' }).click();
+    await expect(page.locator('#tracker-field-application')).toHaveValue('3615-15_new');
     await page.locator('#tracker-field-name').fill('QA tracker');
     await expect(page.locator('#tracker-form-save')).toBeEnabled({ timeout: 5000 });
     await expect(page.locator('#tracker-field-scope')).toHaveValue('rum');

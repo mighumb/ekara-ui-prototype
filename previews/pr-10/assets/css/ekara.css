@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=143');
+@import url('tokens.css?v=144');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -909,7 +909,12 @@ span.form-label {
   background-color: var(--surface-default);
 }
 
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-control {
+  width: 100%;
+}
+
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger {
+  width: 100%;
   padding: 8px 12px;
   min-height: 38px;
   box-sizing: border-box;
@@ -920,6 +925,11 @@ span.form-label {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger--searchable .ekara-inline-select-input {
+  align-self: stretch;
+  min-height: 22px;
 }
 
 .form-select-wrap[data-ekara-inline-select-searchable]:not(:focus-within) .ekara-inline-select-trigger--searchable,
