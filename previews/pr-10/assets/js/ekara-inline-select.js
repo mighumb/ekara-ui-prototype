@@ -156,7 +156,6 @@
         btn.classList.toggle('is-selected', selected);
         btn.setAttribute('aria-selected', selected ? 'true' : 'false');
       });
-      filterOptions(searchable && menuOpen ? searchInput?.value : '');
     }
 
     function openMenu() {
@@ -165,7 +164,8 @@
       menu.classList.remove('hidden');
       setExpanded(root, true);
       if (searchable && searchInput) {
-        filterOptions(searchInput.value);
+        // Show full list on open (product UI); typing applies filter via input handler.
+        filterOptions('');
         searchInput.focus();
       }
     }

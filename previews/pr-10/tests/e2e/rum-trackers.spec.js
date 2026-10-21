@@ -128,9 +128,31 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(appField.locator('.ekara-inline-select-menu:not(.hidden)')).toBeVisible();
     await appField.locator('.ekara-inline-select-option').filter({ hasText: '3615-15_new' }).click();
     await expect(page.locator('#tracker-field-application')).toHaveValue('3615-15_new');
+    await expect(appField.locator('.ekara-inline-select-menu')).toHaveClass(/hidden/);
     await page.locator('#tracker-field-name').fill('QA tracker');
     await expect(page.locator('#tracker-form-save')).toBeEnabled({ timeout: 5000 });
     await expect(page.locator('#tracker-field-scope')).toHaveValue('rum');
+    const metricField = page
+      .locator('#tracker-field-metric')
+      .locator('xpath=ancestor::*[@data-ekara-inline-select][1]');
+    await metricField.locator('.ekara-inline-select-trigger').click();
+    await expect(metricField.locator('.ekara-inline-select-menu:not(.hidden)')).toBeVisible();
+    const metricLabels = await metricField.locator('.ekara-inline-select-option').allTextContents();
+    expect(metricLabels).toEqual([
+      'Time To Interact',
+      'DOM interactive',
+      'Overall Navigation Timing',
+      'Full Page Loading Time',
+      'LCP',
+      'Avg css',
+      'Avg DNS',
+      'Avg Duration',
+      'Avg img',
+      'Avg link',
+      'Avg other',
+    ]);
+    await metricField.locator('.ekara-inline-select-option').filter({ hasText: 'Avg DNS' }).click();
+    await expect(page.locator('#tracker-field-metric')).toHaveValue('avg-dns');
     await expect(page.locator('.rum-tracker-snippet-help')).toContainText('RUM deploy');
     await page.locator('#tracker-form-cancel').click();
 

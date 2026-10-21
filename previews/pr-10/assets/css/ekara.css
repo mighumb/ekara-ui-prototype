@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=144');
+@import url('tokens.css?v=145');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -990,9 +990,10 @@ span.form-label {
   width: 100%;
 }
 
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-menu,
 .form-select-wrap--mapping .ekara-inline-select-menu,
 .form-select-wrap--mapping-value .ekara-inline-select-menu {
-  max-height: min(280px, 50vh);
+  max-height: min(240px, 40vh);
   overflow-y: auto;
 }
 
