@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=137');
+@import url('tokens.css?v=138');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -2699,6 +2699,69 @@ span.form-label {
   margin: 0;
   flex-shrink: 0;
   accent-color: var(--primary);
+}
+
+.rum-tracker-ratio-field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rum-tracker-ratio-field .form-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.rum-tracker-ratio-suffix {
+  font-size: var(--font-size-body);
+  color: var(--text-secondary);
+}
+
+.rum-tracker-session-replay-row .rum-tracker-session-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.rum-tracker-snippet-section .form-label {
+  text-transform: uppercase;
+  letter-spacing: var(--label-letter-spacing);
+  font-size: var(--font-size-12);
+}
+
+.rum-tracker-snippet {
+  margin-top: 8px;
+  background: var(--payload-preview-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.rum-tracker-snippet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-muted);
+}
+
+.rum-tracker-snippet-lang {
+  font-size: var(--font-size-12);
+  color: var(--text-secondary);
+}
+
+.rum-tracker-snippet-code {
+  margin: 0;
+  padding: 12px 16px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: var(--font-size-12);
+  color: var(--text-neutral);
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.6;
+  max-height: 120px;
+  overflow: auto;
 }
 
 .rum-tracker-status {

@@ -69,6 +69,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     const activeRow = page.locator('#tracker-table-body .data-table-row').filter({ hasText: '1111' });
     await activeRow.locator('.menu-trigger').click();
     const activeMenu = page.locator('#menu-1.open');
+    await expect(activeMenu.getByText('Edit', { exact: true })).toBeVisible();
     await expect(activeMenu.getByText('Thresholds', { exact: true })).toBeVisible();
     await expect(activeMenu.locator('[data-action="delete"]')).toBeVisible();
     await expect(activeMenu.locator('[data-action="disable"]')).toBeVisible();
@@ -114,12 +115,31 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('#menu-3.open [data-action="disable"]')).toBeVisible();
   });
 
+  test('Add tracker and Edit open the tracker form drawer', async ({ page }) => {
+    await openTrackersFresh(page);
+    await page.locator('#btn-add-tracker').click();
+    await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
+    await expect(page.locator('#tracker-form-title')).toHaveText('New tracker');
+    await expect(page.locator('#tracker-form-save')).toBeDisabled();
+    await page.locator('#tracker-field-name').fill('QA tracker');
+    await expect(page.locator('#tracker-form-save')).toBeEnabled();
+    await page.locator('#tracker-form-cancel').click();
+
+    await page.locator('#tracker-table-body .menu-trigger').first().click();
+    await page.locator('#menu-1 [data-action="edit"]').click();
+    await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
+    await expect(page.locator('#tracker-form-title')).toHaveText('Edit tracker');
+    await expect(page.locator('#tracker-field-name')).toHaveValue('1111');
+    await page.locator('#tracker-form-cancel').click();
+    await expect(page.locator('#tracker-form-panel.open')).toHaveCount(0);
+  });
+
   test('threshold drawer opens with one metric block and DS select', async ({ page }) => {
     await openTrackersFresh(page);
     await openThresholdsForFirstTracker(page);
     await expect(page.locator('#panel-title')).toContainText('1111 – RUM threshold');
     await expect(page.locator('.rum-threshold-block')).toHaveCount(1);
-    await expect(page.locator('[data-ekara-inline-select] .ekara-inline-select-trigger')).toHaveCount(1);
+    await expect(page.locator('#slide-panel [data-ekara-inline-select] .ekara-inline-select-trigger')).toHaveCount(1);
   });
 
   test('threshold drawer shows a single fixed zone legend', async ({ page }) => {

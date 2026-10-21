@@ -305,6 +305,8 @@ let trackers = [];
 let thresholdsByTracker = {};
 let draftMetrics = [];
 let editingTrackerId = null;
+let trackerFormMode = null;
+let trackerFormEditingId = null;
 let openMenuId = null;
 let deleteTargetId = null;
 let savedScrollY = 0;
@@ -338,6 +340,21 @@ function cacheElements() {
   els.metricsContainer = document.getElementById('metrics-container');
   els.btnAddMetric = document.getElementById('btn-add-metric');
   els.trackerSelectAll = document.getElementById('tracker-select-all');
+  els.formPanel = document.getElementById('tracker-form-panel');
+  els.formTitle = document.getElementById('tracker-form-title');
+  els.formName = document.getElementById('tracker-field-name');
+  els.formDescription = document.getElementById('tracker-field-description');
+  els.formCharCounter = document.getElementById('tracker-char-counter');
+  els.formApplication = document.getElementById('tracker-field-application');
+  els.formScope = document.getElementById('tracker-field-scope');
+  els.formRatio = document.getElementById('tracker-field-ratio');
+  els.formMetric = document.getElementById('tracker-field-metric');
+  els.formSessionReplay = document.getElementById('tracker-field-session-replay');
+  els.formSampling = document.getElementById('tracker-field-sampling');
+  els.formMax24h = document.getElementById('tracker-field-max-24h');
+  els.formSnippetCode = document.getElementById('tracker-snippet-code');
+  els.formSave = document.getElementById('tracker-form-save');
+  els.formNameError = document.getElementById('tracker-error-name');
   els.confirmOverlay = document.getElementById('confirm-overlay');
   els.confirmDialog = document.getElementById('confirm-dialog');
   els.confirmMessage = document.getElementById('confirm-message');
@@ -346,10 +363,21 @@ function cacheElements() {
 }
 
 function bindEvents() {
-  document.getElementById('panel-close').addEventListener('click', closePanel);
-  document.getElementById('btn-cancel').addEventListener('click', closePanel);
+  document.getElementById('panel-close').addEventListener('click', closeSlidePanels);
+  document.getElementById('btn-cancel').addEventListener('click', closeSlidePanels);
   document.getElementById('btn-save').addEventListener('click', saveThresholds);
-  els.overlay.addEventListener('click', closePanel);
+  els.overlay.addEventListener('click', closeSlidePanels);
+  document.getElementById('tracker-form-close')?.addEventListener('click', closeSlidePanels);
+  document.getElementById('tracker-form-cancel')?.addEventListener('click', closeSlidePanels);
+  document.getElementById('btn-add-tracker')?.addEventListener('click', () => openTrackerFormDrawer('create'));
+  els.formSave?.addEventListener('click', saveTrackerForm);
+  els.formName?.addEventListener('input', () => {
+    syncTrackerFormSaveState();
+    if (els.formNameError) els.formNameError.textContent = '';
+  });
+  els.formDescription?.addEventListener('input', updateTrackerCharCounter);
+  els.formSessionReplay?.addEventListener('change', syncTrackerSessionReplayFields);
+  document.getElementById('tracker-snippet-copy')?.addEventListener('click', copyTrackerSnippet);
   els.btnAddMetric.addEventListener('click', addMetricBlock);
 
   if (els.confirmCancel) els.confirmCancel.addEventListener('click', closeConfirm);
@@ -386,17 +414,17 @@ function loadTrackers() {
   try {
     const raw = localStorage.getItem(TRACKERS_STORAGE_KEY);
     if (!raw) {
-      trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+      trackers = DEFAULT_TRACKERS.map((row) => normalizeTracker({ ...row }));
       return;
     }
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed) || !parsed.length) {
-      trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+      trackers = DEFAULT_TRACKERS.map((row) => normalizeTracker({ ...row }));
       return;
     }
-    trackers = parsed;
+    trackers = parsed.map((row) => normalizeTracker(row));
   } catch {
-    trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+    trackers = DEFAULT_TRACKERS.map((row) => normalizeTracker({ ...row }));
   }
 }
 
@@ -519,6 +547,10 @@ function trackerDropdownMenuHtml(row) {
         </div>`;
 
   return `
+          <div class="dropdown-item" data-action="edit" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </div>
           <div class="dropdown-item" data-action="thresholds" data-id="${row.id}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
             Thresholds
@@ -578,6 +610,7 @@ function renderTable() {
       const id = parseInt(item.dataset.id, 10);
       const action = item.dataset.action;
       closeAllMenus();
+      if (action === 'edit') openTrackerFormDrawer('edit', id);
       if (action === 'thresholds') openThresholdsDrawer(id);
       if (action === 'delete') confirmDeleteTracker(id);
       if (action === 'enable') setTrackerActive(id, true);
@@ -606,9 +639,191 @@ function closeAllMenus() {
   openMenuId = null;
 }
 
+function normalizeTracker(row) {
+  const snippetUid = row.snippetUid || row.uid || 'c841e463-ab72-43ca-add1-aab2ebcf9225';
+  return {
+    description: '',
+    defaultMetricId: 'tti',
+    sessionReplay: false,
+    sampling: '',
+    maxPer24h: '',
+    ...row,
+    snippetUid,
+  };
+}
+
+function getNextTrackerId() {
+  return trackers.reduce((max, row) => Math.max(max, row.id), 0) + 1;
+}
+
+function scopeValueFromTracker(tracker) {
+  return tracker.scopeBrowserAgent ? 'rum-ba' : 'rum';
+}
+
+function applyScopeValueToTracker(tracker, scopeValue) {
+  tracker.scopeRum = true;
+  tracker.scopeBrowserAgent = scopeValue === 'rum-ba';
+}
+
+function ratioNumberFromDisplay(ratio) {
+  const n = parseInt(String(ratio).replace(/%/g, ''), 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function formatRatioDisplay(value) {
+  const n = parseInt(String(value).replace(/%/g, ''), 10);
+  return Number.isFinite(n) ? String(n) : '10';
+}
+
+function formatRatioTableCell(value) {
+  const n = ratioNumberFromDisplay(value);
+  return `${n}%`;
+}
+
+function buildTrackerSnippet(uid) {
+  return `<script type="text/javascript"> var ekaraRumConf = { trackerUID: "${uid}" }</script>\n<script async src="https://ekararum.ip-label.com/agent.js"></script>`;
+}
+
+function updateTrackerSnippetPreview(uid) {
+  if (els.formSnippetCode) els.formSnippetCode.textContent = buildTrackerSnippet(uid);
+}
+
+function updateTrackerCharCounter() {
+  if (!els.formCharCounter || !els.formDescription) return;
+  const len = els.formDescription.value.length;
+  els.formCharCounter.textContent = `${len} / 250`;
+}
+
+function syncTrackerSessionReplayFields() {
+  const on = Boolean(els.formSessionReplay?.checked);
+  if (els.formSampling) els.formSampling.disabled = !on;
+  if (els.formMax24h) els.formMax24h.disabled = !on;
+}
+
+function syncTrackerFormSaveState() {
+  if (!els.formSave || !els.formName) return;
+  els.formSave.disabled = !els.formName.value.trim();
+}
+
+function populateTrackerForm(tracker) {
+  const row = normalizeTracker(tracker);
+  els.formApplication.value = row.application;
+  els.formScope.value = scopeValueFromTracker(row);
+  els.formName.value = row.name;
+  els.formDescription.value = row.description || '';
+  els.formRatio.value = formatRatioDisplay(row.ratio);
+  els.formMetric.value = row.defaultMetricId || 'tti';
+  els.formSessionReplay.checked = Boolean(row.sessionReplay);
+  els.formSampling.value = row.sampling || '';
+  els.formMax24h.value = row.maxPer24h || '';
+  syncTrackerSessionReplayFields();
+  updateTrackerCharCounter();
+  updateTrackerSnippetPreview(row.snippetUid);
+  window.EkaraInlineSelect?.scan(els.formPanel);
+  syncTrackerFormSaveState();
+}
+
+function resetTrackerFormForCreate() {
+  const draftUid = `TRACKER_${Date.now()}_`;
+  populateTrackerForm({
+    id: 0,
+    application: 'Application',
+    name: '',
+    description: '',
+    ratio: '10',
+    defaultMetricId: 'tti',
+    sessionReplay: false,
+    sampling: '',
+    maxPer24h: '',
+    snippetUid: draftUid,
+    uid: draftUid,
+    scopeRum: true,
+    scopeBrowserAgent: false,
+    active: true,
+  });
+  if (els.formNameError) els.formNameError.textContent = '';
+}
+
+function openTrackerFormDrawer(mode, trackerId) {
+  closeSlidePanels();
+  trackerFormMode = mode;
+  trackerFormEditingId = mode === 'edit' ? trackerId : null;
+  if (mode === 'edit') {
+    const tracker = trackers.find((t) => t.id === trackerId);
+    if (!tracker) return;
+    if (els.formTitle) els.formTitle.textContent = 'Edit tracker';
+    populateTrackerForm(tracker);
+  } else {
+    if (els.formTitle) els.formTitle.textContent = 'New tracker';
+    resetTrackerFormForCreate();
+  }
+  els.overlay.classList.add('open');
+  els.formPanel?.classList.add('open');
+  lockPageScroll();
+  requestAnimationFrame(() => els.formName?.focus());
+}
+
+function readTrackerFormIntoDraft() {
+  const name = els.formName.value.trim();
+  const existing = trackerFormMode === 'edit' ? trackers.find((t) => t.id === trackerFormEditingId) : null;
+  const snippetUid = existing?.snippetUid || existing?.uid || `TRACKER_${Date.now()}_`;
+  return {
+    application: els.formApplication.value,
+    name,
+    description: els.formDescription.value.trim(),
+    ratio: formatRatioTableCell(els.formRatio.value),
+    defaultMetricId: els.formMetric.value,
+    sessionReplay: els.formSessionReplay.checked,
+    sampling: els.formSampling.value.trim(),
+    maxPer24h: els.formMax24h.value.trim(),
+    snippetUid,
+  };
+}
+
+function saveTrackerForm() {
+  const draft = readTrackerFormIntoDraft();
+  if (!draft.name) {
+    if (els.formNameError) els.formNameError.textContent = 'Tracker name is required.';
+    els.formName?.focus();
+    return;
+  }
+  if (trackerFormMode === 'edit' && trackerFormEditingId != null) {
+    const row = trackers.find((t) => t.id === trackerFormEditingId);
+    if (!row) return;
+    Object.assign(row, draft);
+    applyScopeValueToTracker(row, els.formScope.value);
+    row.uid = row.snippetUid;
+  } else {
+    const row = normalizeTracker({
+      id: getNextTrackerId(),
+      active: true,
+      ...draft,
+    });
+    applyScopeValueToTracker(row, els.formScope.value);
+    row.uid = row.snippetUid;
+    trackers.push(row);
+  }
+  persistTrackers();
+  renderTable();
+  closeSlidePanels();
+  trackerFormMode = null;
+  trackerFormEditingId = null;
+}
+
+async function copyTrackerSnippet() {
+  const text = els.formSnippetCode?.textContent;
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    /* prototype: clipboard may be blocked */
+  }
+}
+
 function openThresholdsDrawer(trackerId) {
   const tracker = trackers.find((t) => t.id === trackerId);
   if (!tracker) return;
+  closeSlidePanels();
   editingTrackerId = trackerId;
   draftMetrics = defaultMetricsForTracker(trackerId);
   els.panelTitle.textContent = `${tracker.name} – RUM threshold`;
@@ -621,13 +836,20 @@ function openThresholdsDrawer(trackerId) {
   updatePanelBodyScroll();
 }
 
-function closePanel() {
+function closeSlidePanels() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  els.formPanel?.classList.remove('open');
   if (els.panelBody) els.panelBody.classList.remove('can-scroll');
   unlockPageScroll();
   editingTrackerId = null;
   draftMetrics = [];
+  trackerFormMode = null;
+  trackerFormEditingId = null;
+}
+
+function closePanel() {
+  closeSlidePanels();
 }
 
 function saveThresholds() {
