@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=140');
+@import url('tokens.css?v=141');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -787,6 +787,51 @@ span.form-label {
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 12px;
+}
+
+/* Numeric/text input with in-field suffix (e.g. Ratio %, Sampling %) */
+.form-input-affix {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--radius);
+  background: var(--surface-default);
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.form-input-affix:focus-within {
+  border-color: var(--input-focus-border);
+}
+
+.form-input-affix .form-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding-right: 4px;
+}
+
+.form-input-affix .form-input:focus {
+  border-color: transparent;
+}
+
+.form-input-affix:has(.form-input:disabled) {
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+}
+
+.form-input-affix-suffix {
+  flex-shrink: 0;
+  padding-right: 12px;
+  font-size: var(--font-size-body);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.form-input-affix:has(.form-input:disabled) .form-input-affix-suffix {
+  color: var(--input-disabled-text);
 }
 
 .form-error {
@@ -2730,20 +2775,13 @@ span.form-label {
   accent-color: var(--primary);
 }
 
-.rum-tracker-ratio-field {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+#tracker-form-panel .form-row-inline-2,
+#tracker-form-panel .form-row-inline-3 {
+  gap: 16px;
 }
 
-.rum-tracker-ratio-field .form-input {
-  flex: 1;
-  min-width: 0;
-}
-
-.rum-tracker-ratio-suffix {
-  font-size: var(--font-size-body);
-  color: var(--text-secondary);
+.rum-tracker-session-replay-row {
+  grid-template-columns: minmax(7.5rem, auto) 1fr 1fr;
 }
 
 .rum-tracker-session-replay-row .rum-tracker-session-toggle {
