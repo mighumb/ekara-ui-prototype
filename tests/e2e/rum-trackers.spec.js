@@ -53,6 +53,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     const activeRow = page.locator('#tracker-table-body .data-table-row').filter({ hasText: '1111' });
     await activeRow.locator('.menu-trigger').click();
     const activeMenu = page.locator('#menu-1.open');
+    await expect(activeMenu.getByText('Edit', { exact: true })).toBeVisible();
     await expect(activeMenu.getByText('Thresholds', { exact: true })).toBeVisible();
     await expect(activeMenu.locator('[data-action="delete"]')).toBeVisible();
     await expect(activeMenu.locator('[data-action="disable"]')).toBeVisible();
@@ -96,6 +97,16 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(row.locator('.rum-tracker-status--active')).toBeVisible();
     await row.locator('.menu-trigger').click();
     await expect(page.locator('#menu-3.open [data-action="disable"]')).toBeVisible();
+  });
+
+  test('edit opens tracker edit drawer from kebab menu', async ({ page }) => {
+    await openTrackersFresh(page);
+    await page.locator('#tracker-table-body .menu-trigger').first().click();
+    await page.locator('#menu-1 [data-action="edit"]').click();
+    await expect(page.locator('#tracker-edit-panel.open')).toBeVisible();
+    await expect(page.locator('#tracker-edit-title')).toContainText('1111 – Edit tracker');
+    await page.locator('#tracker-edit-cancel').click();
+    await expect(page.locator('#tracker-edit-panel.open')).toHaveCount(0);
   });
 
   test('threshold drawer opens with one metric block and DS select', async ({ page }) => {

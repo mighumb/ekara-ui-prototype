@@ -337,6 +337,8 @@ function cacheElements() {
   els.panelSubtitle = document.getElementById('panel-subtitle');
   els.metricsContainer = document.getElementById('metrics-container');
   els.btnAddMetric = document.getElementById('btn-add-metric');
+  els.editPanel = document.getElementById('tracker-edit-panel');
+  els.editPanelTitle = document.getElementById('tracker-edit-title');
   els.confirmOverlay = document.getElementById('confirm-overlay');
   els.confirmDialog = document.getElementById('confirm-dialog');
   els.confirmMessage = document.getElementById('confirm-message');
@@ -345,10 +347,12 @@ function cacheElements() {
 }
 
 function bindEvents() {
-  document.getElementById('panel-close').addEventListener('click', closePanel);
-  document.getElementById('btn-cancel').addEventListener('click', closePanel);
+  document.getElementById('panel-close').addEventListener('click', closeSlidePanels);
+  document.getElementById('btn-cancel').addEventListener('click', closeSlidePanels);
   document.getElementById('btn-save').addEventListener('click', saveThresholds);
-  els.overlay.addEventListener('click', closePanel);
+  els.overlay.addEventListener('click', closeSlidePanels);
+  document.getElementById('tracker-edit-close')?.addEventListener('click', closeSlidePanels);
+  document.getElementById('tracker-edit-cancel')?.addEventListener('click', closeSlidePanels);
   els.btnAddMetric.addEventListener('click', addMetricBlock);
 
   if (els.confirmCancel) els.confirmCancel.addEventListener('click', closeConfirm);
@@ -492,6 +496,10 @@ function trackerDropdownMenuHtml(row) {
         </div>`;
 
   return `
+          <div class="dropdown-item" data-action="edit" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </div>
           <div class="dropdown-item" data-action="thresholds" data-id="${row.id}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
             Thresholds
@@ -551,6 +559,7 @@ function renderTable() {
       const id = parseInt(item.dataset.id, 10);
       const action = item.dataset.action;
       closeAllMenus();
+      if (action === 'edit') openTrackerEditDrawer(id);
       if (action === 'thresholds') openThresholdsDrawer(id);
       if (action === 'delete') confirmDeleteTracker(id);
       if (action === 'enable') setTrackerActive(id, true);
@@ -577,9 +586,20 @@ function closeAllMenus() {
   openMenuId = null;
 }
 
+function openTrackerEditDrawer(trackerId) {
+  const tracker = trackers.find((t) => t.id === trackerId);
+  if (!tracker) return;
+  closeSlidePanels();
+  if (els.editPanelTitle) els.editPanelTitle.textContent = `${tracker.name} – Edit tracker`;
+  els.overlay.classList.add('open');
+  els.editPanel?.classList.add('open');
+  lockPageScroll();
+}
+
 function openThresholdsDrawer(trackerId) {
   const tracker = trackers.find((t) => t.id === trackerId);
   if (!tracker) return;
+  closeSlidePanels();
   editingTrackerId = trackerId;
   draftMetrics = defaultMetricsForTracker(trackerId);
   els.panelTitle.textContent = `${tracker.name} – RUM threshold`;
@@ -592,13 +612,18 @@ function openThresholdsDrawer(trackerId) {
   updatePanelBodyScroll();
 }
 
-function closePanel() {
+function closeSlidePanels() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  els.editPanel?.classList.remove('open');
   if (els.panelBody) els.panelBody.classList.remove('can-scroll');
   unlockPageScroll();
   editingTrackerId = null;
   draftMetrics = [];
+}
+
+function closePanel() {
+  closeSlidePanels();
 }
 
 function saveThresholds() {
