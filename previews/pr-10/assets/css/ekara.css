@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=141');
+@import url('tokens.css?v=142');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -732,6 +732,11 @@ span.form-label {
   appearance: none;
 }
 
+.form-input,
+.form-textarea {
+  cursor: text;
+}
+
 .form-select {
   padding-right: 32px;
   overflow: hidden;
@@ -773,7 +778,8 @@ span.form-label {
 }
 
 .form-select:disabled,
-.form-input:disabled {
+.form-input:disabled,
+.form-textarea:disabled {
   background-color: var(--input-disabled-bg);
   color: var(--input-disabled-text);
   -webkit-text-fill-color: var(--input-disabled-text);
@@ -799,6 +805,7 @@ span.form-label {
   background: var(--surface-default);
   transition: border-color 0.15s;
   box-sizing: border-box;
+  cursor: text;
 }
 
 .form-input-affix:focus-within {
@@ -820,6 +827,7 @@ span.form-label {
 .form-input-affix:has(.form-input:disabled) {
   background-color: var(--input-disabled-bg);
   border-color: var(--input-disabled-border);
+  cursor: not-allowed;
 }
 
 .form-input-affix-suffix {
@@ -886,13 +894,27 @@ span.form-label {
   padding: 8px 12px;
   min-height: 38px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger--searchable {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable]:not(:focus-within) .ekara-inline-select-trigger--searchable,
+.form-select-wrap[data-ekara-inline-select-searchable]:not(:focus-within) .ekara-inline-select-input {
+  cursor: pointer;
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable]:focus-within .ekara-inline-select-input {
   cursor: text;
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable] .ekara-inline-select-chevron {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .ekara-inline-select-input {
