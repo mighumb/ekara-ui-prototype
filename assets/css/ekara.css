@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=142');
+@import url('tokens.css?v=143');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -727,9 +727,15 @@ span.form-label {
   border-radius: var(--radius);
   color: var(--text-neutral);
   background: var(--surface-default);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.form-input:hover:not(:focus):not(:disabled),
+.form-textarea:hover:not(:focus):not(:disabled) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
 }
 
 .form-input,
@@ -803,13 +809,19 @@ span.form-label {
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
   background: var(--surface-default);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
   box-sizing: border-box;
   cursor: text;
 }
 
+.form-input-affix:hover:not(:focus-within):not(:has(.form-input:disabled)) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
+}
+
 .form-input-affix:focus-within {
   border-color: var(--input-focus-border);
+  background-color: var(--surface-default);
 }
 
 .form-input-affix .form-input {
@@ -883,11 +895,18 @@ span.form-label {
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
   background: var(--surface-default);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 
-.form-select-wrap[data-ekara-inline-select]:focus-within {
+.form-select-wrap[data-ekara-inline-select]:hover:not(:focus-within):not(:has(select:disabled)) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
+}
+
+.form-select-wrap[data-ekara-inline-select]:focus-within,
+.form-select-wrap[data-ekara-inline-select]:has([aria-expanded='true']) {
   border-color: var(--input-focus-border);
+  background-color: var(--surface-default);
 }
 
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger {
@@ -1590,13 +1609,19 @@ span.form-label {
   position: relative;
   cursor: pointer;
   box-sizing: border-box;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.ekara-picker-field:hover:not(:focus):not([aria-expanded='true']):not(:disabled) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
 }
 
 .ekara-picker-field:focus,
 .ekara-picker-field[aria-expanded='true'] {
   outline: none;
   border-color: var(--input-focus-border);
+  background-color: var(--surface-default);
 }
 
 .ekara-picker-field:has(.ekara-chip) {
@@ -1806,6 +1831,12 @@ span.form-label {
   background: var(--card-bg);
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.measure-filter-inline:not(.measure-filter-inline--static):hover:not(:focus-within):not(:has([aria-expanded='true'])) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
 }
 
 .measure-filter-inline--static {
@@ -1819,6 +1850,7 @@ span.form-label {
 .measure-filter-inline:not(.measure-filter-inline--static):has([aria-expanded='true']) {
   outline: none;
   border-color: var(--input-focus-border);
+  background-color: var(--card-bg);
 }
 
 .measure-filter-prefix {
