@@ -121,8 +121,15 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
     await expect(page.locator('#tracker-form-title')).toHaveText('New tracker');
     await expect(page.locator('#tracker-form-save')).toBeDisabled();
+    await page.evaluate(() => {
+      const sel = document.getElementById('tracker-field-application');
+      sel.value = '3615-15_new';
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    });
     await page.locator('#tracker-field-name').fill('QA tracker');
-    await expect(page.locator('#tracker-form-save')).toBeEnabled();
+    await expect(page.locator('#tracker-form-save')).toBeEnabled({ timeout: 5000 });
+    await expect(page.locator('#tracker-field-scope')).toHaveValue('rum');
+    await expect(page.locator('.rum-tracker-snippet-help')).toContainText('RUM deploy');
     await page.locator('#tracker-form-cancel').click();
 
     await page.locator('#tracker-table-body .menu-trigger').first().click();

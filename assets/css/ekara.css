@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=138');
+@import url('tokens.css?v=139');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -2762,6 +2762,18 @@ span.form-label {
   line-height: 1.6;
   max-height: 120px;
   overflow: auto;
+}
+
+.rum-tracker-snippet-help {
+  margin: 10px 0 0;
+  font-size: var(--font-size-12);
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.rum-tracker-snippet-wiki {
+  color: var(--link-color);
+  text-decoration: underline;
 }
 
 .rum-tracker-status {
