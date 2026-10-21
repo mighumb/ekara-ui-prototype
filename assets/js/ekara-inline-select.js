@@ -188,10 +188,23 @@
         if (menu.classList.contains('hidden')) openMenu();
         filterOptions(searchInput.value);
       });
-      searchInput.addEventListener('blur', () => {
+      searchInput.addEventListener('blur', (e) => {
+        const next = e.relatedTarget;
+        if (next && root.contains(next)) return;
         window.setTimeout(() => {
           if (!root.contains(document.activeElement)) closeMenu();
         }, 120);
+      });
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (select.disabled) return;
+        if (e.target.closest('.ekara-inline-select-chevron')) return;
+        if (menu.classList.contains('hidden')) {
+          openMenu();
+          searchInput.focus();
+        } else if (e.target !== searchInput) {
+          closeMenu();
+        }
       });
       chevron.addEventListener('mousedown', (e) => {
         e.preventDefault();
