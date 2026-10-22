@@ -19,9 +19,16 @@ test.describe('Management — SSO', () => {
   test('page loads with seeded rows and Management sidebar links', async ({ page }) => {
     await openSso(page);
     await expect(page.locator('.page-title')).toHaveText('SSO');
-    await expect(page.locator('#sso-table-body .data-table-row')).toHaveCount(11);
+    await expect(page.locator('#sso-table-body .data-table-row')).toHaveCount(14);
     await expect(page.getByRole('link', { name: 'SSO' })).toHaveAttribute('aria-current', 'page');
     await expect(page.getByRole('link', { name: 'Webhooks' })).toBeVisible();
+  });
+
+  test('name and type are independent columns', async ({ page }) => {
+    await openSso(page);
+    const row = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'CVA SSO Okta' });
+    await expect(row.locator('.data-table-cell').nth(0)).toHaveText('CVA SSO Okta');
+    await expect(row.locator('.data-table-cell').nth(2)).toHaveText('Okta');
   });
 
   test('default sort is Name ascending', async ({ page }) => {
@@ -37,21 +44,23 @@ test.describe('Management — SSO', () => {
 
   test('edit save preserves associated users count', async ({ page }) => {
     await openSso(page);
-    const row = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'ddf' });
+    const row = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'aaaa' });
     await expect(row.locator('.data-table-cell').nth(3)).toHaveText('17 users');
     await row.locator('.menu-trigger').click();
     await row.locator('.dropdown-item', { hasText: 'Edit' }).click();
-    await page.locator('#field-description').fill('Prod updated');
+    await page.locator('#field-description').fill('aaa updated');
     await page.locator('#save-btn').click();
     await expect(page.locator('#slide-panel.open')).toHaveCount(0);
-    const updated = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'ddf' });
+    const updated = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'aaaa' });
     await expect(updated.locator('.data-table-cell').nth(3)).toHaveText('17 users');
-    await expect(updated.locator('.data-table-cell').nth(1)).toHaveText('Prod updated');
+    await expect(updated.locator('.data-table-cell').nth(1)).toHaveText('aaa updated');
   });
 
   test('kebab edit opens drawer; delete removes row after confirm', async ({ page }) => {
     await openSso(page);
-    const row = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'Azure' });
+    const row = page
+      .locator('#sso-table-body .data-table-row')
+      .filter({ has: page.locator('.data-table-cell').first().filter({ hasText: /^Azure$/ }) });
     await row.locator('.menu-trigger').click();
     await row.locator('.dropdown-item', { hasText: 'Edit' }).click();
     await expect(page.locator('#slide-panel.open')).toBeVisible();
@@ -62,7 +71,7 @@ test.describe('Management — SSO', () => {
     await row.locator('.dropdown-item', { hasText: 'Delete' }).click();
     await expect(page.locator('#confirm-dialog.open')).toBeVisible();
     await page.locator('#confirm-ok').click();
-    await expect(page.locator('#sso-table-body .data-table-row')).toHaveCount(10);
+    await expect(page.locator('#sso-table-body .data-table-row')).toHaveCount(13);
   });
 
   test('Add SSO drawer shows OAuth fields for AzureAD', async ({ page }) => {

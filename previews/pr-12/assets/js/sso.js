@@ -7,18 +7,22 @@ const SSO_STORAGE_KEY = 'ekara-prototype-sso';
 /** Types that show Scopes / Client ID / Tenant ID (product modal). */
 const SSO_OAUTH_FIELD_TYPES = new Set(['ADFS', 'AzureAD', 'Okta', 'PingIdentity']);
 
+/** Name = admin label; type = provider protocol (often differ, per product). */
 const DEFAULT_SSO = [
-  { id: 1, name: 'ddf', description: 'Prod', type: 'LDAP', associatedUsers: '17 users' },
-  { id: 2, name: 'ddd', description: '', type: 'LDAP', associatedUsers: '1 user' },
-  { id: 3, name: 'LDAP', description: '', type: 'LDAP', associatedUsers: '1 user' },
-  { id: 4, name: 'ADFS', description: '', type: 'ADFS', associatedUsers: '2 users' },
-  { id: 5, name: 'Azure', description: 'Azure', type: 'AzureAD', associatedUsers: '1 user' },
-  { id: 6, name: 'Okta', description: 'Okta', type: 'Okta', associatedUsers: 'None' },
-  { id: 7, name: 'PingIdentity', description: 'PingIdentity', type: 'PingIdentity', associatedUsers: 'None' },
-  { id: 8, name: 'test', description: 'test', type: 'LDAP', associatedUsers: 'None' },
-  { id: 9, name: 'test2', description: 'test2', type: 'LDAP', associatedUsers: 'None' },
-  { id: 10, name: 'test3', description: 'test3', type: 'LDAP', associatedUsers: 'None' },
-  { id: 11, name: 'test4', description: 'test4', type: 'LDAP', associatedUsers: 'None' },
+  { id: 1, name: 'aaaa', description: 'aaa', type: 'LDAP', associatedUsers: '17 users' },
+  { id: 2, name: 'ADFS', description: '', type: 'ADFS', associatedUsers: 'None' },
+  { id: 3, name: 'Azure', description: '', type: 'AzureAD', associatedUsers: '50 users' },
+  { id: 4, name: 'CVA SSO Okta', description: '', type: 'Okta', associatedUsers: '2 users' },
+  { id: 5, name: 'dddddddddddd', description: 'dddddddddddd', type: 'AzureAD', associatedUsers: '2 users' },
+  { id: 6, name: 'dds', description: 'qdsdsd', type: 'AzureAD', associatedUsers: '1 user' },
+  { id: 7, name: 'LDAP ip-label', description: '', type: 'LDAP', associatedUsers: '3 users' },
+  { id: 8, name: 'LDAP- KAYA', description: '', type: 'LDAP', associatedUsers: '1 user' },
+  { id: 9, name: 'LDAP-MONCEF', description: '', type: 'LDAP', associatedUsers: '1 user' },
+  { id: 10, name: 'Okta IPL Demo', description: '', type: 'Okta', associatedUsers: '1 user' },
+  { id: 11, name: 'OpenLDAP AZURE TEST', description: '', type: 'LDAP', associatedUsers: '1 user' },
+  { id: 12, name: 'OpenLDAP SendBox', description: '', type: 'LDAP', associatedUsers: '2 users' },
+  { id: 13, name: 'pingOne', description: '', type: 'PingIdentity', associatedUsers: 'None' },
+  { id: 14, name: 'pingOne new', description: '', type: 'PingIdentity', associatedUsers: 'None' },
 ];
 
 const SORT_FIRST_CLICK_ASC = {
