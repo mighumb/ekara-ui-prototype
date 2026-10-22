@@ -70,7 +70,7 @@ test.describe('Prototype entry (single main URL)', () => {
     await page.goto('/settings/rum/trackers/');
     await page.locator('#btn-bento').click();
     await page.locator('.bento-menu-item[data-module="Management"]').click();
-    await expect(page).toHaveURL(/\/webhooks\//);
+    await expect(page).toHaveURL(/\/sso\//);
     await page.locator('#btn-bento').click();
     await page.locator('.bento-menu-item[data-module="Measures"]').click();
     await expect(page).toHaveURL(/user-journey-mapping/);

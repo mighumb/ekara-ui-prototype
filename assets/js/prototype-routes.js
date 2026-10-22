@@ -10,7 +10,7 @@
 
   const moduleRoutes = {
     Measures: 'measures/explore/rum/user-journey-mapping/',
-    Management: 'webhooks/',
+    Management: 'sso/',
     Settings: 'settings/alerts/',
   };
 
