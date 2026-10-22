@@ -4,8 +4,6 @@
 
 const SSO_STORAGE_KEY = 'ekara-prototype-sso';
 
-const SSO_TYPES = ['LDAP', 'ADFS', 'AzureAD', 'Okta', 'PingIdentity'];
-
 const DEFAULT_SSO = [
   { id: 1, name: 'ddf', description: 'Prod', type: 'LDAP', associatedUsers: '17 users' },
   { id: 2, name: 'ddd', description: '', type: 'LDAP', associatedUsers: '1 user' },
@@ -255,19 +253,18 @@ function saveSso() {
     return;
   }
 
-  const payload = {
+  const fields = {
     name,
     description: els.descriptionInput.value.trim(),
     type: els.typeSelect.value,
-    associatedUsers: 'None',
   };
 
   if (editingId) {
     const idx = ssoConfigs.findIndex((r) => r.id === editingId);
     if (idx === -1) return;
-    ssoConfigs[idx] = { ...ssoConfigs[idx], ...payload };
+    ssoConfigs[idx] = { ...ssoConfigs[idx], ...fields };
   } else {
-    ssoConfigs.unshift({ id: getNextId(), ...payload });
+    ssoConfigs.unshift({ id: getNextId(), associatedUsers: 'None', ...fields });
   }
 
   persistSsoConfigs();

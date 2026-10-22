@@ -35,6 +35,20 @@ test.describe('Management — SSO', () => {
     expect(names).toEqual(sorted);
   });
 
+  test('edit save preserves associated users count', async ({ page }) => {
+    await openSso(page);
+    const row = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'ddf' });
+    await expect(row.locator('.data-table-cell').nth(3)).toHaveText('17 users');
+    await row.locator('.menu-trigger').click();
+    await row.locator('.dropdown-item', { hasText: 'Edit' }).click();
+    await page.locator('#field-description').fill('Prod updated');
+    await page.locator('#save-btn').click();
+    await expect(page.locator('#slide-panel.open')).toHaveCount(0);
+    const updated = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'ddf' });
+    await expect(updated.locator('.data-table-cell').nth(3)).toHaveText('17 users');
+    await expect(updated.locator('.data-table-cell').nth(1)).toHaveText('Prod updated');
+  });
+
   test('kebab edit opens drawer; delete removes row after confirm', async ({ page }) => {
     await openSso(page);
     const row = page.locator('#sso-table-body .data-table-row').filter({ hasText: 'Azure' });
