@@ -65,6 +65,17 @@ test.describe('Management — SSO', () => {
     await expect(page.locator('#sso-table-body .data-table-row')).toHaveCount(10);
   });
 
+  test('Add SSO drawer shows OAuth fields for AzureAD', async ({ page }) => {
+    await openSso(page);
+    await page.locator('#btn-add-sso').click();
+    await expect(page.locator('#panel-title')).toHaveText('New SSO');
+    await expect(page.locator('#save-btn')).toHaveText('Save');
+    await expect(page.locator('#field-scopes')).toBeVisible();
+    await expect(page.locator('#field-client-id')).toBeVisible();
+    await expect(page.locator('#field-tenant-id')).toBeVisible();
+    await expect(page.locator('#field-name')).toHaveAttribute('placeholder', 'Provider name');
+  });
+
   test('Add SSO creates row from drawer', async ({ page }) => {
     await openSso(page);
     await page.locator('#btn-add-sso').click();

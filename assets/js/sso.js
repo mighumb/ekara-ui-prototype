@@ -4,6 +4,9 @@
 
 const SSO_STORAGE_KEY = 'ekara-prototype-sso';
 
+/** Types that show Scopes / Client ID / Tenant ID (product modal). */
+const SSO_OAUTH_FIELD_TYPES = new Set(['ADFS', 'AzureAD', 'Okta', 'PingIdentity']);
+
 const DEFAULT_SSO = [
   { id: 1, name: 'ddf', description: 'Prod', type: 'LDAP', associatedUsers: '17 users' },
   { id: 2, name: 'ddd', description: '', type: 'LDAP', associatedUsers: '1 user' },
@@ -43,6 +46,10 @@ function init() {
     nameInput: document.getElementById('field-name'),
     descriptionInput: document.getElementById('field-description'),
     typeSelect: document.getElementById('field-type'),
+    oauthFieldsSection: document.getElementById('sso-oauth-fields'),
+    scopesInput: document.getElementById('field-scopes'),
+    clientIdInput: document.getElementById('field-client-id'),
+    tenantIdInput: document.getElementById('field-tenant-id'),
     nameError: document.getElementById('error-name'),
     saveBtn: document.getElementById('save-btn'),
     confirmOverlay: document.getElementById('confirm-overlay'),
@@ -64,6 +71,7 @@ function bindEvents() {
   els.overlay.addEventListener('click', closePanel);
   els.saveBtn.addEventListener('click', saveSso);
   els.nameInput.addEventListener('input', () => clearFieldError(els.nameInput, els.nameError));
+  els.typeSelect.addEventListener('change', updateOAuthFieldsVisibility);
 
   els.confirmCancel.addEventListener('click', closeConfirm);
   els.confirmOverlay.addEventListener('click', closeConfirm);
@@ -87,17 +95,26 @@ function bindEvents() {
   });
 }
 
+function normalizeSsoRow(row) {
+  return {
+    ...row,
+    scopes: row.scopes ?? '',
+    clientId: row.clientId ?? '',
+    tenantId: row.tenantId ?? '',
+  };
+}
+
 function loadSsoConfigs() {
   try {
     const raw = localStorage.getItem(SSO_STORAGE_KEY);
-    if (!raw) return DEFAULT_SSO.map((row) => ({ ...row }));
+    if (!raw) return DEFAULT_SSO.map((row) => normalizeSsoRow(row));
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed) || parsed.length === 0) {
-      return DEFAULT_SSO.map((row) => ({ ...row }));
+      return DEFAULT_SSO.map((row) => normalizeSsoRow(row));
     }
-    return parsed;
+    return parsed.map(normalizeSsoRow);
   } catch {
-    return DEFAULT_SSO.map((row) => ({ ...row }));
+    return DEFAULT_SSO.map((row) => normalizeSsoRow(row));
   }
 }
 
@@ -214,10 +231,14 @@ function closeAllMenus() {
   openMenuId = null;
 }
 
+function updateOAuthFieldsVisibility() {
+  const show = SSO_OAUTH_FIELD_TYPES.has(els.typeSelect.value);
+  els.oauthFieldsSection.classList.toggle('hidden', !show);
+}
+
 function openPanel(mode, id) {
   editingId = mode === 'edit' ? id : null;
   els.panelTitle.textContent = mode === 'edit' ? 'Edit SSO' : 'New SSO';
-  els.saveBtn.textContent = mode === 'edit' ? 'Save' : 'Create';
 
   if (mode === 'edit') {
     const row = ssoConfigs.find((r) => r.id === id);
@@ -225,11 +246,17 @@ function openPanel(mode, id) {
     els.nameInput.value = row.name;
     els.descriptionInput.value = row.description;
     els.typeSelect.value = row.type;
+    els.scopesInput.value = row.scopes ?? '';
+    els.clientIdInput.value = row.clientId ?? '';
+    els.tenantIdInput.value = row.tenantId ?? '';
     els.typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
   } else {
     els.nameInput.value = '';
     els.descriptionInput.value = '';
-    els.typeSelect.value = 'LDAP';
+    els.typeSelect.value = 'AzureAD';
+    els.scopesInput.value = '';
+    els.clientIdInput.value = '';
+    els.tenantIdInput.value = '';
     els.typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
@@ -253,10 +280,14 @@ function saveSso() {
     return;
   }
 
+  const type = els.typeSelect.value;
   const fields = {
     name,
     description: els.descriptionInput.value.trim(),
-    type: els.typeSelect.value,
+    type,
+    scopes: SSO_OAUTH_FIELD_TYPES.has(type) ? els.scopesInput.value.trim() : '',
+    clientId: SSO_OAUTH_FIELD_TYPES.has(type) ? els.clientIdInput.value.trim() : '',
+    tenantId: SSO_OAUTH_FIELD_TYPES.has(type) ? els.tenantIdInput.value.trim() : '',
   };
 
   if (editingId) {
