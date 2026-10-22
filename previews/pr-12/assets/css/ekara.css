@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=147');
+@import url('tokens.css?v=148');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -301,6 +301,26 @@ select:not(:disabled) {
   min-height: calc(100vh - 48px);
 }
 
+/* List screens: page header fixed, table body scrolls inside viewport */
+.main-content--list-table {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px);
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.main-content--list-table .page-header {
+  flex-shrink: 0;
+}
+
+.data-table-viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
 .page-header {
   display: flex;
   align-items: center;
@@ -397,20 +417,58 @@ select:not(:disabled) {
 
 /* Table */
 .data-table {
+  --data-table-cols: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
+  grid-template-columns: var(--data-table-cols);
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
 }
 
-.data-table-header,
-#webhook-table-body,
-#sso-table-body,
-#alert-table-body,
-#tracker-table-body,
-.data-table-row {
+.data-table:not(.data-table--scroll) .data-table-header,
+.data-table:not(.data-table--scroll) #webhook-table-body,
+.data-table:not(.data-table--scroll) #sso-table-body,
+.data-table:not(.data-table--scroll) #alert-table-body,
+.data-table:not(.data-table--scroll) #tracker-table-body,
+.data-table:not(.data-table--scroll) .data-table-row {
   display: contents;
+}
+
+.data-table.data-table--scroll {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.data-table--scroll .data-table-header {
+  display: grid;
+  grid-template-columns: var(--data-table-cols);
+  flex-shrink: 0;
+}
+
+.data-table--scroll .data-table-body-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.data-table--scroll .data-table-body-scroll #webhook-table-body,
+.data-table--scroll .data-table-body-scroll #sso-table-body,
+.data-table--scroll .data-table-body-scroll #alert-table-body,
+.data-table--scroll .data-table-body-scroll #tracker-table-body {
+  display: block;
+}
+
+.data-table--scroll .data-table-row {
+  display: grid;
+  grid-template-columns: var(--data-table-cols);
+}
+
+.data-table--scroll .rum-tracker-table-footer {
+  grid-column: unset;
 }
 
 .data-table-header-cell,
@@ -1332,7 +1390,7 @@ span.form-label {
 
 /* Alerts table */
 .data-table--alerts {
-  grid-template-columns:
+  --data-table-cols:
     56px
     minmax(120px, 1.1fr)
     minmax(100px, 1fr)
@@ -1341,6 +1399,7 @@ span.form-label {
     minmax(88px, 0.65fr)
     minmax(100px, 0.75fr)
     48px;
+  grid-template-columns: var(--data-table-cols);
 }
 
 .data-table--alerts .data-table-header-cell:first-child,
@@ -2799,17 +2858,18 @@ span.form-label {
 }
 
 .data-table--sso {
-  grid-template-columns:
+  --data-table-cols:
     minmax(100px, 1.15fr)
     minmax(100px, 1fr)
     minmax(88px, 0.75fr)
     minmax(100px, 0.85fr)
     48px;
+  grid-template-columns: var(--data-table-cols);
 }
 
 .data-table--trackers {
   /* Same balanced fr pattern as .data-table--alerts — avoid one wide UID column */
-  grid-template-columns:
+  --data-table-cols:
     56px
     88px
     minmax(100px, 1fr)
@@ -2818,6 +2878,7 @@ span.form-label {
     minmax(64px, 0.55fr)
     minmax(100px, 0.95fr)
     48px;
+  grid-template-columns: var(--data-table-cols);
 }
 
 .data-table--trackers .data-table-header-cell:nth-child(1),
@@ -2962,6 +3023,7 @@ span.form-label {
 
 .rum-tracker-table-footer {
   grid-column: 1 / -1;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   gap: 24px;
