@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../../assets/css/tokens.css?v=147">
-  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=147">
+  <link rel="stylesheet" href="../../../assets/css/tokens.css?v=148">
+  <link rel="stylesheet" href="../../../assets/css/ekara.css?v=148">
 </head>
 <body data-settings-screen="trackers">
   <div class="app-layout">
@@ -92,7 +92,7 @@
 
     <aside class="sidebar" data-ekara-settings-sidebar></aside>
 
-    <main class="main-content">
+    <main class="main-content main-content--list-table">
       <div class="page-header">
         <h1 class="page-title">Trackers</h1>
         <button type="button" class="btn btn-primary" id="btn-add-tracker">
@@ -101,7 +101,8 @@
           </button>
       </div>
 
-      <div class="data-table data-table--trackers">
+      <div class="data-table-viewport">
+      <div class="data-table data-table--trackers data-table--scroll">
         <div class="data-table-header">
           <div class="data-table-header-cell">
             <input type="checkbox" class="data-table-checkbox" id="tracker-select-all" aria-label="Select all trackers">
@@ -144,7 +145,9 @@
           </div>
           <div class="data-table-header-cell"></div>
         </div>
-        <div id="tracker-table-body"></div>
+        <div class="data-table-body-scroll">
+          <div id="tracker-table-body"></div>
+        </div>
         <div class="rum-tracker-table-footer">
           <span class="rum-tracker-legend-item">
             <span class="rum-tracker-status rum-tracker-status--active" aria-hidden="true">
@@ -159,6 +162,7 @@
             Inactive
           </span>
         </div>
+      </div>
       </div>
     </main>
   </div>

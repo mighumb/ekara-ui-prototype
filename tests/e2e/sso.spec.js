@@ -18,6 +18,8 @@ test.describe('Management — SSO', () => {
 
   test('page loads with seeded rows and Management sidebar links', async ({ page }) => {
     await openSso(page);
+    await expect(page.locator('.main-content--list-table')).toBeVisible();
+    await expect(page.locator('.data-table-body-scroll')).toBeVisible();
     await expect(page.locator('.page-title')).toHaveText('SSO');
     await expect(page.locator('#sso-table-body .data-table-row')).toHaveCount(14);
     await expect(page.getByRole('link', { name: 'SSO' })).toHaveAttribute('aria-current', 'page');

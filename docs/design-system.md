@@ -61,6 +61,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
 | Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |
+| List table (viewport scroll) | `main.main-content--list-table` + `.data-table-viewport` + `.data-table--scroll` with `.data-table-body-scroll` wrapping `#*-table-body`; header stays fixed, body scrolls | `--data-table-cols` on `.data-table` / modifiers |
 | Slide-in drawer | `.slide-panel` (+ optional `.slide-panel--narrow` for compact forms) | `--slide-panel-width` / `--slide-panel-width-narrow`; header, body, footer share `--slide-panel-padding`; footer actions `--slide-panel-actions-gap` |
 | RUM threshold zone legend | `.rum-threshold-drawer-legend` (fixed strip between drawer header and scrollable body) | Reuses `.rum-threshold-bar-seg--*` swatches; separator `.section-divider` inside padded strip (no full-bleed border) |
 
