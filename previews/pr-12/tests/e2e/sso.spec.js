@@ -74,6 +74,11 @@ test.describe('Management — SSO', () => {
     await expect(page.locator('#field-client-id')).toBeVisible();
     await expect(page.locator('#field-tenant-id')).toBeVisible();
     await expect(page.locator('#field-name')).toHaveAttribute('placeholder', 'Provider name');
+
+    const wrap = page.locator('[data-ekara-inline-select]:has(#field-type)');
+    await wrap.locator('.ekara-inline-select-trigger').click();
+    const labels = await wrap.locator('.ekara-inline-select-option').allTextContents();
+    expect(labels.map((t) => t.trim())).toEqual(['ADFS', 'AzureAD', 'LDAP', 'Okta', 'PingIdentity']);
   });
 
   test('Add SSO creates row from drawer', async ({ page }) => {
