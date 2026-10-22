@@ -8,6 +8,7 @@ Only implemented screens are listed.
 | Page | Path | JIRA |
 |------|------|------|
 | Webhooks (Integrations) | [/webhooks/](https://mighumb.github.io/ekara-ui-prototype/webhooks/) | [DFY-23383](https://iplabel.atlassian.net/browse/DFY-23383) — list CRUD, service sections, `localStorage` mock (`ekara-prototype-webhooks`) |
+| SSO (Integrations) | [/sso/](https://mighumb.github.io/ekara-ui-prototype/sso/) | Management Integrations list — sortable columns (default Name asc), kebab Edit/Delete, Add SSO drawer (name, description, type), shared Management sidebar, `localStorage` mock (`ekara-prototype-sso`) |
 
 ## Measures
 

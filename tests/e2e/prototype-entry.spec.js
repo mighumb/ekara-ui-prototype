@@ -22,6 +22,15 @@ test.describe('Prototype entry (single main URL)', () => {
     expect(linkColor).toBe(referenceColor);
   }
 
+  test('Management sidebar links Webhooks and SSO on SSO page', async ({ page }) => {
+    await page.goto('/sso/');
+    await expect(page.locator('[data-ekara-management-sidebar] .sidebar-nav')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'SSO' })).toHaveAttribute('aria-current', 'page');
+    await page.getByRole('link', { name: 'Webhooks' }).click();
+    await expect(page).toHaveURL(/\/webhooks\//);
+    await expect(page.getByRole('link', { name: 'Webhooks' })).toHaveAttribute('aria-current', 'page');
+  });
+
   test('Settings sidebar is mounted from shared script on Alert rules', async ({ page }) => {
     await page.goto('/settings/alerts/');
     await expect(page.locator('[data-ekara-settings-sidebar] .sidebar-nav')).toBeVisible();

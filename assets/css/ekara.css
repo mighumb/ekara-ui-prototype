@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=146');
+@import url('tokens.css?v=147');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -406,6 +406,7 @@ select:not(:disabled) {
 
 .data-table-header,
 #webhook-table-body,
+#sso-table-body,
 #alert-table-body,
 #tracker-table-body,
 .data-table-row {
@@ -2795,6 +2796,15 @@ span.form-label {
   text-transform: none;
   letter-spacing: normal;
   line-height: 1.45;
+}
+
+.data-table--sso {
+  grid-template-columns:
+    minmax(100px, 1.15fr)
+    minmax(100px, 1fr)
+    minmax(88px, 0.75fr)
+    minmax(100px, 0.85fr)
+    48px;
 }
 
 .data-table--trackers {

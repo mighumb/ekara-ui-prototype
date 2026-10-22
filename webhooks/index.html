@@ -7,10 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/tokens.css?v=146">
-  <link rel="stylesheet" href="../assets/css/ekara.css?v=146">
+  <link rel="stylesheet" href="../assets/css/tokens.css?v=147">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=147">
 </head>
-<body>
+<body data-management-screen="webhooks">
   <div class="app-layout">
     <!-- Top bar -->
     <header class="topbar">
@@ -88,74 +88,7 @@
       </div>
     </header>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <nav class="sidebar-nav">
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Accounts
-        </div>
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          Workspaces
-        </div>
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Applications
-        </div>
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          Users
-        </div>
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          User profiles
-        </div>
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          Proxies
-        </div>
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          Browser Agent
-        </div>
-
-        <!-- Integrations group -->
-        <div class="sidebar-item">
-          <div class="sidebar-group-toggle">
-            <span class="sidebar-group-label">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-              Integrations
-            </span>
-            <svg class="sidebar-chevron expanded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-        <div class="sidebar-subitems">
-          <div class="sidebar-item sidebar-subitem active">Webhooks</div>
-          <div class="sidebar-item sidebar-subitem">SSO</div>
-          <div class="sidebar-item sidebar-subitem">Groups</div>
-          <div class="sidebar-item sidebar-subitem">API keys</div>
-          <div class="sidebar-item sidebar-subitem">Export OpenTelemetry</div>
-        </div>
-
-        <!-- Usage group -->
-        <div class="sidebar-item">
-          <div class="sidebar-group-toggle">
-            <span class="sidebar-group-label">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-              Usage
-            </span>
-            <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        </div>
-
-        <div class="sidebar-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Tags
-        </div>
-      </nav>
-      <div class="sidebar-footer">v3.43.0 © 2026 ip-label</div>
-    </aside>
+    <aside class="sidebar" data-ekara-management-sidebar></aside>
 
     <!-- Main content -->
     <main class="main-content">
@@ -337,6 +270,7 @@
   </div>
 
   <script src="../assets/js/prototype-routes.js?v=1"></script>
+  <script src="../assets/js/management-sidebar.js?v=1"></script>
   <script src="../assets/js/bento.js?v=3"></script>
   <script src="../assets/js/tooltip.js?v=3"></script>
   <script src="../assets/js/ekara-inline-select.js?v=3"></script>
