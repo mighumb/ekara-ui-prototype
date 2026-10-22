@@ -15,9 +15,15 @@ async function openTrackersFresh(page) {
   await expect(page.locator('#tracker-table-body .data-table-row').first()).toBeVisible();
 }
 
-async function openThresholdsForFirstTracker(page) {
-  await page.locator('#tracker-table-body .menu-trigger').first().click();
-  await page.locator('.dropdown-item[data-action="thresholds"]').first().click();
+async function openTrackerKebab(page, trackerName) {
+  const row = page.locator('#tracker-table-body .data-table-row').filter({ hasText: trackerName });
+  await row.locator('.menu-trigger').click();
+  return row;
+}
+
+async function openThresholdsForTracker(page, trackerName = '1111') {
+  const row = await openTrackerKebab(page, trackerName);
+  await row.locator('.dropdown-item[data-action="thresholds"]').click();
   await expect(page.locator('#slide-panel.open')).toBeVisible();
 }
 
@@ -46,6 +52,48 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await openTrackersFresh(page);
     await expect(page.locator('.page-title')).toHaveText('Trackers');
     await expect(page.locator('#tracker-table-body .data-table-row')).toHaveCount(3);
+    await expect(page.locator('.data-table-header-sort.is-sorted')).toHaveCount(0);
+  });
+
+  test('column sort toggles direction and shows chevron only on active column', async ({ page }) => {
+    await openTrackersFresh(page);
+    const nameHeader = page.locator('.data-table-header-sort[data-sort-key="name"]');
+    await nameHeader.click();
+    await expect(nameHeader).toHaveAttribute('aria-sort', 'ascending');
+    await expect(page.locator('.data-table-header-sort.is-sorted')).toHaveCount(1);
+    const names = await page
+      .locator('#tracker-table-body .data-table-row')
+      .evaluateAll((rows) =>
+        rows.map((row) => row.querySelectorAll('.data-table-cell')[3]?.textContent?.trim() || ''),
+      );
+    const sorted = [...names].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    expect(names).toEqual(sorted);
+    await nameHeader.click();
+    await expect(nameHeader).toHaveAttribute('aria-sort', 'descending');
+  });
+
+  test('reload resets to default sort (no active column)', async ({ page }) => {
+    await openTrackersFresh(page);
+    await page.locator('.data-table-header-sort[data-sort-key="application"]').click();
+    await expect(page.locator('.data-table-header-sort.is-sorted')).toHaveCount(1);
+    await page.reload();
+    await expect(page.locator('.data-table-header-sort.is-sorted')).toHaveCount(0);
+  });
+
+  test('header select-all toggles row checkboxes', async ({ page }) => {
+    await openTrackersFresh(page);
+    const selectAll = page.locator('#tracker-select-all');
+    const rowBoxes = page.locator('#tracker-table-body .data-table-checkbox');
+    await expect(rowBoxes).toHaveCount(3);
+    await selectAll.check();
+    await expect(rowBoxes).toHaveCount(3);
+    for (let i = 0; i < 3; i += 1) {
+      await expect(rowBoxes.nth(i)).toBeChecked();
+    }
+    await rowBoxes.nth(0).uncheck();
+    await expect(selectAll).not.toBeChecked();
+    await selectAll.check();
+    await expect(rowBoxes.nth(0)).toBeChecked();
   });
 
   test('kebab menu shows Disable for active tracker and Enable for inactive', async ({ page }) => {
@@ -53,6 +101,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     const activeRow = page.locator('#tracker-table-body .data-table-row').filter({ hasText: '1111' });
     await activeRow.locator('.menu-trigger').click();
     const activeMenu = page.locator('#menu-1.open');
+    await expect(activeMenu.getByText('Edit', { exact: true })).toBeVisible();
     await expect(activeMenu.getByText('Thresholds', { exact: true })).toBeVisible();
     await expect(activeMenu.locator('[data-action="delete"]')).toBeVisible();
     await expect(activeMenu.locator('[data-action="disable"]')).toBeVisible();
@@ -98,17 +147,69 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await expect(page.locator('#menu-3.open [data-action="disable"]')).toBeVisible();
   });
 
+  test('Add tracker and Edit open the tracker form drawer', async ({ page }) => {
+    await openTrackersFresh(page);
+    await page.locator('#btn-add-tracker').click();
+    await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
+    await expect(page.locator('#tracker-form-title')).toHaveText('New tracker');
+    await expect(page.locator('#tracker-form-save')).toHaveText('Create');
+    await expect(page.locator('#tracker-form-save')).toBeDisabled();
+    const appField = page
+      .locator('#tracker-field-application')
+      .locator('xpath=ancestor::*[@data-ekara-inline-select][1]');
+    await appField.locator('.ekara-inline-select-trigger').click();
+    await expect(appField.locator('.ekara-inline-select-menu:not(.hidden)')).toBeVisible();
+    await appField.locator('.ekara-inline-select-option').filter({ hasText: '3615-15_new' }).click();
+    await expect(page.locator('#tracker-field-application')).toHaveValue('3615-15_new');
+    await expect(appField.locator('.ekara-inline-select-menu')).toHaveClass(/hidden/);
+    await page.locator('#tracker-field-name').fill('QA tracker');
+    await expect(page.locator('#tracker-form-save')).toBeEnabled({ timeout: 5000 });
+    await expect(page.locator('#tracker-field-scope')).toHaveValue('rum');
+    const metricField = page
+      .locator('#tracker-field-metric')
+      .locator('xpath=ancestor::*[@data-ekara-inline-select][1]');
+    await metricField.locator('.ekara-inline-select-trigger').click();
+    await expect(metricField.locator('.ekara-inline-select-menu:not(.hidden)')).toBeVisible();
+    const metricLabels = await metricField.locator('.ekara-inline-select-option').allTextContents();
+    expect(metricLabels).toEqual([
+      'Time To Interact',
+      'DOM interactive',
+      'Overall Navigation Timing',
+      'Full Page Loading Time',
+      'LCP',
+      'Avg css',
+      'Avg DNS',
+      'Avg Duration',
+      'Avg img',
+      'Avg link',
+      'Avg other',
+    ]);
+    await metricField.locator('.ekara-inline-select-option').filter({ hasText: 'Avg DNS' }).click();
+    await expect(page.locator('#tracker-field-metric')).toHaveValue('avg-dns');
+    await expect(page.locator('.rum-tracker-snippet-help')).toContainText('RUM deploy');
+    await page.locator('#tracker-form-cancel').click();
+
+    const row1111 = await openTrackerKebab(page, '1111');
+    await row1111.locator('[data-action="edit"]').click();
+    await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
+    await expect(page.locator('#tracker-form-title')).toHaveText('Edit tracker');
+    await expect(page.locator('#tracker-form-save')).toHaveText('Save');
+    await expect(page.locator('#tracker-field-name')).toHaveValue('1111');
+    await page.locator('#tracker-form-cancel').click();
+    await expect(page.locator('#tracker-form-panel.open')).toHaveCount(0);
+  });
+
   test('threshold drawer opens with one metric block and DS select', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
     await expect(page.locator('#panel-title')).toContainText('1111 – RUM threshold');
     await expect(page.locator('.rum-threshold-block')).toHaveCount(1);
-    await expect(page.locator('[data-ekara-inline-select] .ekara-inline-select-trigger')).toHaveCount(1);
+    await expect(page.locator('#slide-panel [data-ekara-inline-select] .ekara-inline-select-trigger')).toHaveCount(1);
   });
 
   test('threshold drawer shows a single fixed zone legend', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
     const legend = page.locator('.rum-threshold-drawer-legend');
     await expect(legend).toHaveCount(1);
     await expect(legend.getByText('Very satisfied')).toBeVisible();
@@ -120,7 +221,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
 
   test('add metric, exclude duplicates, save persists, cancel discards draft', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
 
     await page.locator('#btn-add-metric').click();
     await expect(page.locator('.rum-threshold-block')).toHaveCount(2);
@@ -136,7 +237,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await page.locator('#btn-save').click();
     await expect(page.locator('#slide-panel.open')).toHaveCount(0);
 
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
     await expect(page.locator('.rum-threshold-block')).toHaveCount(2);
 
     await page.locator('#btn-add-metric').click();
@@ -144,13 +245,13 @@ test.describe('Settings — RUM Trackers thresholds', () => {
     await page.locator('#btn-cancel').click();
     await expect(page.locator('#slide-panel.open')).toHaveCount(0);
 
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
     await expect(page.locator('.rum-threshold-block')).toHaveCount(2);
   });
 
   test('threshold order validation shows correct message per step', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
 
     const tolerating = satisfactionField(page, 'tolerating');
     await tolerating.fill('1');
@@ -174,7 +275,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
 
   test('validation error highlights the field being edited', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
 
     const tolerating = satisfactionField(page, 'tolerating');
     await tolerating.fill('8');
@@ -189,7 +290,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
 
   test('metric preset applies official defaults and locks standard performance', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
 
     await selectMetricInBlock(page, 0, 'LCP');
     await expect(
@@ -234,7 +335,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
       );
     }, STORAGE_KEY);
     await page.reload();
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
     await selectMetricInBlock(page, 0, 'FCP');
     await expect(
       page.locator('[data-visual="performance"] [data-marker-field="satisfied"] .rum-threshold-marker-input'),
@@ -246,7 +347,7 @@ test.describe('Settings — RUM Trackers thresholds', () => {
 
   test('remove metric block when more than one', async ({ page }) => {
     await openTrackersFresh(page);
-    await openThresholdsForFirstTracker(page);
+    await openThresholdsForTracker(page, '1111');
     await page.locator('#btn-add-metric').click();
     await expect(page.locator('.rum-threshold-block')).toHaveCount(2);
     await page.locator('.remove-metric-block').nth(1).click();

@@ -1,8 +1,10 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-async function expectUniformSlidePanelFooterPadding(page) {
-  const padding = await page.locator('.slide-panel-footer').evaluate((el) => {
+async function expectUniformSlidePanelFooterPadding(page, openPanelSelector = '#slide-panel.open') {
+  const footer = page.locator(`${openPanelSelector} .slide-panel-footer`);
+  await expect(footer).toHaveCount(1);
+  const padding = await footer.evaluate((el) => {
     const s = getComputedStyle(el);
     return {
       top: s.paddingTop,
@@ -37,5 +39,12 @@ test.describe('Slide panel layout (shared DS)', () => {
     await page.locator('.dropdown-item[data-action="thresholds"]').first().click();
     await expect(page.locator('#slide-panel.open')).toBeVisible();
     await expectUniformSlidePanelFooterPadding(page);
+  });
+
+  test('RUM trackers New/Edit form drawer footer padding is uniform', async ({ page }) => {
+    await page.goto('/settings/rum/trackers/index.html');
+    await page.locator('#btn-add-tracker').click();
+    await expect(page.locator('#tracker-form-panel.open')).toBeVisible();
+    await expectUniformSlidePanelFooterPadding(page, '#tracker-form-panel.open');
   });
 });

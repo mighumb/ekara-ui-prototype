@@ -3,7 +3,7 @@
  * Bump `assetVersion` whenever shared CSS/JS changes; run `npm run check:assets`.
  */
 (function (global) {
-  const assetVersion = '136';
+  const assetVersion = '146';
 
   /** Default screen when opening the site root (production main). */
   const defaultEntry = 'measures/explore/rum/user-journey-mapping/';
