@@ -102,11 +102,21 @@ jobs:
                   f.startsWith('tests/e2e/alerts'),
               },
               {
+                label: 'SSO (Management)',
+                path: 'sso/',
+                match: (f) =>
+                  f.startsWith('sso/') ||
+                  f === 'assets/js/sso.js' ||
+                  f === 'assets/js/management-sidebar.js' ||
+                  f.startsWith('tests/e2e/sso'),
+              },
+              {
                 label: 'Webhooks (Management)',
                 path: 'webhooks/',
                 match: (f) =>
                   f.startsWith('webhooks/') ||
                   f === 'assets/js/webhooks.js' ||
+                  f === 'assets/js/management-sidebar.js' ||
                   f.startsWith('tests/e2e/webhooks'),
               },
               {
