@@ -95,16 +95,10 @@
     <main class="main-content">
       <div class="page-header">
         <h1 class="page-title">Trackers</h1>
-        <div class="page-header-actions">
-          <button type="button" class="btn btn-outline" disabled aria-disabled="true">
-            Actions
-            <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg>
-          </button>
-          <button type="button" class="btn btn-primary" id="btn-add-tracker">
+        <button type="button" class="btn btn-primary" id="btn-add-tracker">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add tracker
           </button>
-        </div>
       </div>
 
       <div class="data-table data-table--trackers">
@@ -112,12 +106,42 @@
           <div class="data-table-header-cell">
             <input type="checkbox" class="data-table-checkbox" id="tracker-select-all" aria-label="Select all trackers">
           </div>
-          <div class="data-table-header-cell">Status</div>
-          <div class="data-table-header-cell">Application</div>
-          <div class="data-table-header-cell">Tracker</div>
-          <div class="data-table-header-cell">UID</div>
-          <div class="data-table-header-cell">Ratio</div>
-          <div class="data-table-header-cell">Scope</div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="active" aria-sort="none">
+              <span class="data-table-header-sort-label">Status</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="application" aria-sort="none">
+              <span class="data-table-header-sort-label">Application</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="name" aria-sort="none">
+              <span class="data-table-header-sort-label">Tracker</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="uid" aria-sort="none">
+              <span class="data-table-header-sort-label">UID</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="ratio" aria-sort="none">
+              <span class="data-table-header-sort-label">Ratio</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="scope" aria-sort="none">
+              <span class="data-table-header-sort-label">Scope</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
           <div class="data-table-header-cell"></div>
         </div>
         <div id="tracker-table-body"></div>
@@ -280,7 +304,7 @@
     </div>
     <div class="slide-panel-footer">
       <button type="button" class="btn btn-text" id="tracker-form-cancel">Cancel</button>
-      <button type="button" class="btn btn-primary" id="tracker-form-save" disabled>Save</button>
+      <button type="button" class="btn btn-primary" id="tracker-form-save" disabled>Create</button>
     </div>
   </div>
 
@@ -298,6 +322,6 @@
   <script src="../../../assets/js/settings-sidebar.js?v=2"></script>
   <script src="../../../assets/js/bento.js?v=3"></script>
   <script src="../../../assets/js/ekara-inline-select.js?v=6"></script>
-  <script src="../../../assets/js/rum-trackers.js?v=22"></script>
+  <script src="../../../assets/js/rum-trackers.js?v=23"></script>
 </body>
 </html>
