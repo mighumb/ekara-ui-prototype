@@ -268,6 +268,31 @@ const THRESHOLD_TOO_HIGH_VS_NEXT = [
   'The value of the second threshold must be lower than the third.',
 ];
 
+const TRACKER_APPLICATION_OPTIONS = [
+  '3615-15_new',
+  '3615-2',
+  '3615-4',
+  "AAN's apps",
+  'AEkara6',
+  'Application cva',
+  'Application',
+];
+
+/** Default metric dropdown in New/Edit tracker (order + labels per product UI capture). */
+const TRACKER_DEFAULT_METRIC_OPTIONS = [
+  { id: 'tti', label: 'Time To Interact' },
+  { id: 'dom-interactive', label: 'DOM interactive' },
+  { id: 'ont', label: 'Overall Navigation Timing' },
+  { id: 'fplt', label: 'Full Page Loading Time' },
+  { id: 'lcp', label: 'LCP' },
+  { id: 'avg-css', label: 'Avg css' },
+  { id: 'avg-dns', label: 'Avg DNS' },
+  { id: 'avg-duration', label: 'Avg Duration' },
+  { id: 'avg-img', label: 'Avg img' },
+  { id: 'avg-link', label: 'Avg link' },
+  { id: 'avg-other', label: 'Avg other' },
+];
+
 const DEFAULT_TRACKERS = [
   {
     id: 1,
@@ -305,7 +330,20 @@ let trackers = [];
 let thresholdsByTracker = {};
 let draftMetrics = [];
 let editingTrackerId = null;
+/** null = New tracker drawer; number = Edit tracker (same pattern as alerts/webhooks `editingId`). */
+let editingFormTrackerId = null;
 let openMenuId = null;
+/** Session-only; reset on full page reload (default = most recent first). */
+let tableSort = { key: null, asc: true };
+
+const SORT_FIRST_CLICK_ASC = {
+  active: false,
+  application: true,
+  name: true,
+  uid: true,
+  ratio: false,
+  scope: true,
+};
 let deleteTargetId = null;
 let savedScrollY = 0;
 let blockIdSeq = 0;
@@ -318,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('[rum-trackers] Invalid METRIC_THRESHOLD_PRESETS:', presetCheck.errors);
   }
   cacheElements();
+  initTrackerFormSelects();
   loadTrackers();
   loadThresholds();
   renderTable();
@@ -337,6 +376,23 @@ function cacheElements() {
   els.panelSubtitle = document.getElementById('panel-subtitle');
   els.metricsContainer = document.getElementById('metrics-container');
   els.btnAddMetric = document.getElementById('btn-add-metric');
+  els.trackerSelectAll = document.getElementById('tracker-select-all');
+  els.formPanel = document.getElementById('tracker-form-panel');
+  els.formTitle = document.getElementById('tracker-form-title');
+  els.formName = document.getElementById('tracker-field-name');
+  els.formDescription = document.getElementById('tracker-field-description');
+  els.formCharCounter = document.getElementById('tracker-char-counter');
+  els.formApplication = document.getElementById('tracker-field-application');
+  els.formScope = document.getElementById('tracker-field-scope');
+  els.formRatio = document.getElementById('tracker-field-ratio');
+  els.formMetric = document.getElementById('tracker-field-metric');
+  els.formSessionReplay = document.getElementById('tracker-field-session-replay');
+  els.formSampling = document.getElementById('tracker-field-sampling');
+  els.formMax24h = document.getElementById('tracker-field-max-24h');
+  els.formSnippetCode = document.getElementById('tracker-snippet-code');
+  els.formSave = document.getElementById('tracker-form-save');
+  els.formNameError = document.getElementById('tracker-error-name');
+  els.formApplicationError = document.getElementById('tracker-error-application');
   els.confirmOverlay = document.getElementById('confirm-overlay');
   els.confirmDialog = document.getElementById('confirm-dialog');
   els.confirmMessage = document.getElementById('confirm-message');
@@ -345,10 +401,44 @@ function cacheElements() {
 }
 
 function bindEvents() {
-  document.getElementById('panel-close').addEventListener('click', closePanel);
-  document.getElementById('btn-cancel').addEventListener('click', closePanel);
+  document.getElementById('panel-close').addEventListener('click', closeSlidePanels);
+  document.getElementById('btn-cancel').addEventListener('click', closeSlidePanels);
   document.getElementById('btn-save').addEventListener('click', saveThresholds);
-  els.overlay.addEventListener('click', closePanel);
+  els.overlay.addEventListener('click', closeSlidePanels);
+  document.getElementById('tracker-form-close')?.addEventListener('click', closeSlidePanels);
+  document.getElementById('tracker-form-cancel')?.addEventListener('click', closeSlidePanels);
+  document.getElementById('btn-add-tracker')?.addEventListener('click', () => openTrackerPanel('create'));
+  document.querySelectorAll('.data-table--trackers .data-table-header-sort').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sortKey;
+      if (!key) return;
+      if (tableSort.key === key) {
+        tableSort.asc = !tableSort.asc;
+      } else {
+        tableSort.key = key;
+        tableSort.asc = SORT_FIRST_CLICK_ASC[key] ?? true;
+      }
+      renderTable();
+    });
+  });
+  els.formSave?.addEventListener('click', saveTrackerForm);
+  els.formName?.addEventListener('input', () => {
+    syncTrackerFormSaveState();
+    if (els.formNameError) els.formNameError.textContent = '';
+  });
+  els.formApplication?.addEventListener('change', () => {
+    syncTrackerFormSaveState();
+    if (els.formApplicationError) els.formApplicationError.textContent = '';
+  });
+  els.formDescription?.addEventListener('input', updateTrackerCharCounter);
+  els.formSessionReplay?.addEventListener('change', () => {
+    if (els.formSessionReplay.checked) {
+      if (!els.formSampling.value.trim()) els.formSampling.value = '1';
+      if (!els.formMax24h.value.trim()) els.formMax24h.value = '100';
+    }
+    syncTrackerSessionReplayFields();
+  });
+  document.getElementById('tracker-snippet-copy')?.addEventListener('click', copyTrackerSnippet);
   els.btnAddMetric.addEventListener('click', addMetricBlock);
 
   if (els.confirmCancel) els.confirmCancel.addEventListener('click', closeConfirm);
@@ -364,6 +454,18 @@ function bindEvents() {
 
   document.addEventListener('click', () => closeAllMenus());
 
+  els.trackerSelectAll?.addEventListener('change', () => {
+    const on = els.trackerSelectAll.checked;
+    els.tableBody.querySelectorAll('.data-table-checkbox').forEach((cb) => {
+      cb.checked = on;
+    });
+    els.trackerSelectAll.indeterminate = false;
+  });
+
+  els.tableBody.addEventListener('change', (e) => {
+    if (e.target.matches('.data-table-checkbox')) syncTrackerSelectAllState();
+  });
+
   window.addEventListener('resize', () => {
     if (els.panel?.classList.contains('open')) updatePanelBodyScroll();
   });
@@ -373,17 +475,17 @@ function loadTrackers() {
   try {
     const raw = localStorage.getItem(TRACKERS_STORAGE_KEY);
     if (!raw) {
-      trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+      trackers = DEFAULT_TRACKERS.map((row) => normalizeTracker({ ...row }));
       return;
     }
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed) || !parsed.length) {
-      trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+      trackers = DEFAULT_TRACKERS.map((row) => normalizeTracker({ ...row }));
       return;
     }
-    trackers = parsed;
+    trackers = parsed.map((row) => normalizeTracker(row));
   } catch {
-    trackers = DEFAULT_TRACKERS.map((row) => ({ ...row }));
+    trackers = DEFAULT_TRACKERS.map((row) => normalizeTracker({ ...row }));
   }
 }
 
@@ -418,6 +520,7 @@ function deleteTracker(id) {
   persistTrackers();
   persistThresholds();
   if (editingTrackerId === id) closePanel();
+  if (editingFormTrackerId === id) closeSlidePanels();
   renderTable();
 }
 
@@ -473,11 +576,82 @@ function trackerStatusIconSvg(active) {
   </svg>`;
 }
 
+function syncTrackerSelectAllState() {
+  const selectAll = els.trackerSelectAll;
+  if (!selectAll) return;
+  const boxes = els.tableBody.querySelectorAll('.data-table-checkbox');
+  if (!boxes.length) {
+    selectAll.checked = false;
+    selectAll.indeterminate = false;
+    return;
+  }
+  const checkedCount = [...boxes].filter((cb) => cb.checked).length;
+  selectAll.checked = checkedCount === boxes.length;
+  selectAll.indeterminate = checkedCount > 0 && checkedCount < boxes.length;
+}
+
 function formatScopeCell(row) {
   const parts = [];
   if (row.scopeRum) parts.push('RUM');
   if (row.scopeBrowserAgent) parts.push('Browser Agent');
   return parts.length ? parts.join(', ') : '—';
+}
+
+function trackerSortKey(row) {
+  return row.updatedAt ?? row.id;
+}
+
+function compareTrackersByRecency(a, b) {
+  const byTime = trackerSortKey(b) - trackerSortKey(a);
+  if (byTime !== 0) return byTime;
+  return b.id - a.id;
+}
+
+function compareTrackersByColumn(a, b, key) {
+  switch (key) {
+    case 'active':
+      return Number(a.active) - Number(b.active);
+    case 'application':
+      return (a.application || '').localeCompare(b.application || '', undefined, { sensitivity: 'base' });
+    case 'name':
+      return (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' });
+    case 'uid':
+      return (a.uid || '').localeCompare(b.uid || '', undefined, { sensitivity: 'base' });
+    case 'ratio':
+      return ratioNumberFromDisplay(a.ratio) - ratioNumberFromDisplay(b.ratio);
+    case 'scope':
+      return formatScopeCell(a).localeCompare(formatScopeCell(b), undefined, { sensitivity: 'base' });
+    default:
+      return 0;
+  }
+}
+
+function getSortedTrackersForDisplay() {
+  const rows = [...trackers];
+  if (!tableSort.key) {
+    rows.sort(compareTrackersByRecency);
+    return rows;
+  }
+  const dir = tableSort.asc ? 1 : -1;
+  rows.sort((a, b) => {
+    const primary = compareTrackersByColumn(a, b, tableSort.key) * dir;
+    if (primary !== 0) return primary;
+    return compareTrackersByRecency(a, b);
+  });
+  return rows;
+}
+
+function syncTableSortHeaders() {
+  document.querySelectorAll('.data-table--trackers .data-table-header-sort').forEach((btn) => {
+    const key = btn.dataset.sortKey;
+    btn.classList.remove('is-sorted', 'is-sorted-asc', 'is-sorted-desc');
+    if (tableSort.key === key) {
+      btn.classList.add('is-sorted', tableSort.asc ? 'is-sorted-asc' : 'is-sorted-desc');
+      btn.setAttribute('aria-sort', tableSort.asc ? 'ascending' : 'descending');
+    } else {
+      btn.setAttribute('aria-sort', 'none');
+    }
+  });
 }
 
 function trackerDropdownMenuHtml(row) {
@@ -492,6 +666,10 @@ function trackerDropdownMenuHtml(row) {
         </div>`;
 
   return `
+          <div class="dropdown-item" data-action="edit" data-id="${row.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </div>
           <div class="dropdown-item" data-action="thresholds" data-id="${row.id}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
             Thresholds
@@ -506,13 +684,15 @@ function trackerDropdownMenuHtml(row) {
 }
 
 function renderTable() {
-  els.tableBody.innerHTML = trackers
+  syncTableSortHeaders();
+  const rows = getSortedTrackersForDisplay();
+  els.tableBody.innerHTML = rows
     .map((row) => {
       const statusClass = row.active ? 'rum-tracker-status--active' : 'rum-tracker-status--inactive';
       const statusLabel = row.active ? 'Active' : 'Inactive';
       const scope = formatScopeCell(row);
       return `
-    <div class="data-table-row" data-tracker-id="${row.id}">
+    <div class="data-table-row" data-id="${row.id}">
       <div class="data-table-cell">
         <input type="checkbox" class="data-table-checkbox" aria-label="Select ${escapeHtml(row.name)}">
       </div>
@@ -551,12 +731,15 @@ function renderTable() {
       const id = parseInt(item.dataset.id, 10);
       const action = item.dataset.action;
       closeAllMenus();
+      if (action === 'edit') openTrackerPanel('edit', id);
       if (action === 'thresholds') openThresholdsDrawer(id);
       if (action === 'delete') confirmDeleteTracker(id);
       if (action === 'enable') setTrackerActive(id, true);
       if (action === 'disable') setTrackerActive(id, false);
     });
   });
+
+  syncTrackerSelectAllState();
 }
 
 function toggleMenu(id) {
@@ -577,9 +760,267 @@ function closeAllMenus() {
   openMenuId = null;
 }
 
+function normalizeTracker(row) {
+  const snippetUid = row.snippetUid || row.uid || 'c841e463-ab72-43ca-add1-aab2ebcf9225';
+  return {
+    description: '',
+    defaultMetricId: 'tti',
+    sessionReplay: false,
+    sampling: '',
+    maxPer24h: '',
+    ...row,
+    snippetUid,
+  };
+}
+
+function getNextTrackerId() {
+  return trackers.reduce((max, row) => Math.max(max, row.id), 0) + 1;
+}
+
+function initTrackerFormSelects() {
+  if (!els.formApplication || !els.formMetric) return;
+  els.formApplication.innerHTML = `<option value="">Application</option>${TRACKER_APPLICATION_OPTIONS.map(
+    (name) => `<option value="${escapeAttr(name)}">${escapeHtml(name)}</option>`,
+  ).join('')}`;
+  els.formMetric.innerHTML = TRACKER_DEFAULT_METRIC_OPTIONS.map(
+    (m) => `<option value="${escapeAttr(m.id)}">${escapeHtml(m.label)}</option>`,
+  ).join('');
+  const panel = document.getElementById('tracker-form-panel');
+  if (panel) {
+    panel.querySelectorAll('[data-ekara-inline-select]').forEach((wrap) => {
+      window.EkaraInlineSelect?.destroy(wrap);
+    });
+    window.EkaraInlineSelect?.scan(panel);
+  }
+}
+
+function ensureApplicationOption(value) {
+  if (!value || !els.formApplication) return;
+  const exists = [...els.formApplication.options].some((o) => o.value === value);
+  if (!exists) {
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = value;
+    els.formApplication.appendChild(opt);
+  }
+}
+
+function scopeValueFromTracker(tracker) {
+  if (tracker.scopeBrowserAgent && !tracker.scopeRum) return 'browser-agent';
+  return 'rum';
+}
+
+function applyScopeValueToTracker(tracker, scopeValue) {
+  if (scopeValue === 'browser-agent') {
+    tracker.scopeRum = false;
+    tracker.scopeBrowserAgent = true;
+  } else {
+    tracker.scopeRum = true;
+    tracker.scopeBrowserAgent = false;
+  }
+}
+
+function ratioNumberFromDisplay(ratio) {
+  const n = parseInt(String(ratio).replace(/%/g, ''), 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function formatRatioDisplay(value) {
+  const n = parseInt(String(value).replace(/%/g, ''), 10);
+  return Number.isFinite(n) ? String(n) : '10';
+}
+
+function formatRatioTableCell(value) {
+  const n = ratioNumberFromDisplay(value);
+  return `${n}%`;
+}
+
+function generateTrackerSnippetUid() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'c841e463-ab72-43ca-add1-aab2ebcf9225';
+}
+
+function buildTrackerSnippet(uid) {
+  return `<script type="text/javascript"> var ekaraRumConf = { trackerUID: "${uid}" }</script> <script async src="https://ekararum.ip-label.net/ekararum.js"></script>`;
+}
+
+function highlightTrackerSnippet(snippet) {
+  const escaped = escapeHtml(snippet);
+  return escaped
+    .replace(/(&lt;script[^&]*&gt;)/g, '<span class="rum-tracker-snippet-tag">$1</span>')
+    .replace(/(&lt;\/script&gt;)/g, '<span class="rum-tracker-snippet-tag">$1</span>')
+    .replace(/\bvar\b/g, '<span class="rum-tracker-snippet-kw">var</span>')
+    .replace(/(trackerUID:\s*)(&quot;[^&]*&quot;)/g, '$1<span class="rum-tracker-snippet-str">$2</span>');
+}
+
+function updateTrackerSnippetPreview(uid) {
+  if (!els.formSnippetCode) return;
+  const plain = buildTrackerSnippet(uid);
+  els.formSnippetCode.dataset.plainSnippet = plain;
+  els.formSnippetCode.innerHTML = highlightTrackerSnippet(plain);
+}
+
+function updateTrackerCharCounter() {
+  if (!els.formCharCounter || !els.formDescription) return;
+  const len = els.formDescription.value.length;
+  els.formCharCounter.textContent = `${len} / 250`;
+}
+
+function syncTrackerSessionReplayFields() {
+  const on = Boolean(els.formSessionReplay?.checked);
+  if (els.formSampling) els.formSampling.disabled = !on;
+  if (els.formMax24h) els.formMax24h.disabled = !on;
+}
+
+function syncTrackerFormSaveState() {
+  if (!els.formSave || !els.formName) return;
+  const ok = Boolean(els.formName.value.trim() && els.formApplication?.value);
+  els.formSave.disabled = !ok;
+  els.formSave.textContent = editingFormTrackerId != null ? 'Save' : 'Create';
+}
+
+function refreshTrackerFormInlineSelects() {
+  [els.formApplication, els.formMetric, els.formScope].forEach((selectEl) => {
+    const wrap = selectEl?.closest('[data-ekara-inline-select]');
+    window.EkaraInlineSelect?.destroy(wrap);
+  });
+}
+
+function populateTrackerForm(tracker) {
+  const row = normalizeTracker(tracker);
+  refreshTrackerFormInlineSelects();
+  ensureApplicationOption(row.application);
+  els.formApplication.value = row.application || '';
+  els.formScope.value = scopeValueFromTracker(row);
+  els.formName.value = row.name;
+  els.formDescription.value = row.description || '';
+  els.formRatio.value = formatRatioDisplay(row.ratio);
+  els.formMetric.value = row.defaultMetricId || 'tti';
+  els.formSessionReplay.checked = Boolean(row.sessionReplay);
+  els.formSampling.value = row.sampling || '';
+  els.formMax24h.value = row.maxPer24h || '';
+  syncTrackerSessionReplayFields();
+  updateTrackerCharCounter();
+  updateTrackerSnippetPreview(row.snippetUid);
+  if (els.formApplicationError) els.formApplicationError.textContent = '';
+  if (els.formNameError) els.formNameError.textContent = '';
+  window.EkaraInlineSelect?.scan(els.formPanel);
+  syncTrackerFormSaveState();
+}
+
+function resetTrackerFormForCreate() {
+  const draftUid = generateTrackerSnippetUid();
+  populateTrackerForm({
+    id: 0,
+    application: '',
+    name: '',
+    description: '',
+    ratio: '10',
+    defaultMetricId: 'tti',
+    sessionReplay: false,
+    sampling: '',
+    maxPer24h: '',
+    snippetUid: draftUid,
+    uid: draftUid,
+    scopeRum: true,
+    scopeBrowserAgent: false,
+    active: true,
+  });
+  if (els.formNameError) els.formNameError.textContent = '';
+}
+
+function openTrackerPanel(mode, trackerId) {
+  closeSlidePanels();
+  editingFormTrackerId = mode === 'edit' ? trackerId : null;
+  if (mode === 'edit') {
+    const tracker = trackers.find((t) => t.id === trackerId);
+    if (!tracker) return;
+    if (els.formTitle) els.formTitle.textContent = 'Edit tracker';
+    populateTrackerForm(tracker);
+  } else {
+    if (els.formTitle) els.formTitle.textContent = 'New tracker';
+    resetTrackerFormForCreate();
+  }
+  els.overlay.classList.add('open');
+  els.formPanel?.classList.add('open');
+  lockPageScroll();
+  syncTrackerFormSaveState();
+  requestAnimationFrame(() => els.formName?.focus());
+}
+
+function readTrackerFormIntoDraft() {
+  const name = els.formName.value.trim();
+  const existing = editingFormTrackerId != null ? trackers.find((t) => t.id === editingFormTrackerId) : null;
+  const snippetUid = existing?.snippetUid || existing?.uid || generateTrackerSnippetUid();
+  return {
+    application: els.formApplication.value,
+    name,
+    description: els.formDescription.value.trim(),
+    ratio: formatRatioTableCell(els.formRatio.value),
+    defaultMetricId: els.formMetric.value,
+    sessionReplay: els.formSessionReplay.checked,
+    sampling: els.formSampling.value.trim(),
+    maxPer24h: els.formMax24h.value.trim(),
+    snippetUid,
+  };
+}
+
+function saveTrackerForm() {
+  const draft = readTrackerFormIntoDraft();
+  let valid = true;
+  if (!els.formApplication?.value) {
+    if (els.formApplicationError) els.formApplicationError.textContent = 'Application is required.';
+    valid = false;
+  }
+  if (!draft.name) {
+    if (els.formNameError) els.formNameError.textContent = 'Tracker name is required.';
+    valid = false;
+  }
+  if (!valid) {
+    if (!els.formApplication?.value) els.formApplication?.focus();
+    else els.formName?.focus();
+    return;
+  }
+  const now = Date.now();
+  if (editingFormTrackerId != null) {
+    const row = trackers.find((t) => t.id === editingFormTrackerId);
+    if (!row) return;
+    Object.assign(row, draft, { updatedAt: now });
+    applyScopeValueToTracker(row, els.formScope.value);
+    row.uid = row.snippetUid;
+  } else {
+    const row = normalizeTracker({
+      id: getNextTrackerId(),
+      active: true,
+      updatedAt: now,
+      ...draft,
+    });
+    applyScopeValueToTracker(row, els.formScope.value);
+    row.uid = row.snippetUid;
+    trackers.unshift(row);
+  }
+  persistTrackers();
+  renderTable();
+  closeSlidePanels();
+  editingFormTrackerId = null;
+}
+
+async function copyTrackerSnippet() {
+  const text = els.formSnippetCode?.dataset.plainSnippet || els.formSnippetCode?.textContent;
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    /* prototype: clipboard may be blocked */
+  }
+}
+
 function openThresholdsDrawer(trackerId) {
   const tracker = trackers.find((t) => t.id === trackerId);
   if (!tracker) return;
+  closeSlidePanels();
   editingTrackerId = trackerId;
   draftMetrics = defaultMetricsForTracker(trackerId);
   els.panelTitle.textContent = `${tracker.name} – RUM threshold`;
@@ -592,13 +1033,19 @@ function openThresholdsDrawer(trackerId) {
   updatePanelBodyScroll();
 }
 
-function closePanel() {
+function closeSlidePanels() {
   els.overlay.classList.remove('open');
   els.panel.classList.remove('open');
+  els.formPanel?.classList.remove('open');
   if (els.panelBody) els.panelBody.classList.remove('can-scroll');
   unlockPageScroll();
   editingTrackerId = null;
   draftMetrics = [];
+  editingFormTrackerId = null;
+}
+
+function closePanel() {
+  closeSlidePanels();
 }
 
 function saveThresholds() {
@@ -1029,15 +1476,7 @@ function refreshAllMetricSelects() {
 }
 
 function destroyInlineSelect(wrap) {
-  if (!wrap) return;
-  const select = wrap.querySelector('select');
-  if (!select) return;
-  wrap.querySelector('.ekara-inline-select-control')?.remove();
-  wrap.querySelector('.ekara-inline-select-menu')?.remove();
-  select.classList.remove('hidden');
-  select.removeAttribute('tabindex');
-  select.removeAttribute('aria-hidden');
-  delete wrap.dataset.ekaraInlineSelectReady;
+  window.EkaraInlineSelect?.destroy(wrap);
 }
 
 function parseThresholdNumber(raw) {

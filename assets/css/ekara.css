@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=136');
+@import url('tokens.css?v=146');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -727,9 +727,20 @@ span.form-label {
   border-radius: var(--radius);
   color: var(--text-neutral);
   background: var(--surface-default);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.form-input:hover:not(:focus):not(:disabled),
+.form-textarea:hover:not(:focus):not(:disabled) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
+}
+
+.form-input,
+.form-textarea {
+  cursor: text;
 }
 
 .form-select {
@@ -773,7 +784,8 @@ span.form-label {
 }
 
 .form-select:disabled,
-.form-input:disabled {
+.form-input:disabled,
+.form-textarea:disabled {
   background-color: var(--input-disabled-bg);
   color: var(--input-disabled-text);
   -webkit-text-fill-color: var(--input-disabled-text);
@@ -787,6 +799,59 @@ span.form-label {
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 12px;
+}
+
+/* Numeric/text input with in-field suffix (e.g. Ratio %, Sampling %) */
+.form-input-affix {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--radius);
+  background: var(--surface-default);
+  transition: border-color 0.15s, background-color 0.15s;
+  box-sizing: border-box;
+  cursor: text;
+}
+
+.form-input-affix:hover:not(:focus-within):not(:has(.form-input:disabled)) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
+}
+
+.form-input-affix:focus-within {
+  border-color: var(--input-focus-border);
+  background-color: var(--surface-default);
+}
+
+.form-input-affix .form-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding-right: 4px;
+}
+
+.form-input-affix .form-input:focus {
+  border-color: transparent;
+}
+
+.form-input-affix:has(.form-input:disabled) {
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+  cursor: not-allowed;
+}
+
+.form-input-affix-suffix {
+  flex-shrink: 0;
+  padding-right: 12px;
+  font-size: var(--font-size-body);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.form-input-affix:has(.form-input:disabled) .form-input-affix-suffix {
+  color: var(--input-disabled-text);
 }
 
 .form-error {
@@ -830,17 +895,77 @@ span.form-label {
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
   background: var(--surface-default);
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 
-.form-select-wrap[data-ekara-inline-select]:focus-within {
+.form-select-wrap[data-ekara-inline-select]:hover:not(:focus-within):not(:has(select:disabled)) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
+}
+
+.form-select-wrap[data-ekara-inline-select]:focus-within,
+.form-select-wrap[data-ekara-inline-select]:has([aria-expanded='true']) {
   border-color: var(--input-focus-border);
+  background-color: var(--surface-default);
+}
+
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-control {
+  width: 100%;
 }
 
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger {
+  width: 100%;
   padding: 8px 12px;
   min-height: 38px;
   box-sizing: border-box;
+  cursor: pointer;
+}
+
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger--searchable {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-trigger--searchable .ekara-inline-select-input {
+  align-self: stretch;
+  min-height: 22px;
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable]:not(:focus-within) .ekara-inline-select-trigger--searchable,
+.form-select-wrap[data-ekara-inline-select-searchable]:not(:focus-within) .ekara-inline-select-input {
+  cursor: pointer;
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable]:focus-within .ekara-inline-select-input {
+  cursor: text;
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable] .ekara-inline-select-chevron {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.ekara-inline-select-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  color: var(--text-neutral);
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+.ekara-inline-select-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.ekara-inline-select-input:disabled {
+  cursor: not-allowed;
+  color: var(--input-disabled-text);
 }
 
 .form-select-wrap[data-ekara-inline-select] select.form-select.hidden {
@@ -865,9 +990,10 @@ span.form-label {
   width: 100%;
 }
 
+.form-select-wrap[data-ekara-inline-select] .ekara-inline-select-menu,
 .form-select-wrap--mapping .ekara-inline-select-menu,
 .form-select-wrap--mapping-value .ekara-inline-select-menu {
-  max-height: min(280px, 50vh);
+  max-height: min(240px, 40vh);
   overflow-y: auto;
 }
 
@@ -1494,13 +1620,19 @@ span.form-label {
   position: relative;
   cursor: pointer;
   box-sizing: border-box;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.ekara-picker-field:hover:not(:focus):not([aria-expanded='true']):not(:disabled) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
 }
 
 .ekara-picker-field:focus,
 .ekara-picker-field[aria-expanded='true'] {
   outline: none;
   border-color: var(--input-focus-border);
+  background-color: var(--surface-default);
 }
 
 .ekara-picker-field:has(.ekara-chip) {
@@ -1710,6 +1842,12 @@ span.form-label {
   background: var(--card-bg);
   border: 1px solid var(--input-border-color);
   border-radius: var(--radius);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.measure-filter-inline:not(.measure-filter-inline--static):hover:not(:focus-within):not(:has([aria-expanded='true'])) {
+  border-color: var(--input-hover-border);
+  background-color: var(--surface-hover-neutral);
 }
 
 .measure-filter-inline--static {
@@ -1723,6 +1861,7 @@ span.form-label {
 .measure-filter-inline:not(.measure-filter-inline--static):has([aria-expanded='true']) {
   outline: none;
   border-color: var(--input-focus-border);
+  background-color: var(--card-bg);
 }
 
 .measure-filter-prefix {
@@ -2659,15 +2798,16 @@ span.form-label {
 }
 
 .data-table--trackers {
+  /* Same balanced fr pattern as .data-table--alerts — avoid one wide UID column */
   grid-template-columns:
-    52px
+    56px
     88px
-    minmax(108px, 1.15fr)
-    minmax(80px, 0.9fr)
-    minmax(168px, 1.55fr)
-    72px
-    minmax(112px, 1fr)
-    52px;
+    minmax(100px, 1fr)
+    minmax(100px, 1fr)
+    minmax(120px, 1.05fr)
+    minmax(64px, 0.55fr)
+    minmax(100px, 0.95fr)
+    48px;
 }
 
 .data-table--trackers .data-table-header-cell:nth-child(1),
@@ -2675,6 +2815,8 @@ span.form-label {
   padding-left: 16px;
   padding-right: 6px;
   overflow: visible;
+  display: flex;
+  align-items: center;
 }
 
 .data-table--trackers .data-table-header-cell:nth-child(2),
@@ -2697,6 +2839,86 @@ span.form-label {
   margin: 0;
   flex-shrink: 0;
   accent-color: var(--primary);
+}
+
+#tracker-form-panel .form-row-inline-2,
+#tracker-form-panel .form-row-inline-3 {
+  gap: 16px;
+}
+
+.rum-tracker-session-replay-row {
+  grid-template-columns: minmax(7.5rem, auto) 1fr 1fr;
+}
+
+.rum-tracker-session-replay-row .rum-tracker-session-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.rum-tracker-snippet-section .form-label {
+  text-transform: uppercase;
+  letter-spacing: var(--label-letter-spacing);
+  font-size: var(--font-size-12);
+}
+
+.rum-tracker-snippet {
+  margin-top: 8px;
+  background: var(--payload-preview-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.rum-tracker-snippet-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-muted);
+}
+
+.rum-tracker-snippet-lang {
+  font-size: var(--font-size-12);
+  color: var(--text-secondary);
+}
+
+.rum-tracker-snippet-code {
+  margin: 0;
+  padding: 12px 16px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: var(--font-size-12);
+  color: var(--text-neutral);
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.6;
+  max-height: 120px;
+  overflow: auto;
+}
+
+.rum-tracker-snippet-tag {
+  color: var(--primary);
+}
+
+.rum-tracker-snippet-kw {
+  color: var(--primary);
+}
+
+.rum-tracker-snippet-str {
+  color: var(--danger);
+}
+
+.rum-tracker-snippet-help {
+  margin: 10px 0 0;
+  font-size: var(--font-size-12);
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.rum-tracker-snippet-wiki {
+  color: var(--link-color);
+  text-decoration: underline;
 }
 
 .rum-tracker-status {

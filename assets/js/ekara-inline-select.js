@@ -1,16 +1,39 @@
 /**
  * Ekara inline select — DS listbox (replaces native select popup).
  * Markup: [data-ekara-inline-select] > select — e.g. `.measure-filter-inline`, `.form-select-wrap`.
+ * Optional: `data-ekara-inline-select-searchable` — type-to-filter combobox (tracker Application / Default metric).
  */
 (function () {
   function closeAllExcept(exceptRoot) {
     document.querySelectorAll('[data-ekara-inline-select]').forEach((root) => {
       if (root === exceptRoot) return;
       const menu = root.querySelector('.ekara-inline-select-menu');
-      const trigger = root.querySelector('.ekara-inline-select-trigger');
       menu?.classList.add('hidden');
-      trigger?.setAttribute('aria-expanded', 'false');
+      setExpanded(root, false);
+      const instance = root._ekaraInlineSelect;
+      if (instance?.searchable) instance.syncDisplayFromSelect();
     });
+  }
+
+  function setExpanded(root, open) {
+    const trigger = root.querySelector('.ekara-inline-select-trigger');
+    const searchInput = root.querySelector('.ekara-inline-select-input');
+    const el = searchInput || trigger;
+    el?.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function destroyRoot(root) {
+    if (!root || root.dataset.ekaraInlineSelectReady !== 'true') return;
+    const select = root.querySelector('select');
+    root.querySelector('.ekara-inline-select-control')?.remove();
+    root.querySelector('.ekara-inline-select-menu')?.remove();
+    if (select) {
+      select.classList.remove('hidden');
+      select.removeAttribute('tabindex');
+      select.removeAttribute('aria-hidden');
+    }
+    delete root._ekaraInlineSelect;
+    delete root.dataset.ekaraInlineSelectReady;
   }
 
   function initRoot(root) {
@@ -19,21 +42,40 @@
     if (!select) return;
     root.dataset.ekaraInlineSelectReady = 'true';
 
+    const searchable = root.hasAttribute('data-ekara-inline-select-searchable');
     const control = document.createElement('div');
     control.className = 'ekara-inline-select-control';
 
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'ekara-inline-select-trigger';
-    trigger.setAttribute('aria-haspopup', 'listbox');
-    trigger.setAttribute('aria-expanded', 'false');
-    if (select.id) {
-      trigger.setAttribute('aria-labelledby', `${select.id}-label`);
-    }
+    let trigger;
+    let valueEl;
+    let searchInput = null;
 
-    const valueEl = document.createElement('span');
-    valueEl.className = 'ekara-inline-select-value';
-    valueEl.id = select.id ? `${select.id}-label` : '';
+    if (searchable) {
+      trigger = document.createElement('div');
+      trigger.className = 'ekara-inline-select-trigger ekara-inline-select-trigger--searchable';
+      searchInput = document.createElement('input');
+      searchInput.type = 'text';
+      searchInput.className = 'ekara-inline-select-input';
+      searchInput.setAttribute('autocomplete', 'off');
+      searchInput.setAttribute('role', 'combobox');
+      searchInput.setAttribute('aria-haspopup', 'listbox');
+      searchInput.setAttribute('aria-expanded', 'false');
+      const labelledBy = select.getAttribute('aria-labelledby');
+      if (labelledBy) searchInput.setAttribute('aria-labelledby', labelledBy);
+      valueEl = searchInput;
+    } else {
+      trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'ekara-inline-select-trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (select.id) {
+        trigger.setAttribute('aria-labelledby', `${select.id}-label`);
+      }
+      valueEl = document.createElement('span');
+      valueEl.className = 'ekara-inline-select-value';
+      valueEl.id = select.id ? `${select.id}-label` : '';
+    }
 
     const chevron = document.createElement('span');
     chevron.className = 'ekara-inline-select-chevron';
@@ -54,6 +96,9 @@
       btn.setAttribute('role', 'option');
       btn.dataset.value = opt.value;
       btn.textContent = opt.textContent || opt.value;
+      if (searchable) {
+        btn.addEventListener('mousedown', (e) => e.preventDefault());
+      }
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         select.value = opt.value;
@@ -65,10 +110,47 @@
       menu.appendChild(item);
     });
 
+    let menuOpen = false;
+
+    function placeholderText() {
+      const empty = [...select.options].find((o) => o.value === '');
+      return empty ? empty.textContent : '';
+    }
+
+    function syncDisplayFromSelect() {
+      if (!searchable || !searchInput) return;
+      const opt = select.options[select.selectedIndex];
+      if (select.value && opt) {
+        searchInput.value = opt.textContent;
+      } else {
+        searchInput.value = '';
+      }
+      searchInput.placeholder = placeholderText();
+    }
+
+    function filterOptions(query) {
+      const q = String(query || '').trim().toLowerCase();
+      menu.querySelectorAll('.ekara-inline-select-option').forEach((btn) => {
+        const item = btn.closest('li');
+        if (!item) return;
+        if (!q) {
+          item.hidden = false;
+          return;
+        }
+        const text = (btn.textContent || '').toLowerCase();
+        item.hidden = !text.includes(q);
+      });
+    }
+
     function syncUI() {
       const opt = select.options[select.selectedIndex];
-      valueEl.textContent = opt ? opt.textContent : '';
-      trigger.disabled = select.disabled;
+      if (searchable) {
+        syncDisplayFromSelect();
+        if (searchInput) searchInput.disabled = select.disabled;
+      } else {
+        valueEl.textContent = opt ? opt.textContent : '';
+        trigger.disabled = select.disabled;
+      }
       menu.querySelectorAll('.ekara-inline-select-option').forEach((btn) => {
         const selected = btn.dataset.value === select.value;
         btn.classList.toggle('is-selected', selected);
@@ -78,21 +160,68 @@
 
     function openMenu() {
       closeAllExcept(root);
+      menuOpen = true;
       menu.classList.remove('hidden');
-      trigger.setAttribute('aria-expanded', 'true');
+      setExpanded(root, true);
+      if (searchable && searchInput) {
+        // Show full list on open (product UI); typing applies filter via input handler.
+        filterOptions('');
+        searchInput.focus();
+      }
     }
 
     function closeMenu() {
+      menuOpen = false;
       menu.classList.add('hidden');
-      trigger.setAttribute('aria-expanded', 'false');
+      setExpanded(root, false);
+      if (searchable) syncDisplayFromSelect();
+      filterOptions('');
     }
 
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (select.disabled) return;
-      if (menu.classList.contains('hidden')) openMenu();
-      else closeMenu();
-    });
+    if (searchable && searchInput) {
+      searchInput.addEventListener('focus', () => {
+        if (select.disabled) return;
+        openMenu();
+      });
+      searchInput.addEventListener('input', () => {
+        if (select.disabled) return;
+        if (menu.classList.contains('hidden')) openMenu();
+        filterOptions(searchInput.value);
+      });
+      searchInput.addEventListener('blur', (e) => {
+        const next = e.relatedTarget;
+        if (next && root.contains(next)) return;
+        window.setTimeout(() => {
+          if (!root.contains(document.activeElement)) closeMenu();
+        }, 120);
+      });
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (select.disabled) return;
+        if (e.target.closest('.ekara-inline-select-chevron')) return;
+        if (menu.classList.contains('hidden')) {
+          openMenu();
+          searchInput.focus();
+        } else if (e.target !== searchInput) {
+          closeMenu();
+        }
+      });
+      chevron.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        if (select.disabled) return;
+        if (menu.classList.contains('hidden')) {
+          openMenu();
+          searchInput.focus();
+        } else closeMenu();
+      });
+    } else {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (select.disabled) return;
+        if (menu.classList.contains('hidden')) openMenu();
+        else closeMenu();
+      });
+    }
 
     select.classList.add('hidden');
     select.setAttribute('tabindex', '-1');
@@ -103,6 +232,7 @@
     root.appendChild(menu);
 
     select.addEventListener('change', syncUI);
+    root._ekaraInlineSelect = { searchable, syncDisplayFromSelect };
     syncUI();
   }
 
@@ -137,5 +267,5 @@
     root.querySelectorAll('[data-ekara-inline-select]').forEach(initRoot);
   }
 
-  window.EkaraInlineSelect = { init: initRoot, wrapFormSelect, scan };
+  window.EkaraInlineSelect = { init: initRoot, wrapFormSelect, scan, destroy: destroyRoot };
 })();
