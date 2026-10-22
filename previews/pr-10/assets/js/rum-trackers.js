@@ -330,9 +330,20 @@ let trackers = [];
 let thresholdsByTracker = {};
 let draftMetrics = [];
 let editingTrackerId = null;
-let trackerFormMode = null;
-let trackerFormEditingId = null;
+/** null = New tracker drawer; number = Edit tracker (same pattern as alerts/webhooks `editingId`). */
+let editingFormTrackerId = null;
 let openMenuId = null;
+/** Session-only; reset on full page reload (default = most recent first). */
+let tableSort = { key: null, asc: true };
+
+const SORT_FIRST_CLICK_ASC = {
+  active: false,
+  application: true,
+  name: true,
+  uid: true,
+  ratio: false,
+  scope: true,
+};
 let deleteTargetId = null;
 let savedScrollY = 0;
 let blockIdSeq = 0;
@@ -396,7 +407,20 @@ function bindEvents() {
   els.overlay.addEventListener('click', closeSlidePanels);
   document.getElementById('tracker-form-close')?.addEventListener('click', closeSlidePanels);
   document.getElementById('tracker-form-cancel')?.addEventListener('click', closeSlidePanels);
-  document.getElementById('btn-add-tracker')?.addEventListener('click', () => openTrackerFormDrawer('create'));
+  document.getElementById('btn-add-tracker')?.addEventListener('click', () => openTrackerPanel('create'));
+  document.querySelectorAll('.data-table--trackers .data-table-header-sort').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sortKey;
+      if (!key) return;
+      if (tableSort.key === key) {
+        tableSort.asc = !tableSort.asc;
+      } else {
+        tableSort.key = key;
+        tableSort.asc = SORT_FIRST_CLICK_ASC[key] ?? true;
+      }
+      renderTable();
+    });
+  });
   els.formSave?.addEventListener('click', saveTrackerForm);
   els.formName?.addEventListener('input', () => {
     syncTrackerFormSaveState();
@@ -496,6 +520,7 @@ function deleteTracker(id) {
   persistTrackers();
   persistThresholds();
   if (editingTrackerId === id) closePanel();
+  if (editingFormTrackerId === id) closeSlidePanels();
   renderTable();
 }
 
@@ -572,6 +597,63 @@ function formatScopeCell(row) {
   return parts.length ? parts.join(', ') : '—';
 }
 
+function trackerSortKey(row) {
+  return row.updatedAt ?? row.id;
+}
+
+function compareTrackersByRecency(a, b) {
+  const byTime = trackerSortKey(b) - trackerSortKey(a);
+  if (byTime !== 0) return byTime;
+  return b.id - a.id;
+}
+
+function compareTrackersByColumn(a, b, key) {
+  switch (key) {
+    case 'active':
+      return Number(a.active) - Number(b.active);
+    case 'application':
+      return (a.application || '').localeCompare(b.application || '', undefined, { sensitivity: 'base' });
+    case 'name':
+      return (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' });
+    case 'uid':
+      return (a.uid || '').localeCompare(b.uid || '', undefined, { sensitivity: 'base' });
+    case 'ratio':
+      return ratioNumberFromDisplay(a.ratio) - ratioNumberFromDisplay(b.ratio);
+    case 'scope':
+      return formatScopeCell(a).localeCompare(formatScopeCell(b), undefined, { sensitivity: 'base' });
+    default:
+      return 0;
+  }
+}
+
+function getSortedTrackersForDisplay() {
+  const rows = [...trackers];
+  if (!tableSort.key) {
+    rows.sort(compareTrackersByRecency);
+    return rows;
+  }
+  const dir = tableSort.asc ? 1 : -1;
+  rows.sort((a, b) => {
+    const primary = compareTrackersByColumn(a, b, tableSort.key) * dir;
+    if (primary !== 0) return primary;
+    return compareTrackersByRecency(a, b);
+  });
+  return rows;
+}
+
+function syncTableSortHeaders() {
+  document.querySelectorAll('.data-table--trackers .data-table-header-sort').forEach((btn) => {
+    const key = btn.dataset.sortKey;
+    btn.classList.remove('is-sorted', 'is-sorted-asc', 'is-sorted-desc');
+    if (tableSort.key === key) {
+      btn.classList.add('is-sorted', tableSort.asc ? 'is-sorted-asc' : 'is-sorted-desc');
+      btn.setAttribute('aria-sort', tableSort.asc ? 'ascending' : 'descending');
+    } else {
+      btn.setAttribute('aria-sort', 'none');
+    }
+  });
+}
+
 function trackerDropdownMenuHtml(row) {
   const statusToggle = row.active
     ? `<div class="dropdown-item" data-action="disable" data-id="${row.id}">
@@ -602,13 +684,15 @@ function trackerDropdownMenuHtml(row) {
 }
 
 function renderTable() {
-  els.tableBody.innerHTML = trackers
+  syncTableSortHeaders();
+  const rows = getSortedTrackersForDisplay();
+  els.tableBody.innerHTML = rows
     .map((row) => {
       const statusClass = row.active ? 'rum-tracker-status--active' : 'rum-tracker-status--inactive';
       const statusLabel = row.active ? 'Active' : 'Inactive';
       const scope = formatScopeCell(row);
       return `
-    <div class="data-table-row" data-tracker-id="${row.id}">
+    <div class="data-table-row" data-id="${row.id}">
       <div class="data-table-cell">
         <input type="checkbox" class="data-table-checkbox" aria-label="Select ${escapeHtml(row.name)}">
       </div>
@@ -647,7 +731,7 @@ function renderTable() {
       const id = parseInt(item.dataset.id, 10);
       const action = item.dataset.action;
       closeAllMenus();
-      if (action === 'edit') openTrackerFormDrawer('edit', id);
+      if (action === 'edit') openTrackerPanel('edit', id);
       if (action === 'thresholds') openThresholdsDrawer(id);
       if (action === 'delete') confirmDeleteTracker(id);
       if (action === 'enable') setTrackerActive(id, true);
@@ -794,6 +878,7 @@ function syncTrackerFormSaveState() {
   if (!els.formSave || !els.formName) return;
   const ok = Boolean(els.formName.value.trim() && els.formApplication?.value);
   els.formSave.disabled = !ok;
+  els.formSave.textContent = editingFormTrackerId != null ? 'Save' : 'Create';
 }
 
 function refreshTrackerFormInlineSelects() {
@@ -846,10 +931,9 @@ function resetTrackerFormForCreate() {
   if (els.formNameError) els.formNameError.textContent = '';
 }
 
-function openTrackerFormDrawer(mode, trackerId) {
+function openTrackerPanel(mode, trackerId) {
   closeSlidePanels();
-  trackerFormMode = mode;
-  trackerFormEditingId = mode === 'edit' ? trackerId : null;
+  editingFormTrackerId = mode === 'edit' ? trackerId : null;
   if (mode === 'edit') {
     const tracker = trackers.find((t) => t.id === trackerId);
     if (!tracker) return;
@@ -862,12 +946,13 @@ function openTrackerFormDrawer(mode, trackerId) {
   els.overlay.classList.add('open');
   els.formPanel?.classList.add('open');
   lockPageScroll();
+  syncTrackerFormSaveState();
   requestAnimationFrame(() => els.formName?.focus());
 }
 
 function readTrackerFormIntoDraft() {
   const name = els.formName.value.trim();
-  const existing = trackerFormMode === 'edit' ? trackers.find((t) => t.id === trackerFormEditingId) : null;
+  const existing = editingFormTrackerId != null ? trackers.find((t) => t.id === editingFormTrackerId) : null;
   const snippetUid = existing?.snippetUid || existing?.uid || generateTrackerSnippetUid();
   return {
     application: els.formApplication.value,
@@ -898,27 +983,28 @@ function saveTrackerForm() {
     else els.formName?.focus();
     return;
   }
-  if (trackerFormMode === 'edit' && trackerFormEditingId != null) {
-    const row = trackers.find((t) => t.id === trackerFormEditingId);
+  const now = Date.now();
+  if (editingFormTrackerId != null) {
+    const row = trackers.find((t) => t.id === editingFormTrackerId);
     if (!row) return;
-    Object.assign(row, draft);
+    Object.assign(row, draft, { updatedAt: now });
     applyScopeValueToTracker(row, els.formScope.value);
     row.uid = row.snippetUid;
   } else {
     const row = normalizeTracker({
       id: getNextTrackerId(),
       active: true,
+      updatedAt: now,
       ...draft,
     });
     applyScopeValueToTracker(row, els.formScope.value);
     row.uid = row.snippetUid;
-    trackers.push(row);
+    trackers.unshift(row);
   }
   persistTrackers();
   renderTable();
   closeSlidePanels();
-  trackerFormMode = null;
-  trackerFormEditingId = null;
+  editingFormTrackerId = null;
 }
 
 async function copyTrackerSnippet() {
@@ -955,8 +1041,7 @@ function closeSlidePanels() {
   unlockPageScroll();
   editingTrackerId = null;
   draftMetrics = [];
-  trackerFormMode = null;
-  trackerFormEditingId = null;
+  editingFormTrackerId = null;
 }
 
 function closePanel() {
