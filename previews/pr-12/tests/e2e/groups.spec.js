@@ -85,6 +85,8 @@ test.describe('Management — Groups (DFY-24465)', () => {
       await profileWrap.locator('.ekara-inline-select-trigger').click();
       await profileWrap.locator('.ekara-inline-select-option', { hasText: profile }).click();
       await expect(page.locator('#field-workspaces')).toBeDisabled();
+      const workspaceTrigger = page.locator('[data-ekara-inline-select]:has(#field-workspaces) .ekara-inline-select-trigger');
+      await expect(workspaceTrigger).toHaveCSS('cursor', 'not-allowed');
       const options = await page.locator('#field-workspaces option').allTextContents();
       expect(options.map((t) => t.trim())).toEqual(['You have access to all workspaces']);
       await expect(page.locator('#field-workspaces')).toHaveValue('__all__');
