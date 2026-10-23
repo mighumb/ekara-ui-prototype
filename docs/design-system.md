@@ -50,10 +50,10 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Text button | `.btn-text` | `--primary` text; hover `--surface-hover-action` |
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
-| Text input | `.form-input`, `.form-textarea` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` |
+| Text input | `.form-input`, `.form-textarea` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` (no hover; `cursor: not-allowed`, not pointer) |
 | Read-only field (no dropdown) | `.form-input.form-input--disabled-static` | Disabled input tokens (e.g. global Applications scope) |
 | Date range | `.ekara-date-range-picker` + `ekara-date-range-picker.js` | Display format **`DD/MM/YYYY - DD/MM/YYYY`** (same on every page); presets + dual month grid; range `--date-range-selection-bg`, endpoints `--primary` / `--text-on-primary`; include script after `ekara.css` |
-| Dropdown / select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | DS listbox only — no visible native `<select>` popup. Hidden `<select>` holds value. **Measures:** `.measure-filter-inline`. **Forms:** `.form-select-wrap` + `.form-select`. Dynamic rows: `EkaraInlineSelect.wrapFormSelect(select)`. |
+| Dropdown / select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | DS listbox only — no visible native `<select>` popup. Hidden `<select>` holds value. **Measures:** `.measure-filter-inline`. **Forms:** `.form-select-wrap` + `.form-select`. Dynamic rows: `EkaraInlineSelect.wrapFormSelect(select)`. When the hidden `<select>` is `disabled`, no hover chrome and no pointer cursor on the trigger. |
 | Chip picker field | `.ekara-picker-field` + `.ekara-picker-chevron` | Multi-select / menu triggers (Settings recipients & applications, Measures trackers). Same border/focus as inputs; chips use `.ekara-chip*`. |
 | Day filter pills | `.day-pill` / `.day-pill-group` | Alert schedule days; active uses primary tokens |
 | Channel choice | `.channel-option` in `.channel-options` | Alert drawer radios (stacked layout: `--stacked`) |
@@ -61,6 +61,7 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Tooltip | `[data-tooltip]` on host; floating `.ekara-tooltip` (see `tooltip.js`) | `--tooltip-*` |
 | Chip (tag) | `.ekara-chip`, `.ekara-chip-label`, `.ekara-chip-remove` | `--surface-hover-neutral`, `--border-color`, `--text-neutral`; remove hover `--surface-hover-action` |
 | Sortable table header | `.data-table-header-sort` inside `.data-table-header-cell`; chevron `.data-table-header-sort-icon` only when `.is-sorted` (Option B — no icon until column clicked) | `--select-chevron-svg` |
+| List table (viewport scroll) | `main.main-content--list-table` + `.data-table-viewport` + `.data-table--scroll` with `.data-table-body-scroll` wrapping `#*-table-body`; header stays fixed, body scrolls | `--data-table-cols` on `.data-table` / modifiers |
 | Slide-in drawer | `.slide-panel` (+ optional `.slide-panel--narrow` for compact forms) | `--slide-panel-width` / `--slide-panel-width-narrow`; header, body, footer share `--slide-panel-padding`; footer actions `--slide-panel-actions-gap` |
 | RUM threshold zone legend | `.rum-threshold-drawer-legend` (fixed strip between drawer header and scrollable body) | Reuses `.rum-threshold-bar-seg--*` swatches; separator `.section-divider` inside padded strip (no full-bleed border) |
 
@@ -126,7 +127,9 @@ After any shared CSS change, bump `assetVersion` in `assets/js/prototype-routes.
 
 **Navigation:** module URLs and the default entry live in `prototype-routes.js`; `bento.js` uses them so every screen stays on the same deployment when switching modules.
 
-**Settings module sidebar:** one definition in `assets/js/settings-sidebar.js`. Settings HTML pages mount it with `<aside class="sidebar" data-ekara-settings-sidebar></aside>` and set `data-settings-screen` on `<body>` (`alerts` | `trackers`). Include `settings-sidebar.js` after `prototype-routes.js`. Measures / Management keep their own sidebars.
+**Settings module sidebar:** one definition in `assets/js/settings-sidebar.js`. Settings HTML pages mount it with `<aside class="sidebar" data-ekara-settings-sidebar></aside>` and set `data-settings-screen` on `<body>` (`alerts` | `trackers`). Include `settings-sidebar.js` after `prototype-routes.js`.
+
+**Management module sidebar:** `assets/js/management-sidebar.js` — `data-ekara-management-sidebar` + `data-management-screen` (`webhooks` | `sso` | `groups`).
 
 **Settings sidebar cross-links:** any clickable sub-item in the dark sidebar must use `sidebar-item sidebar-subitem sidebar-subitem-link` (including the current page with `active` + `href="./"`). Plain `<a>` without that class inherits body/link colors and becomes unreadable on `--sidebar-bg`.
 
