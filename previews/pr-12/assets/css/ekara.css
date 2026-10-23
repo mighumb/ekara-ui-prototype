@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=149');
+@import url('tokens.css?v=150');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -1387,8 +1387,9 @@ span.form-label {
   padding-top: 0;
 }
 
-.form-select-wrap--narrow {
-  max-width: 120px;
+.form-group--modal-spacer {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .confirm-dialog-title {
