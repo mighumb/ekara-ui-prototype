@@ -76,6 +76,33 @@ test.describe('Management — Groups (DFY-24465)', () => {
     expect(optionCount).toBe(10);
   });
 
+  test('Administrator and Manager workspaces select is only all-workspaces', async ({ page }) => {
+    await openGroups(page);
+    await page.locator('#btn-add-group').click();
+
+    for (const profile of ['Administrator', 'Manager']) {
+      const profileWrap = page.locator('[data-ekara-inline-select]:has(#field-profile)');
+      await profileWrap.locator('.ekara-inline-select-trigger').click();
+      await profileWrap.locator('.ekara-inline-select-option', { hasText: profile }).click();
+      await expect(page.locator('#field-workspaces')).toBeDisabled();
+      const options = await page.locator('#field-workspaces option').allTextContents();
+      expect(options.map((t) => t.trim())).toEqual(['You have access to all workspaces']);
+      await expect(page.locator('#field-workspaces')).toHaveValue('__all__');
+    }
+
+    const profileWrap = page.locator('[data-ekara-inline-select]:has(#field-profile)');
+    await profileWrap.locator('.ekara-inline-select-trigger').click();
+    await profileWrap.locator('.ekara-inline-select-option', { hasText: 'Operator' }).click();
+    const workspaceWrap = page.locator('[data-ekara-inline-select]:has(#field-workspaces)');
+    await workspaceWrap.locator('.ekara-inline-select-trigger').click();
+    const operatorLabels = await workspaceWrap.locator('.ekara-inline-select-option').allTextContents();
+    expect(operatorLabels.map((t) => t.trim())).toEqual([
+      'ALL Application',
+      'Console GIEPS',
+      'Application cva',
+    ]);
+  });
+
   test('create group persists priority in table', async ({ page }) => {
     await openGroups(page);
     await page.locator('#btn-add-group').click();
