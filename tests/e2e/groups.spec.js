@@ -90,17 +90,21 @@ test.describe('Management — Groups (DFY-24465)', () => {
       await expect(page.locator('#field-workspaces')).toHaveValue('__all__');
     }
 
-    const profileWrap = page.locator('[data-ekara-inline-select]:has(#field-profile)');
-    await profileWrap.locator('.ekara-inline-select-trigger').click();
-    await profileWrap.locator('.ekara-inline-select-option', { hasText: 'Operator' }).click();
-    const workspaceWrap = page.locator('[data-ekara-inline-select]:has(#field-workspaces)');
-    await workspaceWrap.locator('.ekara-inline-select-trigger').click();
-    const operatorLabels = await workspaceWrap.locator('.ekara-inline-select-option').allTextContents();
-    expect(operatorLabels.map((t) => t.trim())).toEqual([
-      'ALL Application',
-      'Console GIEPS',
-      'Application cva',
-    ]);
+    const scopedWorkspaceLabels = ['ALL Application', 'Console GIEPS', 'Application cva'];
+
+    for (const profile of ['Operator', 'Analyst']) {
+      const profileWrap = page.locator('[data-ekara-inline-select]:has(#field-profile)');
+      await profileWrap.locator('.ekara-inline-select-trigger').click();
+      await profileWrap.locator('.ekara-inline-select-option', { hasText: profile }).click();
+      await expect(page.locator('#field-workspaces')).toBeEnabled();
+      const options = await page.locator('#field-workspaces option').allTextContents();
+      expect(options.map((t) => t.trim())).toEqual(scopedWorkspaceLabels);
+      const workspaceWrap = page.locator('[data-ekara-inline-select]:has(#field-workspaces)');
+      await workspaceWrap.locator('.ekara-inline-select-trigger').click();
+      const menuLabels = await workspaceWrap.locator('.ekara-inline-select-option').allTextContents();
+      expect(menuLabels.map((t) => t.trim())).toEqual(scopedWorkspaceLabels);
+      await workspaceWrap.locator('.ekara-inline-select-trigger').click();
+    }
   });
 
   test('create group persists priority in table', async ({ page }) => {

@@ -8,6 +8,7 @@ const PROFILE_OPTIONS = ['Administrator', 'Manager', 'Operator', 'Analyst'];
 const LANGUAGE_OPTIONS = ['English', 'French', 'Chinese'];
 const TIMEZONE_OPTIONS = ['GMT', 'Africa/Addis_Ababa', 'Europe/Paris', 'America/New_York'];
 const WORKSPACE_OPTIONS = ['ALL Application', 'Console GIEPS', 'Application cva'];
+/** Admin / Manager: all workspaces only. Operator / Analyst: scoped workspace list. */
 const PROFILES_ALL_WORKSPACES = new Set(['Administrator', 'Manager']);
 const WORKSPACE_ALL_VALUE = '__all__';
 const WORKSPACE_ALL_LABEL = 'You have access to all workspaces';
