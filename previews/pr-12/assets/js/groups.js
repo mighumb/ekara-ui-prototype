@@ -5,7 +5,7 @@
 const GROUPS_STORAGE_KEY = 'ekara-prototype-groups';
 
 const PROFILE_OPTIONS = ['Administrator', 'Manager', 'Operator', 'Analyst'];
-const LANGUAGE_OPTIONS = ['English', 'French', 'German'];
+const LANGUAGE_OPTIONS = ['English', 'French', 'Chinese'];
 const TIMEZONE_OPTIONS = ['GMT', 'Africa/Addis_Ababa', 'Europe/Paris', 'America/New_York'];
 const WORKSPACE_OPTIONS = ['ALL Application', 'Console GIEPS', 'Application cva'];
 
