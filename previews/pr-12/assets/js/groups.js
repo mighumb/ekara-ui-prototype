@@ -8,6 +8,9 @@ const PROFILE_OPTIONS = ['Administrator', 'Manager', 'Operator', 'Analyst'];
 const LANGUAGE_OPTIONS = ['English', 'French', 'Chinese'];
 const TIMEZONE_OPTIONS = ['GMT', 'Africa/Addis_Ababa', 'Europe/Paris', 'America/New_York'];
 const WORKSPACE_OPTIONS = ['ALL Application', 'Console GIEPS', 'Application cva'];
+const PROFILES_ALL_WORKSPACES = new Set(['Administrator', 'Manager']);
+const WORKSPACE_ALL_VALUE = '__all__';
+const WORKSPACE_ALL_LABEL = 'You have access to all workspaces';
 
 const SORT_FIRST_CLICK_ASC = {
   name: true,
@@ -79,6 +82,10 @@ function init() {
     confirmOk: document.getElementById('confirm-ok'),
   };
 
+  els.profileSelect.addEventListener('change', () => {
+    syncWorkspaceFieldForProfile();
+  });
+
   bindEvents();
   syncTableSortHeaders();
   renderTable();
@@ -117,14 +124,19 @@ function bindEvents() {
   });
 }
 
+function profileUsesAllWorkspaces(profile) {
+  return PROFILES_ALL_WORKSPACES.has(profile);
+}
+
 function normalizeGroup(row) {
   const priority = Number.isFinite(Number(row.priority)) ? Number(row.priority) : 0;
   const clampedPriority = Math.min(9, Math.max(0, priority));
+  const allWorkspaces = profileUsesAllWorkspaces(row.profile) || Boolean(row.accessAllWorkspaces);
   return {
     ...row,
     priority: clampedPriority,
-    workspaces: Array.isArray(row.workspaces) ? row.workspaces : [],
-    accessAllWorkspaces: Boolean(row.accessAllWorkspaces),
+    workspaces: allWorkspaces ? [] : Array.isArray(row.workspaces) ? row.workspaces : [],
+    accessAllWorkspaces: allWorkspaces,
   };
 }
 
@@ -301,17 +313,17 @@ function openDialog(mode, id) {
     els.languageSelect.value = row.language;
     els.timezoneSelect.value = row.timezone;
     els.prioritySelect.value = String(row.priority);
-    els.workspaceSelect.value = row.accessAllWorkspaces ? '__all__' : row.workspaces[0] || WORKSPACE_OPTIONS[0];
-    dispatchSelectChanges();
+    syncWorkspaceFieldForProfile(row);
   } else {
     els.nameInput.value = '';
     els.profileSelect.value = 'Administrator';
     els.languageSelect.value = 'English';
     els.timezoneSelect.value = 'GMT';
     els.prioritySelect.value = '0';
-    els.workspaceSelect.value = '__all__';
-    dispatchSelectChanges();
+    syncWorkspaceFieldForProfile();
   }
+
+  dispatchSelectChanges();
 
   clearFieldError(els.nameInput, els.nameError);
   syncSaveButtonState();
@@ -319,6 +331,41 @@ function openDialog(mode, id) {
   els.dialog.classList.add('open');
   els.dialog.setAttribute('aria-hidden', 'false');
   lockPageScroll();
+}
+
+function syncWorkspaceFieldForProfile(rowForEdit = null) {
+  const profile = els.profileSelect.value;
+  const allOnly = profileUsesAllWorkspaces(profile);
+  const select = els.workspaceSelect;
+  const wrap = select.closest('[data-ekara-inline-select]');
+  const preferredValue = rowForEdit
+    ? rowForEdit.accessAllWorkspaces
+      ? WORKSPACE_ALL_VALUE
+      : rowForEdit.workspaces[0] || WORKSPACE_OPTIONS[0]
+    : select.value;
+
+  if (wrap) {
+    window.EkaraInlineSelect?.destroy(wrap);
+  }
+
+  select.replaceChildren();
+  if (allOnly) {
+    select.append(new Option(WORKSPACE_ALL_LABEL, WORKSPACE_ALL_VALUE));
+    select.value = WORKSPACE_ALL_VALUE;
+    select.disabled = true;
+  } else {
+    WORKSPACE_OPTIONS.forEach((ws) => select.append(new Option(ws, ws)));
+    select.disabled = false;
+    if (WORKSPACE_OPTIONS.includes(preferredValue)) {
+      select.value = preferredValue;
+    } else {
+      select.value = WORKSPACE_OPTIONS[0];
+    }
+  }
+
+  if (wrap) {
+    window.EkaraInlineSelect?.init(wrap);
+  }
 }
 
 function dispatchSelectChanges() {
@@ -345,11 +392,12 @@ function saveGroup() {
     return;
   }
 
+  const profile = els.profileSelect.value;
+  const accessAll = profileUsesAllWorkspaces(profile) || els.workspaceSelect.value === WORKSPACE_ALL_VALUE;
   const workspaceValue = els.workspaceSelect.value;
-  const accessAll = workspaceValue === '__all__';
   const fields = {
     name,
-    profile: els.profileSelect.value,
+    profile,
     language: els.languageSelect.value,
     timezone: els.timezoneSelect.value,
     priority: Math.min(9, Math.max(0, parseInt(els.prioritySelect.value, 10) || 0)),
