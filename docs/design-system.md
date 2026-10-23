@@ -50,10 +50,10 @@ Current prototype usage: `--label-color` → `var(--color-n900)` for `form-label
 | Text button | `.btn-text` | `--primary` text; hover `--surface-hover-action` |
 | Danger button | `.btn-danger` | `--danger` / `--danger-hover` |
 | Toggle | `.toggle` | off `--toggle-track-off`, on `--toggle-track-on` (B500) |
-| Text input | `.form-input`, `.form-textarea` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` |
+| Text input | `.form-input`, `.form-textarea` | border `--input-border-color`; focus `--input-focus-border`; disabled `--input-disabled-*` (no hover; `cursor: not-allowed`, not pointer) |
 | Read-only field (no dropdown) | `.form-input.form-input--disabled-static` | Disabled input tokens (e.g. global Applications scope) |
 | Date range | `.ekara-date-range-picker` + `ekara-date-range-picker.js` | Display format **`DD/MM/YYYY - DD/MM/YYYY`** (same on every page); presets + dual month grid; range `--date-range-selection-bg`, endpoints `--primary` / `--text-on-primary`; include script after `ekara.css` |
-| Dropdown / select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | DS listbox only — no visible native `<select>` popup. Hidden `<select>` holds value. **Measures:** `.measure-filter-inline`. **Forms:** `.form-select-wrap` + `.form-select`. Dynamic rows: `EkaraInlineSelect.wrapFormSelect(select)`. |
+| Dropdown / select | `[data-ekara-inline-select]` + `ekara-inline-select.js` | DS listbox only — no visible native `<select>` popup. Hidden `<select>` holds value. **Measures:** `.measure-filter-inline`. **Forms:** `.form-select-wrap` + `.form-select`. Dynamic rows: `EkaraInlineSelect.wrapFormSelect(select)`. When the hidden `<select>` is `disabled`, no hover chrome and no pointer cursor on the trigger. |
 | Chip picker field | `.ekara-picker-field` + `.ekara-picker-chevron` | Multi-select / menu triggers (Settings recipients & applications, Measures trackers). Same border/focus as inputs; chips use `.ekara-chip*`. |
 | Day filter pills | `.day-pill` / `.day-pill-group` | Alert schedule days; active uses primary tokens |
 | Channel choice | `.channel-option` in `.channel-options` | Alert drawer radios (stacked layout: `--stacked`) |

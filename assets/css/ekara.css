@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=151');
+@import url('tokens.css?v=152');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -964,10 +964,22 @@ span.form-label {
   background-color: var(--surface-hover-neutral);
 }
 
-.form-select-wrap[data-ekara-inline-select]:focus-within,
-.form-select-wrap[data-ekara-inline-select]:has([aria-expanded='true']) {
+.form-select-wrap[data-ekara-inline-select]:focus-within:not(:has(select:disabled)),
+.form-select-wrap[data-ekara-inline-select]:has([aria-expanded='true']):not(:has(select:disabled)) {
   border-color: var(--input-focus-border);
   background-color: var(--surface-default);
+}
+
+.form-select-wrap[data-ekara-inline-select]:has(select:disabled) {
+  cursor: not-allowed;
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+}
+
+.form-select-wrap[data-ekara-inline-select]:has(select:disabled) .ekara-inline-select-trigger {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--input-disabled-text);
 }
 
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-control {
@@ -1043,6 +1055,12 @@ span.form-label {
 .ekara-inline-select-trigger:disabled {
   cursor: not-allowed;
   color: var(--input-disabled-text);
+}
+
+.form-select-wrap[data-ekara-inline-select-searchable]:has(select:disabled) .ekara-inline-select-input,
+.form-select-wrap[data-ekara-inline-select-searchable]:has(select:disabled) .ekara-inline-select-chevron {
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .mapping-row .form-select-wrap,
@@ -1752,6 +1770,14 @@ span.form-label {
   background-color: var(--surface-hover-neutral);
 }
 
+.ekara-picker-field:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+  color: var(--input-disabled-text);
+}
+
 .ekara-picker-field:focus,
 .ekara-picker-field[aria-expanded='true'] {
   outline: none;
@@ -1969,9 +1995,22 @@ span.form-label {
   transition: border-color 0.15s, background-color 0.15s;
 }
 
-.measure-filter-inline:not(.measure-filter-inline--static):hover:not(:focus-within):not(:has([aria-expanded='true'])) {
+.measure-filter-inline:not(.measure-filter-inline--static):hover:not(:focus-within):not(:has([aria-expanded='true'])):not(
+    :has(select:disabled)
+  ) {
   border-color: var(--input-hover-border);
   background-color: var(--surface-hover-neutral);
+}
+
+.measure-filter-inline:has(select:disabled) {
+  cursor: not-allowed;
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+}
+
+.measure-filter-inline:has(select:disabled) .ekara-inline-select-trigger {
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .measure-filter-inline--static {
