@@ -102,6 +102,15 @@ jobs:
                   f.startsWith('tests/e2e/alerts'),
               },
               {
+                label: 'Groups (Management)',
+                path: 'groups/',
+                match: (f) =>
+                  f.startsWith('groups/') ||
+                  f === 'assets/js/groups.js' ||
+                  f === 'assets/js/management-sidebar.js' ||
+                  f.startsWith('tests/e2e/groups'),
+              },
+              {
                 label: 'SSO (Management)',
                 path: 'sso/',
                 match: (f) =>

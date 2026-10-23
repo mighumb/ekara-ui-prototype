@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Groups — Ekara Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/tokens.css?v=149">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=149">
+</head>
+<body data-management-screen="groups">
+  <div class="app-layout">
+    <header class="topbar">
+      <div class="topbar-left">
+        <img src="../assets/images/ekara-logo.svg" alt="" class="topbar-logo" width="32" height="32">
+        <div class="topbar-breadcrumb">
+          Management | Integrations &gt; <span>Groups</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-account">
+          My account
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M1 1l4 4 4-4"/></svg>
+        </div>
+        <button class="topbar-icon-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="topbar-badge"></span>
+        </button>
+        <div class="topbar-avatar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v1h20v-1c0-3.3-6.7-5-10-5z"/></svg>
+        </div>
+        <div class="bento-menu-wrap">
+          <button type="button" class="topbar-icon-btn" id="btn-bento" aria-label="Modules" aria-expanded="false" aria-haspopup="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/>
+              <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+              <circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+            </svg>
+          </button>
+          <div class="bento-menu" id="bento-menu" hidden>
+            <button type="button" class="bento-menu-item" data-module="Measures">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M4 19V10"/><path d="M9 19V5"/><path d="M14 19v-7"/><path d="M19 19V8"/>
+                <circle cx="18" cy="6" r="3"/>
+              </svg>
+              <span>Measures</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Infrastructure">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="18" r="2"/><circle cx="6" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="18" cy="6" r="2"/>
+                <path d="M12 16V10"/><path d="M6 8v2a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/>
+              </svg>
+              <span>Infrastructure</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Settings">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span>Settings</span>
+            </button>
+            <button type="button" class="bento-menu-item active" data-module="Management" aria-current="page">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5"/>
+                <path d="M5.5 20c1.6-3.2 4.2-5 6.5-5s4.9 1.8 6.5 5"/>
+              </svg>
+              <span>Management</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Ekara Green">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M5 19c8-1 12-8 13-14-6 1-12 5-13 14Z"/>
+                <path d="M8 14c2-2 5-4 9-5"/>
+              </svg>
+              <span>Ekara Green</span>
+            </button>
+            <button type="button" class="bento-menu-item" data-module="Incident Guard">
+              <svg class="bento-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 5 3.5 8.5 7 10 3.5-1.5 7-5 7-10V6l-7-3Z"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+              <span>Incident Guard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar" data-ekara-management-sidebar></aside>
+
+    <main class="main-content main-content--list-table">
+      <div class="page-header">
+        <h1 class="page-title">Groups</h1>
+        <button type="button" class="btn btn-primary" id="btn-add-group">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add group
+        </button>
+      </div>
+
+      <div class="data-table-viewport">
+      <div class="data-table data-table--groups data-table--scroll">
+        <div class="data-table-header">
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="name" aria-sort="none">
+              <span class="data-table-header-sort-label">Name</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="profile" aria-sort="none">
+              <span class="data-table-header-sort-label">Profil</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="workspaces" aria-sort="none">
+              <span class="data-table-header-sort-label">Workspaces</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell">
+            <button type="button" class="data-table-header-sort" data-sort-key="priority" aria-sort="none">
+              <span class="data-table-header-sort-label">Priority</span>
+              <span class="data-table-header-sort-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="data-table-header-cell"></div>
+        </div>
+        <div class="data-table-body-scroll">
+          <div id="group-table-body"></div>
+        </div>
+      </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay"></div>
+
+  <div class="form-dialog" id="group-form-dialog" role="dialog" aria-modal="true" aria-labelledby="group-dialog-title" aria-hidden="true">
+    <div class="form-dialog-header">
+      <h2 class="form-dialog-title" id="group-dialog-title">New group</h2>
+      <button type="button" class="slide-panel-close" id="group-dialog-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-dialog-body">
+      <form id="group-form" onsubmit="return false;">
+        <div class="form-row-inline-2">
+          <div class="form-group">
+            <label class="form-label" for="field-name">Name</label>
+            <input type="text" class="form-input" id="field-name" autocomplete="off">
+            <div class="form-error" id="error-name"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-profile">Profil</label>
+            <div class="form-select-wrap" data-ekara-inline-select>
+              <select class="form-select" id="field-profile">
+                <option value="Administrator">Administrator</option>
+                <option value="Operator">Operator</option>
+                <option value="Analyst">Analyst</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-row-inline-2">
+          <div class="form-group">
+            <label class="form-label" for="field-language">Language</label>
+            <div class="form-select-wrap" data-ekara-inline-select>
+              <select class="form-select" id="field-language">
+                <option value="English">English</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-timezone">Time zone</label>
+            <div class="form-select-wrap" data-ekara-inline-select>
+              <select class="form-select" id="field-timezone">
+                <option value="GMT">GMT</option>
+                <option value="Africa/Addis_Ababa">Africa/Addis_Ababa</option>
+                <option value="Europe/Paris">Europe/Paris</option>
+                <option value="America/New_York">America/New_York</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="field-priority">Priority</label>
+          <div class="form-select-wrap form-select-wrap--narrow" data-ekara-inline-select>
+            <select class="form-select" id="field-priority">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="field-workspaces">Workspaces</label>
+          <div class="form-select-wrap" data-ekara-inline-select>
+            <select class="form-select" id="field-workspaces">
+              <option value="__all__">You have access to all workspaces</option>
+              <option value="ALL Application">ALL Application</option>
+              <option value="Console GIEPS">Console GIEPS</option>
+              <option value="Application cva">Application cva</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="form-dialog-footer">
+      <button type="button" class="btn btn-text" id="group-cancel-btn">Cancel</button>
+      <button type="button" class="btn btn-primary" id="group-save-btn" disabled>Create</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay modal-overlay--confirm" id="confirm-overlay"></div>
+  <div class="confirm-dialog" id="confirm-dialog">
+    <div class="confirm-dialog-title">Delete group</div>
+    <div class="confirm-dialog-message" id="confirm-message"></div>
+    <div class="confirm-dialog-actions">
+      <button type="button" class="btn btn-text" id="confirm-cancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+
+  <script src="../assets/js/prototype-routes.js?v=1"></script>
+  <script src="../assets/js/management-sidebar.js?v=2"></script>
+  <script src="../assets/js/bento.js?v=3"></script>
+  <script src="../assets/js/ekara-inline-select.js?v=6"></script>
+  <script src="../assets/js/groups.js?v=1"></script>
+</body>
+</html>

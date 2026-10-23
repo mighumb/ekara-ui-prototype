@@ -1,7 +1,7 @@
 /**
- * Shared Management module sidebar (Webhooks, SSO, and future Integrations screens).
+ * Shared Management module sidebar (Webhooks, SSO, Groups, and future Integrations screens).
  * Mount: <aside class="sidebar" data-ekara-management-sidebar></aside>
- * Active screen: <body data-management-screen="webhooks|sso">
+ * Active screen: <body data-management-screen="webhooks|sso|groups">
  */
 (function (global) {
   const CHEVRON_EXPANDED =
@@ -10,8 +10,9 @@
     '<svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
 
   const LINKS = {
-    webhooks: { webhooks: './', sso: '../sso/' },
-    sso: { webhooks: '../webhooks/', sso: './' },
+    webhooks: { webhooks: './', sso: '../sso/', groups: '../groups/' },
+    sso: { webhooks: '../webhooks/', sso: './', groups: '../groups/' },
+    groups: { webhooks: '../webhooks/', sso: '../sso/', groups: './' },
   };
 
   function integrationLink(screen, activeScreen, label) {
@@ -29,7 +30,7 @@
       return '';
     }
 
-    const integrationsExpanded = activeScreen === 'webhooks' || activeScreen === 'sso';
+    const integrationsExpanded = ['webhooks', 'sso', 'groups'].includes(activeScreen);
 
     return `
       <nav class="sidebar-nav">
@@ -74,7 +75,7 @@
         <div class="sidebar-subitems${integrationsExpanded ? '' : ' collapsed'}" data-sidebar-group>
           ${integrationLink('webhooks', activeScreen, 'Webhooks')}
           ${integrationLink('sso', activeScreen, 'SSO')}
-          <div class="sidebar-item sidebar-subitem">Groups</div>
+          ${integrationLink('groups', activeScreen, 'Groups')}
           <div class="sidebar-item sidebar-subitem">API keys</div>
           <div class="sidebar-item sidebar-subitem">Export OpenTelemetry</div>
         </div>

@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=148');
+@import url('tokens.css?v=149');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -428,6 +428,7 @@ select:not(:disabled) {
 .data-table:not(.data-table--scroll) .data-table-header,
 .data-table:not(.data-table--scroll) #webhook-table-body,
 .data-table:not(.data-table--scroll) #sso-table-body,
+.data-table:not(.data-table--scroll) #group-table-body,
 .data-table:not(.data-table--scroll) #alert-table-body,
 .data-table:not(.data-table--scroll) #tracker-table-body,
 .data-table:not(.data-table--scroll) .data-table-row {
@@ -457,6 +458,7 @@ select:not(:disabled) {
 
 .data-table--scroll .data-table-body-scroll #webhook-table-body,
 .data-table--scroll .data-table-body-scroll #sso-table-body,
+.data-table--scroll .data-table-body-scroll #group-table-body,
 .data-table--scroll .data-table-body-scroll #alert-table-body,
 .data-table--scroll .data-table-body-scroll #tracker-table-body {
   display: block;
@@ -1332,6 +1334,61 @@ span.form-label {
 
 .confirm-dialog.open {
   display: block;
+}
+
+/* Centered form dialog (Management Groups, etc.) */
+.form-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  background: var(--surface-default);
+  border-radius: var(--radius-dialog);
+  box-shadow: var(--shadow-dialog);
+  z-index: 500;
+  display: none;
+  flex-direction: column;
+}
+
+.form-dialog.open {
+  display: flex;
+}
+
+.form-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: var(--slide-panel-padding);
+  padding-bottom: 0;
+}
+
+.form-dialog-title {
+  margin: 0;
+  font-size: var(--page-title-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-neutral);
+}
+
+.form-dialog-body {
+  padding: var(--slide-panel-padding);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.form-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--slide-panel-actions-gap);
+  padding: var(--slide-panel-padding);
+  padding-top: 0;
+}
+
+.form-select-wrap--narrow {
+  max-width: 120px;
 }
 
 .confirm-dialog-title {
@@ -2865,6 +2922,57 @@ span.form-label {
     minmax(100px, 0.85fr)
     48px;
   grid-template-columns: var(--data-table-cols);
+}
+
+.data-table--groups {
+  --data-table-cols:
+    minmax(140px, 1.35fr)
+    minmax(100px, 0.8fr)
+    minmax(120px, 1fr)
+    minmax(56px, 0.45fr)
+    48px;
+  grid-template-columns: var(--data-table-cols);
+}
+
+.group-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.group-table-avatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-on-primary);
+  background: var(--primary);
+}
+
+.group-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-workspaces-cell .ekara-chip {
+  max-width: 100%;
+}
+
+.group-workspace-chip .ekara-chip-label {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-workspace-empty {
+  color: var(--text-muted);
 }
 
 .data-table--trackers {
