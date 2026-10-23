@@ -127,7 +127,9 @@ After any shared CSS change, bump `assetVersion` in `assets/js/prototype-routes.
 
 **Navigation:** module URLs and the default entry live in `prototype-routes.js`; `bento.js` uses them so every screen stays on the same deployment when switching modules.
 
-**Settings module sidebar:** one definition in `assets/js/settings-sidebar.js`. Settings HTML pages mount it with `<aside class="sidebar" data-ekara-settings-sidebar></aside>` and set `data-settings-screen` on `<body>` (`alerts` | `trackers`). Include `settings-sidebar.js` after `prototype-routes.js`. Measures / Management keep their own sidebars.
+**Settings module sidebar:** one definition in `assets/js/settings-sidebar.js`. Settings HTML pages mount it with `<aside class="sidebar" data-ekara-settings-sidebar></aside>` and set `data-settings-screen` on `<body>` (`alerts` | `trackers`). Include `settings-sidebar.js` after `prototype-routes.js`.
+
+**Management module sidebar:** `assets/js/management-sidebar.js` — `data-ekara-management-sidebar` + `data-management-screen` (`webhooks` | `sso` | `groups`).
 
 **Settings sidebar cross-links:** any clickable sub-item in the dark sidebar must use `sidebar-item sidebar-subitem sidebar-subitem-link` (including the current page with `active` + `href="./"`). Plain `<a>` without that class inherits body/link colors and becomes unreadable on `--sidebar-bg`.
 
