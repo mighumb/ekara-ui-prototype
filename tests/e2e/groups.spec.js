@@ -50,6 +50,32 @@ test.describe('Management — Groups (DFY-24465)', () => {
     expect(options.map((t) => t.trim())).toEqual(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
   });
 
+  test('priority dropdown matches language width and opens without inner scroll', async ({ page }) => {
+    await openGroups(page);
+    await page.locator('#btn-add-group').click();
+    const languageWrap = page.locator('[data-ekara-inline-select]:has(#field-language)');
+    const priorityWrap = page.locator('[data-ekara-inline-select]:has(#field-priority)');
+    const languageWidth = await languageWrap.evaluate((el) => el.getBoundingClientRect().width);
+    const priorityWidth = await priorityWrap.evaluate((el) => el.getBoundingClientRect().width);
+    expect(priorityWidth).toBeCloseTo(languageWidth, 0);
+
+    await priorityWrap.locator('.ekara-inline-select-trigger').click();
+    const menu = priorityWrap.locator('.ekara-inline-select-menu:not(.hidden)');
+    await expect(menu).toBeVisible();
+    const triggerWidth = await priorityWrap
+      .locator('.ekara-inline-select-trigger')
+      .evaluate((el) => el.getBoundingClientRect().width);
+    const menuMetrics = await menu.evaluate((el) => ({
+      scrollHeight: el.scrollHeight,
+      clientHeight: el.clientHeight,
+      width: el.getBoundingClientRect().width,
+    }));
+    expect(menuMetrics.width).toBeCloseTo(triggerWidth, 0);
+    expect(menuMetrics.scrollHeight).toBeLessThanOrEqual(menuMetrics.clientHeight + 1);
+    const optionCount = await priorityWrap.locator('.ekara-inline-select-option').count();
+    expect(optionCount).toBe(10);
+  });
+
   test('create group persists priority in table', async ({ page }) => {
     await openGroups(page);
     await page.locator('#btn-add-group').click();

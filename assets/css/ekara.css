@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=150');
+@import url('tokens.css?v=151');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -1054,7 +1054,7 @@ span.form-label {
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-menu,
 .form-select-wrap--mapping .ekara-inline-select-menu,
 .form-select-wrap--mapping-value .ekara-inline-select-menu {
-  max-height: min(240px, 40vh);
+  max-height: min(360px, 50vh);
   overflow-y: auto;
 }
 
@@ -1378,6 +1378,11 @@ span.form-label {
   overscroll-behavior: contain;
 }
 
+/* Let inline-select menus paint outside the scroll box (Groups Priority, etc.). */
+.form-dialog-body:has([aria-expanded='true']) {
+  overflow: visible;
+}
+
 .form-dialog-footer {
   display: flex;
   justify-content: flex-end;
@@ -1387,9 +1392,10 @@ span.form-label {
   padding-top: 0;
 }
 
-.form-group--modal-spacer {
-  visibility: hidden;
-  pointer-events: none;
+.form-dialog .form-group--dialog-half {
+  width: calc((100% - 12px) / 2);
+  max-width: calc((100% - 12px) / 2);
+  margin-bottom: 20px;
 }
 
 .confirm-dialog-title {
