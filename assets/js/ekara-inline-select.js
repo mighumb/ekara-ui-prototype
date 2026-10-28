@@ -158,11 +158,34 @@
       });
     }
 
+    function resetMenuSizing() {
+      menu.style.maxHeight = '';
+      menu.style.overflowY = '';
+    }
+
+    /** Size the open menu to its options; cap only very long lists (matches form-select menu CSS). */
+    function fitMenuToContent() {
+      menu.style.maxHeight = 'none';
+      menu.style.overflowY = 'visible';
+      const naturalHeight = menu.scrollHeight;
+      const cap = 360;
+      if (naturalHeight > cap) {
+        menu.style.maxHeight = `${cap}px`;
+        menu.style.overflowY = 'auto';
+      } else {
+        menu.style.maxHeight = `${naturalHeight}px`;
+        menu.style.overflowY = 'visible';
+      }
+    }
+
     function openMenu() {
       closeAllExcept(root);
       menuOpen = true;
       menu.classList.remove('hidden');
       setExpanded(root, true);
+      if (!searchable) {
+        fitMenuToContent();
+      }
       if (searchable && searchInput) {
         // Show full list on open (product UI); typing applies filter via input handler.
         filterOptions('');
@@ -174,6 +197,7 @@
       menuOpen = false;
       menu.classList.add('hidden');
       setExpanded(root, false);
+      resetMenuSizing();
       if (searchable) syncDisplayFromSelect();
       filterOptions('');
     }

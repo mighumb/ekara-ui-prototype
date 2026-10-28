@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=146');
+@import url('tokens.css?v=152');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -301,6 +301,26 @@ select:not(:disabled) {
   min-height: calc(100vh - 48px);
 }
 
+/* List screens: page header fixed, table body scrolls inside viewport */
+.main-content--list-table {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px);
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.main-content--list-table .page-header {
+  flex-shrink: 0;
+}
+
+.data-table-viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
 .page-header {
   display: flex;
   align-items: center;
@@ -397,19 +417,60 @@ select:not(:disabled) {
 
 /* Table */
 .data-table {
+  --data-table-cols: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 48px;
+  grid-template-columns: var(--data-table-cols);
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
 }
 
-.data-table-header,
-#webhook-table-body,
-#alert-table-body,
-#tracker-table-body,
-.data-table-row {
+.data-table:not(.data-table--scroll) .data-table-header,
+.data-table:not(.data-table--scroll) #webhook-table-body,
+.data-table:not(.data-table--scroll) #sso-table-body,
+.data-table:not(.data-table--scroll) #group-table-body,
+.data-table:not(.data-table--scroll) #alert-table-body,
+.data-table:not(.data-table--scroll) #tracker-table-body,
+.data-table:not(.data-table--scroll) .data-table-row {
   display: contents;
+}
+
+.data-table.data-table--scroll {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.data-table--scroll .data-table-header {
+  display: grid;
+  grid-template-columns: var(--data-table-cols);
+  flex-shrink: 0;
+}
+
+.data-table--scroll .data-table-body-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.data-table--scroll .data-table-body-scroll #webhook-table-body,
+.data-table--scroll .data-table-body-scroll #sso-table-body,
+.data-table--scroll .data-table-body-scroll #group-table-body,
+.data-table--scroll .data-table-body-scroll #alert-table-body,
+.data-table--scroll .data-table-body-scroll #tracker-table-body {
+  display: block;
+}
+
+.data-table--scroll .data-table-row {
+  display: grid;
+  grid-template-columns: var(--data-table-cols);
+}
+
+.data-table--scroll .rum-tracker-table-footer {
+  grid-column: unset;
 }
 
 .data-table-header-cell,
@@ -903,10 +964,22 @@ span.form-label {
   background-color: var(--surface-hover-neutral);
 }
 
-.form-select-wrap[data-ekara-inline-select]:focus-within,
-.form-select-wrap[data-ekara-inline-select]:has([aria-expanded='true']) {
+.form-select-wrap[data-ekara-inline-select]:focus-within:not(:has(select:disabled)),
+.form-select-wrap[data-ekara-inline-select]:has([aria-expanded='true']):not(:has(select:disabled)) {
   border-color: var(--input-focus-border);
   background-color: var(--surface-default);
+}
+
+.form-select-wrap[data-ekara-inline-select]:has(select:disabled) {
+  cursor: not-allowed;
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+}
+
+.form-select-wrap[data-ekara-inline-select]:has(select:disabled) .ekara-inline-select-trigger {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--input-disabled-text);
 }
 
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-control {
@@ -984,6 +1057,12 @@ span.form-label {
   color: var(--input-disabled-text);
 }
 
+.form-select-wrap[data-ekara-inline-select-searchable]:has(select:disabled) .ekara-inline-select-input,
+.form-select-wrap[data-ekara-inline-select-searchable]:has(select:disabled) .ekara-inline-select-chevron {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .mapping-row .form-select-wrap,
 .mapping-value-cell .form-select-wrap {
   min-width: 0;
@@ -993,7 +1072,7 @@ span.form-label {
 .form-select-wrap[data-ekara-inline-select] .ekara-inline-select-menu,
 .form-select-wrap--mapping .ekara-inline-select-menu,
 .form-select-wrap--mapping-value .ekara-inline-select-menu {
-  max-height: min(240px, 40vh);
+  max-height: min(360px, 50vh);
   overflow-y: auto;
 }
 
@@ -1275,6 +1354,68 @@ span.form-label {
   display: block;
 }
 
+/* Centered form dialog (Management Groups, etc.) */
+.form-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  background: var(--surface-default);
+  border-radius: var(--radius-dialog);
+  box-shadow: var(--shadow-dialog);
+  z-index: 500;
+  display: none;
+  flex-direction: column;
+}
+
+.form-dialog.open {
+  display: flex;
+}
+
+.form-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: var(--slide-panel-padding);
+  padding-bottom: 0;
+}
+
+.form-dialog-title {
+  margin: 0;
+  font-size: var(--page-title-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-neutral);
+}
+
+.form-dialog-body {
+  padding: var(--slide-panel-padding);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Let inline-select menus paint outside the scroll box (Groups Priority, etc.). */
+.form-dialog-body:has([aria-expanded='true']) {
+  overflow: visible;
+}
+
+.form-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--slide-panel-actions-gap);
+  padding: var(--slide-panel-padding);
+  padding-top: 0;
+}
+
+.form-dialog .form-group--dialog-half {
+  width: calc((100% - 12px) / 2);
+  max-width: calc((100% - 12px) / 2);
+  margin-bottom: 20px;
+}
+
 .confirm-dialog-title {
   font-size: var(--font-size-16);
   font-weight: var(--font-weight-semibold);
@@ -1331,7 +1472,7 @@ span.form-label {
 
 /* Alerts table */
 .data-table--alerts {
-  grid-template-columns:
+  --data-table-cols:
     56px
     minmax(120px, 1.1fr)
     minmax(100px, 1fr)
@@ -1340,6 +1481,7 @@ span.form-label {
     minmax(88px, 0.65fr)
     minmax(100px, 0.75fr)
     48px;
+  grid-template-columns: var(--data-table-cols);
 }
 
 .data-table--alerts .data-table-header-cell:first-child,
@@ -1628,6 +1770,14 @@ span.form-label {
   background-color: var(--surface-hover-neutral);
 }
 
+.ekara-picker-field:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+  color: var(--input-disabled-text);
+}
+
 .ekara-picker-field:focus,
 .ekara-picker-field[aria-expanded='true'] {
   outline: none;
@@ -1845,9 +1995,22 @@ span.form-label {
   transition: border-color 0.15s, background-color 0.15s;
 }
 
-.measure-filter-inline:not(.measure-filter-inline--static):hover:not(:focus-within):not(:has([aria-expanded='true'])) {
+.measure-filter-inline:not(.measure-filter-inline--static):hover:not(:focus-within):not(:has([aria-expanded='true'])):not(
+    :has(select:disabled)
+  ) {
   border-color: var(--input-hover-border);
   background-color: var(--surface-hover-neutral);
+}
+
+.measure-filter-inline:has(select:disabled) {
+  cursor: not-allowed;
+  background-color: var(--input-disabled-bg);
+  border-color: var(--input-disabled-border);
+}
+
+.measure-filter-inline:has(select:disabled) .ekara-inline-select-trigger {
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .measure-filter-inline--static {
@@ -2797,9 +2960,70 @@ span.form-label {
   line-height: 1.45;
 }
 
+.data-table--sso {
+  --data-table-cols:
+    minmax(100px, 1.15fr)
+    minmax(100px, 1fr)
+    minmax(88px, 0.75fr)
+    minmax(100px, 0.85fr)
+    48px;
+  grid-template-columns: var(--data-table-cols);
+}
+
+.data-table--groups {
+  --data-table-cols:
+    minmax(140px, 1.35fr)
+    minmax(100px, 0.8fr)
+    minmax(120px, 1fr)
+    minmax(56px, 0.45fr)
+    48px;
+  grid-template-columns: var(--data-table-cols);
+}
+
+.group-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.group-table-avatar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-on-primary);
+  background: var(--primary);
+}
+
+.group-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-workspaces-cell .ekara-chip {
+  max-width: 100%;
+}
+
+.group-workspace-chip .ekara-chip-label {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-workspace-empty {
+  color: var(--text-muted);
+}
+
 .data-table--trackers {
   /* Same balanced fr pattern as .data-table--alerts — avoid one wide UID column */
-  grid-template-columns:
+  --data-table-cols:
     56px
     88px
     minmax(100px, 1fr)
@@ -2808,6 +3032,7 @@ span.form-label {
     minmax(64px, 0.55fr)
     minmax(100px, 0.95fr)
     48px;
+  grid-template-columns: var(--data-table-cols);
 }
 
 .data-table--trackers .data-table-header-cell:nth-child(1),
@@ -2952,6 +3177,7 @@ span.form-label {
 
 .rum-tracker-table-footer {
   grid-column: 1 / -1;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   gap: 24px;

@@ -102,10 +102,28 @@ jobs:
                   f.startsWith('tests/e2e/alerts'),
               },
               {
+                label: 'Groups (Management)',
+                path: 'groups/',
+                match: (f) =>
+                  f.startsWith('groups/') ||
+                  f === 'assets/js/groups.js' ||
+                  f === 'assets/js/management-sidebar.js' ||
+                  f.startsWith('tests/e2e/groups'),
+              },
+              {
+                label: 'SSO (Management)',
+                path: 'sso/',
+                match: (f) =>
+                  f.startsWith('sso/') ||
+                  f === 'assets/js/sso.js' ||
+                  f === 'assets/js/management-sidebar.js' ||
+                  f.startsWith('tests/e2e/sso'),
+              },
+              {
                 label: 'Webhooks (Management)',
                 path: 'webhooks/',
                 match: (f) =>
-                  f.startsWith('webhooks/') ||
+                  (f.startsWith('webhooks/') && f !== 'webhooks/index.html') ||
                   f === 'assets/js/webhooks.js' ||
                   f.startsWith('tests/e2e/webhooks'),
               },
@@ -122,6 +140,8 @@ jobs:
             const previewLinks = screens.filter((s) =>
               substantiveFilenames.some((f) => s.match(f)),
             );
+            const primaryPreview = previewLinks[0];
+            const otherPreviews = previewLinks.slice(1);
             const linkLines =
               previewLinks.length > 0
                 ? previewLinks.map((s) => `- [${s.label}](${url}${s.path})`)
@@ -133,10 +153,11 @@ jobs:
               '',
               'Prerequisite: publish GitHub Pages from the `gh-pages` branch (see README).',
               '',
-              previewLinks.length === 1
-                ? `**Preview this PR:** ${url}${previewLinks[0].path}`
-                : '**Preview (screens changed in this PR):**',
-              ...linkLines,
+              primaryPreview
+                ? `**Preview this PR:** ${url}${primaryPreview.path}`
+                : '**Preview:**',
+              ...(otherPreviews.length > 0 ? ['', '**Also in this PR:**', ...otherPreviews.map((s) => `- [${s.label}](${url}${s.path})`)] : []),
+              ...(previewLinks.length === 0 ? linkLines : []),
               '',
               '_Updated on each push to this branch._',
             ].join('\n');
