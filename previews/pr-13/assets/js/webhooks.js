@@ -449,7 +449,7 @@ function updateHeaderLabelsVisibility() {
   const hasRows = rowCount > 0;
   els.headerColumnLabels.classList.toggle('hidden', !hasRows);
   if (els.clearHeadersBtn) {
-    els.clearHeadersBtn.classList.toggle('hidden', rowCount <= 2);
+    els.clearHeadersBtn.classList.toggle('hidden', rowCount <= 1);
   }
 }
 
