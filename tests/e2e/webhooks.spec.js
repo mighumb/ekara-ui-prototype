@@ -89,16 +89,15 @@ test.describe('Webhooks', () => {
     await expect(page.locator('#slide-panel.open')).toBeVisible();
   });
 
-  test('Clear all removes optional HTTP header rows when more than two are shown', async ({ page }) => {
+  test('Clear all removes optional HTTP header rows when two or more are shown', async ({ page }) => {
     await openWebhooks(page);
     await openCreatePanel(page);
     await page.locator('#btn-add-header').click();
-    await page.locator('#btn-add-header').click();
-    await expect(page.locator('.header-row')).toHaveCount(2);
+    await expect(page.locator('.header-row')).toHaveCount(1);
     await expect(page.locator('#btn-clear-headers')).toBeHidden();
 
     await page.locator('#btn-add-header').click();
-    await expect(page.locator('.header-row')).toHaveCount(3);
+    await expect(page.locator('.header-row')).toHaveCount(2);
     await expect(page.locator('#btn-clear-headers')).toBeVisible();
     await page.locator('#btn-clear-headers').click();
     await expect(page.locator('.header-row')).toHaveCount(0);
