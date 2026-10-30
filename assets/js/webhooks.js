@@ -445,10 +445,11 @@ function addHeaderRow(key = '', value = '') {
 }
 
 function updateHeaderLabelsVisibility() {
-  const hasRows = els.headersContainer.querySelectorAll('.header-row').length > 0;
+  const rowCount = els.headersContainer.querySelectorAll('.header-row').length;
+  const hasRows = rowCount > 0;
   els.headerColumnLabels.classList.toggle('hidden', !hasRows);
   if (els.clearHeadersBtn) {
-    els.clearHeadersBtn.disabled = !hasRows;
+    els.clearHeadersBtn.classList.toggle('hidden', rowCount <= 2);
   }
 }
 
