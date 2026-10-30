@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/tokens.css?v=152">
-  <link rel="stylesheet" href="../assets/css/ekara.css?v=152">
+  <link rel="stylesheet" href="../assets/css/tokens.css?v=153">
+  <link rel="stylesheet" href="../assets/css/ekara.css?v=153">
 </head>
 <body data-management-screen="webhooks">
   <div class="app-layout">
@@ -210,7 +210,10 @@
 
         <!-- HTTP Headers -->
         <div class="dynamic-section">
-          <span class="form-label">HTTP Header (optional)</span>
+          <div class="dynamic-section-header">
+            <span class="form-label">HTTP Header (optional)</span>
+            <button type="button" class="btn btn-text hidden" id="btn-clear-headers">Clear all</button>
+          </div>
           <div class="field-column-labels field-column-labels--header hidden" id="header-column-labels">
             <span class="form-label">Key</span>
             <span class="form-label">Value</span>
@@ -278,6 +281,6 @@
   <script src="../assets/js/bento.js?v=3"></script>
   <script src="../assets/js/tooltip.js?v=3"></script>
   <script src="../assets/js/ekara-inline-select.js?v=3"></script>
-  <script src="../assets/js/webhooks.js?v=32"></script>
+  <script src="../assets/js/webhooks.js?v=35"></script>
 </body>
 </html>

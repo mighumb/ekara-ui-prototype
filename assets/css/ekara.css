@@ -1,5 +1,5 @@
 /* Ekara UI Prototype — shared styles */
-@import url('tokens.css?v=152');
+@import url('tokens.css?v=153');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -775,7 +775,8 @@ span.form-label {
 }
 
 .toggle-row .form-label,
-.field-column-labels .form-label {
+.field-column-labels .form-label,
+.dynamic-section-header .form-label {
   margin-bottom: 0;
 }
 
