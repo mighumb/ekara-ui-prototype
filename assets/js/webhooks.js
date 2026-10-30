@@ -182,6 +182,7 @@ function init() {
     customSectionDivider: document.getElementById('custom-section-divider'),
     headersContainer: document.getElementById('headers-container'),
     headerColumnLabels: document.getElementById('header-column-labels'),
+    clearHeadersBtn: document.getElementById('btn-clear-headers'),
     mappingsContainer: document.getElementById('mappings-container'),
     mappingColumnLabels: document.getElementById('mapping-column-labels'),
     mappingSection: document.getElementById('mapping-section'),
@@ -210,6 +211,7 @@ function bindGlobalEvents() {
   els.serviceSelect.addEventListener('change', onServiceChange);
   els.oauthToggle.addEventListener('change', updateOAuthFieldsVisibility);
   document.getElementById('btn-add-header').addEventListener('click', () => addHeaderRow());
+  els.clearHeadersBtn.addEventListener('click', clearAllHeaders);
   document.getElementById('btn-add-mapping').addEventListener('click', () => addMappingRow());
 
   bindFieldErrorClearing();
@@ -445,6 +447,14 @@ function addHeaderRow(key = '', value = '') {
 function updateHeaderLabelsVisibility() {
   const hasRows = els.headersContainer.querySelectorAll('.header-row').length > 0;
   els.headerColumnLabels.classList.toggle('hidden', !hasRows);
+  if (els.clearHeadersBtn) {
+    els.clearHeadersBtn.disabled = !hasRows;
+  }
+}
+
+function clearAllHeaders() {
+  els.headersContainer.innerHTML = '';
+  updateHeaderLabelsVisibility();
 }
 
 function collectHeaders() {

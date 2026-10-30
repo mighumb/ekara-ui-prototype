@@ -89,6 +89,19 @@ test.describe('Webhooks', () => {
     await expect(page.locator('#slide-panel.open')).toBeVisible();
   });
 
+  test('Clear all removes optional HTTP header rows', async ({ page }) => {
+    await openWebhooks(page);
+    await openCreatePanel(page);
+    await page.locator('#btn-add-header').click();
+    await page.locator('#btn-add-header').click();
+    await page.locator('.header-key').first().fill('X-Test');
+    await expect(page.locator('.header-row')).toHaveCount(2);
+    await expect(page.locator('#btn-clear-headers')).toBeEnabled();
+    await page.locator('#btn-clear-headers').click();
+    await expect(page.locator('.header-row')).toHaveCount(0);
+    await expect(page.locator('#btn-clear-headers')).toBeDisabled();
+  });
+
   test('Custom mapping updates payload preview', async ({ page }) => {
     await openWebhooks(page);
     await openCreatePanel(page);
